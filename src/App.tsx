@@ -1,14 +1,18 @@
-import { useRoutes } from 'react-router-dom';
-import router from 'src/router';
-
+import { Navigate, useRoutes } from 'react-router-dom';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/ThemeProvider';
+import { useAppSelector } from './app/hooks';
+import routes from 'src/router';
 
 function App() {
-  const content = useRoutes(router);
+  const isAuthenticated = useAppSelector(
+    (state) => state.storeUsers.isAuthenticated
+  );
+
+  const content = useRoutes(routes(isAuthenticated));
 
   return (
     <ThemeProvider>

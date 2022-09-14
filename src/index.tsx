@@ -6,13 +6,17 @@ import 'nprogress/nprogress.css';
 import App from 'src/App';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import * as serviceWorker from 'src/serviceWorker';
+import { Provider } from 'react-redux';
+import { store } from 'src/app/store';
 
 ReactDOM.render(
   <HelmetProvider>
     <SidebarProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
     </SidebarProvider>
   </HelmetProvider>,
   document.getElementById('root')

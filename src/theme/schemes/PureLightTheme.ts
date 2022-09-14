@@ -1115,6 +1115,14 @@ export const PureLightTheme = createTheme({
         }
       }
     },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          marginBottom: 4,
+          fontWeight: 500
+        }
+      }
+    },
     MuiTypography: {
       defaultProps: {
         variantMapping: {

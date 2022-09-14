@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, FC } from 'react';
 import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
 
@@ -6,6 +6,16 @@ import SidebarLayout from 'src/layouts/SidebarLayout';
 import BaseLayout from 'src/layouts/BaseLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import { USERS_SIGN_IN } from './route';
+
+interface IProtectedRouter {
+  isAuth: boolean;
+  children: React.ReactChild;
+}
+
+const ProtectedRouter: FC<IProtectedRouter> = ({ children, isAuth }) => {
+  return <>{!isAuth ? <Navigate to={USERS_SIGN_IN} /> : children}</>;
+};
 
 const Loader = (Component) => (props) =>
   (
@@ -14,55 +24,19 @@ const Loader = (Component) => (props) =>
     </Suspense>
   );
 
-// Pages
+// Home
+const Home = Loader(lazy(() => import('src/content/Home')));
 
-const Overview = Loader(lazy(() => import('src/content/overview')));
-
-// Dashboards
-
-const Crypto = Loader(lazy(() => import('src/content/dashboards/Crypto')));
-
-// Applications
-
-const Messenger = Loader(
-  lazy(() => import('src/content/applications/Messenger'))
-);
-const Transactions = Loader(
-  lazy(() => import('src/content/applications/Transactions'))
-);
-const UserProfile = Loader(
-  lazy(() => import('src/content/applications/Users/profile'))
-);
-const UserSettings = Loader(
-  lazy(() => import('src/content/applications/Users/settings'))
+// Core
+const Role = Loader(lazy(() => import('src/content/core/Role')));
+const InternalUser = Loader(
+  lazy(() => import('src/content/core/InternalUser'))
 );
 
-// Components
-
-const Buttons = Loader(
-  lazy(() => import('src/content/pages/Components/Buttons'))
-);
-const Modals = Loader(
-  lazy(() => import('src/content/pages/Components/Modals'))
-);
-const Accordions = Loader(
-  lazy(() => import('src/content/pages/Components/Accordions'))
-);
-const Tabs = Loader(lazy(() => import('src/content/pages/Components/Tabs')));
-const Badges = Loader(
-  lazy(() => import('src/content/pages/Components/Badges'))
-);
-const Tooltips = Loader(
-  lazy(() => import('src/content/pages/Components/Tooltips'))
-);
-const Avatars = Loader(
-  lazy(() => import('src/content/pages/Components/Avatars'))
-);
-const Cards = Loader(lazy(() => import('src/content/pages/Components/Cards')));
-const Forms = Loader(lazy(() => import('src/content/pages/Components/Forms')));
+// User
+const SignIn = Loader(lazy(() => import('src/content/user/SignIn')));
 
 // Status
-
 const Status404 = Loader(
   lazy(() => import('src/content/pages/Status/Status404'))
 );
@@ -76,145 +50,94 @@ const StatusMaintenance = Loader(
   lazy(() => import('src/content/pages/Status/Maintenance'))
 );
 
-const routes: RouteObject[] = [
-  {
-    path: '',
-    element: <BaseLayout />,
-    children: [
-      {
-        path: '/',
-        element: <Overview />
-      },
-      {
-        path: 'overview',
-        element: <Navigate to="/" replace />
-      },
-      {
-        path: 'status',
-        children: [
-          {
-            path: '',
-            element: <Navigate to="404" replace />
-          },
-          {
-            path: '404',
-            element: <Status404 />
-          },
-          {
-            path: '500',
-            element: <Status500 />
-          },
-          {
-            path: 'maintenance',
-            element: <StatusMaintenance />
-          },
-          {
-            path: 'coming-soon',
-            element: <StatusComingSoon />
-          }
-        ]
-      },
-      {
-        path: '*',
-        element: <Status404 />
-      }
-    ]
-  },
-  {
-    path: 'dashboards',
-    element: <SidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <Navigate to="crypto" replace />
-      },
-      {
-        path: 'crypto',
-        element: <Crypto />
-      },
-      {
-        path: 'messenger',
-        element: <Messenger />
-      }
-    ]
-  },
-  {
-    path: 'management',
-    element: <SidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <Navigate to="transactions" replace />
-      },
-      {
-        path: 'transactions',
-        element: <Transactions />
-      },
-      {
-        path: 'profile',
-        children: [
-          {
-            path: '',
-            element: <Navigate to="details" replace />
-          },
-          {
-            path: 'details',
-            element: <UserProfile />
-          },
-          {
-            path: 'settings',
-            element: <UserSettings />
-          }
-        ]
-      }
-    ]
-  },
-  {
-    path: '/components',
-    element: <SidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <Navigate to="buttons" replace />
-      },
-      {
-        path: 'buttons',
-        element: <Buttons />
-      },
-      {
-        path: 'modals',
-        element: <Modals />
-      },
-      {
-        path: 'accordions',
-        element: <Accordions />
-      },
-      {
-        path: 'tabs',
-        element: <Tabs />
-      },
-      {
-        path: 'badges',
-        element: <Badges />
-      },
-      {
-        path: 'tooltips',
-        element: <Tooltips />
-      },
-      {
-        path: 'avatars',
-        element: <Avatars />
-      },
-      {
-        path: 'cards',
-        element: <Cards />
-      },
-      {
-        path: 'forms',
-        element: <Forms />
-      }
-    ]
-  }
-];
+const routes = (isAuthenticated: boolean): RouteObject[] => {
+  return [
+    {
+      path: '',
+      element: <BaseLayout />,
+      children: [
+        {
+          path: '/',
+          element: <Navigate to="home" replace />
+        },
+        {
+          path: 'status',
+          children: [
+            {
+              path: '',
+              element: <Navigate to="404" replace />
+            },
+            {
+              path: '404',
+              element: <Status404 />
+            },
+            {
+              path: '500',
+              element: <Status500 />
+            },
+            {
+              path: 'maintenance',
+              element: <StatusMaintenance />
+            },
+            {
+              path: 'coming-soon',
+              element: <StatusComingSoon />
+            }
+          ]
+        },
+        {
+          path: '*',
+          element: <Status404 />
+        }
+      ]
+    },
+    {
+      path: '',
+      element: (
+        <ProtectedRouter isAuth={isAuthenticated}>
+          <SidebarLayout />
+        </ProtectedRouter>
+      ),
+      children: [
+        {
+          path: 'home',
+          element: <Home />
+        }
+      ]
+    },
+    {
+      path: 'core',
+      element: (
+        <ProtectedRouter isAuth={isAuthenticated}>
+          <SidebarLayout />
+        </ProtectedRouter>
+      ),
+      children: [
+        {
+          path: '',
+          element: <Navigate to="role" replace />
+        },
+        {
+          path: 'role',
+          element: <Role />
+        },
+        {
+          path: 'internal_user',
+          element: <InternalUser />
+        }
+      ]
+    },
+    {
+      path: 'users',
+      element: <BaseLayout />,
+      children: [
+        {
+          path: 'sign_in',
+          element: isAuthenticated ? <Navigate to={'/'} replace /> : <SignIn />
+        }
+      ]
+    }
+  ];
+};
 
 export default routes;

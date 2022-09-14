@@ -98,12 +98,9 @@ function Logo() {
   const theme = useTheme();
 
   return (
-    <TooltipWrapper
-      title="Tokyo Free White React Typescript Admin Dashboard"
-      arrow
-    >
-      <LogoWrapper to="/overview">
-        <Badge
+    <TooltipWrapper title="Idms Dasboard" arrow>
+      <LogoWrapper to="/core/role">
+        {/* <Badge
           sx={{
             '.MuiBadge-badge': {
               fontSize: theme.typography.pxToRem(11),
@@ -120,7 +117,7 @@ function Logo() {
               <LogoSignInner />
             </LogoSign>
           </LogoSignWrapper>
-        </Badge>
+        </Badge> */}
       </LogoWrapper>
     </TooltipWrapper>
   );
