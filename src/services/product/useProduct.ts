@@ -1,7 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadGetList, IResponseRoleList } from "src/models/general"
-import { reducerUpdateLoadingRoleList, reducerUpdateRoleList } from "src/redux/role";
+import { IPayloadGetList, IResponseProductList } from "src/models/general"
+import { reducerUpdateLoadingProductList, reducerUpdateProductList } from "src/redux/product";
 import httpClient from "..";
 
 export const useProduct = ()=> {
@@ -9,12 +9,12 @@ export const useProduct = ()=> {
     const dispatch = useAppDispatch();
 
     const getProductList = async (params: IPayloadGetList) => {
-        dispatch(reducerUpdateLoadingRoleList(true));
+        dispatch(reducerUpdateLoadingProductList(true));
         try{
-            const response = await httpClient.get<IResponseRoleList>('/role/find_all', {params});
+            const response = await httpClient.get<IResponseProductList>('/product/find_all', {params});
             if(response.status === 200){
-                const roleList = response.data;
-                dispatch(reducerUpdateRoleList({...roleList, loading: false}));
+                const productList = response.data;
+                dispatch(reducerUpdateProductList({...productList, loading: false}));
             }
             
         }catch(e){
@@ -22,7 +22,7 @@ export const useProduct = ()=> {
             handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',
-                message: 'cannot get role list',
+                message: 'cannot get product list',
                 severity: 'error'
               });
         }

@@ -5,8 +5,8 @@ import Footer from 'src/components/Footer';
 import ModalForm from 'src/components/ModalForm';
 import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import FormRole from './components/FormRole';
-import TableRole from './components/Table';
+import FormRole from './components/Form';
+import TableProduct from './components/Table';
 
 const Product = () => {
   const [open, setOpen] = useState(false);
@@ -20,7 +20,7 @@ const Product = () => {
   return (
     <>
       <Helmet>
-        <title>Core - Role</title>
+        <title>Master - Product</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader
@@ -39,7 +39,7 @@ const Product = () => {
           spacing={3}
         >
           <Grid item xs={12}>
-            <TableRole />
+            <TableProduct />
           </Grid>
         </Grid>
       </Container>

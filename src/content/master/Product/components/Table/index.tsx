@@ -63,14 +63,14 @@ const FabSmall = styled(Fab)(
       `
 );
 
-const TableRole = () => {
+const TableProduct = () => {
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
   const [fieldId, setFieldId] = useState<string>();
   const [editingLabelVal, setEditingLabelVal] = useState<Array<any>>();
   const [openEditLabel, setOpenEditLabel] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
 
-  const roleList = useAppSelector((state) => state.storeRole.roleList);
+  const productList = useAppSelector((state) => state.storeProduct.productList);
 
   const { getRoleList } = useRole();
 
@@ -194,10 +194,13 @@ const TableRole = () => {
               />
 
               <TableBody>
-                {roleList.data.map((role, index) => (
-                  <TableRow key={role.roleName}>
+                {productList.data.map((product, index) => (
+                  <TableRow key={product.id}>
                     <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="left">{role.roleName}</TableCell>
+                    <TableCell align="left">{product.productName}</TableCell>
+                    <TableCell align="left">{product.isStaging}</TableCell>
+                    <TableCell align="left">{product.type}</TableCell>
+                    <TableCell align="left">{product.typeValue}</TableCell>
                     <TableCell align="center">
                       <Stack
                         direction="row"
@@ -262,13 +265,13 @@ const TableRole = () => {
                         </Select>
                       </FormControl>
                       <Pagination
-                        count={roleList.totalPages}
+                        count={productList.totalPages}
                         shape="rounded"
                         color="primary"
                         size="large"
                         page={stateTable.page}
                         onChange={(_, page) => handleChangePagination(page)}
-                        disabled={roleList.loading}
+                        disabled={productList.loading}
                       />
                     </Stack>
                   </TableCell>
@@ -290,4 +293,4 @@ const TableRole = () => {
   );
 };
 
-export default TableRole;
+export default TableProduct;

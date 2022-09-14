@@ -39,13 +39,21 @@ export interface ICustomer {
   export type TTypeProduct = 'widget' | 'streaming' | 'api';
 
   export interface IProduct {
-    productName: string,
-    isStaging: true,
-    type: TTypeProduct,
-    widgetId: string,
-    topic: string,
-    delay: string,
-    apiUrl: string
+    id: number;
+    productId: string;
+    productName: string;
+    isStaging: number;
+    type: TTypeProduct;
+    widgetId: string;
+    topic: null | string;
+    apiUrl: null | string;
+    widgetName: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: null | Date;
+    updatedBy: null | string;
+    isActive: boolean;
+    typeValue: string;
   }
 
   export interface IRole {
@@ -69,6 +77,15 @@ export interface ICustomer {
     pic: string,
     phoneNumber: string,
     email: string
+  }
+
+  export interface IPayloadAddProduct {
+    productName: string,
+    isStaging: true,
+    type: TTypeProduct,
+    widgetId: string,
+    topic: string,
+    apiUrl: string
   }
 
   export interface IPayloadLogin {
@@ -102,9 +119,15 @@ export interface ICustomer {
     totalPages: number;
     totalRow: number;
   }
+
+  export interface IResponseProductList extends IResponseBody<Array<IProduct>>{
+    totalPages: number;
+    totalRow: number;
+  }
   
   export interface IResponseAddRole extends IResponseBody<IRole>{};
   export interface IResponseAddCustomer extends IResponseBody<ICustomer>{};
+  export interface IResponseAddProduct extends IResponseBody<IProduct>{};
 
   export interface IPayloadGetList {
     page: number;

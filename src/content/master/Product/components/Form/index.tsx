@@ -11,8 +11,7 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box } from '@mui/system';
-import { useNavigate } from 'react-router';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { useAppDispatch } from 'src/app/hooks';
 import { useRole } from 'src/services/role/useRole';
 import { useState } from 'react';
 import { IPayloadAddRole, IResponseAddRole } from 'src/models/general';
@@ -25,7 +24,7 @@ function validationSchema() {
   });
 }
 
-const FormRole = () => {
+const FormProduct = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { handleChange, handleSubmit, errors, values, touched, setFieldValue } =
@@ -107,4 +106,4 @@ const FormRole = () => {
   );
 };
 
-export default FormRole;
+export default FormProduct;
