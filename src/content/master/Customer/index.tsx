@@ -1,14 +1,35 @@
-import { Container, Grid, useTheme } from '@mui/material';
+import {
+  Card,
+  Container,
+  Grid,
+  Modal,
+  styled,
+  Typography,
+  useTheme
+} from '@mui/material';
+import { Box } from '@mui/system';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import ModalForm from 'src/components/ModalForm';
 import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import FormRole from './components/FormRole';
-import TableRole from './components/Table';
+import FormCustomer from './components/Form';
+import Table from './components/Table';
 
-const InternalUser = () => {
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '1px solid #000',
+  boxShadow: 24,
+  p: 4
+};
+
+const Customer = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -20,14 +41,14 @@ const InternalUser = () => {
   return (
     <>
       <Helmet>
-        <title>Core - Internal User</title>
+        <title>Master - Customer</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader
-          title="Internal User"
+          title="Customer"
           onClick={handleClickCreateRole}
-          labelButton="Create Internal User"
-          subtitle="Definition of Internal User"
+          labelButton="Create Customer"
+          subtitle="Definition of Customer"
         />
       </PageTitleWrapper>
       <Container maxWidth="lg">
@@ -39,16 +60,16 @@ const InternalUser = () => {
           spacing={3}
         >
           <Grid item xs={12}>
-            <TableRole />
+            <Table />
           </Grid>
         </Grid>
       </Container>
       <Footer />
-      <ModalForm title="Add Internal User" open={open} onClose={handleClose}>
-        <FormRole />
+      <ModalForm title="Add Customer" open={open} onClose={handleClose}>
+        <FormCustomer />
       </ModalForm>
     </>
   );
 };
 
-export default InternalUser;
+export default Customer;

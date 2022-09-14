@@ -4,11 +4,11 @@ import { IPayloadGetList, IResponseRoleList } from "src/models/general"
 import { reducerUpdateLoadingRoleList, reducerUpdateRoleList } from "src/redux/role";
 import httpClient from "..";
 
-export const useRole = ()=> {
+export const useProduct = ()=> {
     const { handleClickAlert } = useAlert();
     const dispatch = useAppDispatch();
 
-    const getRoleList = async (params: IPayloadGetList) => {
+    const getProductList = async (params: IPayloadGetList) => {
         dispatch(reducerUpdateLoadingRoleList(true));
         try{
             const response = await httpClient.get<IResponseRoleList>('/role/find_all', {params});
@@ -28,5 +28,5 @@ export const useRole = ()=> {
         }
          
     }
-    return { getRoleList };
+    return { getProductList };
 }

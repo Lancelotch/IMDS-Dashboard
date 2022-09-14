@@ -22,6 +22,13 @@ import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import SecurityIcon from '@mui/icons-material/Security';
+import {
+  CORE_INTERNAL_USER,
+  CORE_ROLE,
+  MASTER_CUSTOMER,
+  MASTER_CUSTOMER_PRODUCT,
+  MASTER_PRODUCT
+} from 'src/route';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -186,7 +193,7 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/core/role"
+                  to={CORE_ROLE}
                   startIcon={<AccessibilityIcon />}
                 >
                   Role
@@ -197,54 +204,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/core/internal_user"
+                  to={CORE_INTERNAL_USER}
                   startIcon={<AccountCircleIcon />}
                 >
                   Internal User
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/core/customer_user"
-                  startIcon={<PersonIcon />}
-                >
-                  Customer User
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/core/user_policy"
-                  startIcon={<PersonIcon />}
-                >
-                  User Policy
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/core/password_policy"
-                  startIcon={<LockIcon />}
-                >
-                  Password Policy
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/core/authentication_policy"
-                  startIcon={<SecurityIcon />}
-                >
-                  Authentication Policy
                 </Button>
               </ListItem>
             </List>
@@ -265,34 +228,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/management/transactions"
-                  startIcon={<TableChartTwoToneIcon />}
+                  to={MASTER_CUSTOMER}
+                  startIcon={<PersonIcon />}
                 >
-                  Transactions List
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Audit Trail
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/management/profile/details"
-                  startIcon={<AccountCircleTwoToneIcon />}
-                >
-                  User Profile
+                  Customer
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -300,10 +239,21 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/management/profile/settings"
-                  startIcon={<DisplaySettingsTwoToneIcon />}
+                  to={MASTER_PRODUCT}
+                  startIcon={<PersonIcon />}
                 >
-                  Account Settings
+                  Product
+                </Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to={MASTER_CUSTOMER_PRODUCT}
+                  startIcon={<PersonIcon />}
+                >
+                  Customer Product
                 </Button>
               </ListItem>
             </List>

@@ -8,7 +8,7 @@ import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import FormRole from './components/FormRole';
 import TableRole from './components/Table';
 
-const InternalUser = () => {
+const Product = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -20,14 +20,14 @@ const InternalUser = () => {
   return (
     <>
       <Helmet>
-        <title>Core - Internal User</title>
+        <title>Core - Role</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader
-          title="Internal User"
+          title="Product"
           onClick={handleClickCreateRole}
-          labelButton="Create Internal User"
-          subtitle="Definition of Internal User"
+          labelButton="Create Product"
+          subtitle="Definition of Product"
         />
       </PageTitleWrapper>
       <Container maxWidth="lg">
@@ -44,11 +44,11 @@ const InternalUser = () => {
         </Grid>
       </Container>
       <Footer />
-      <ModalForm title="Add Internal User" open={open} onClose={handleClose}>
+      <ModalForm title="Add Product" open={open} onClose={handleClose}>
         <FormRole />
       </ModalForm>
     </>
   );
 };
 
-export default InternalUser;
+export default Product;

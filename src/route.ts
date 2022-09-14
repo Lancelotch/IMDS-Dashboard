@@ -1,2 +1,9 @@
 export const USERS = `/users`;
 export const USERS_SIGN_IN = `${USERS}/sign_in`;
+export const CORE = `/core`;
+export const CORE_ROLE = `${CORE}/role`;
+export const CORE_INTERNAL_USER = `${CORE}/internal_user`;
+export const MASTER = `/master`;
+export const MASTER_CUSTOMER = `${MASTER}/customer`;
+export const MASTER_PRODUCT = `${MASTER}/product`;
+export const MASTER_CUSTOMER_PRODUCT = `${MASTER}/customer_product`;

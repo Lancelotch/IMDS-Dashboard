@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import usersStore from 'src/redux/users';
 import roleStore from 'src/redux/role';
+import customerStore from 'src/redux/customer';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -9,7 +10,8 @@ export const store = configureStore({
     }),
   reducer: {
     storeUsers: usersStore,
-    storeRole: roleStore
+    storeRole: roleStore,
+    storeCustomer: customerStore
   }
 });
 

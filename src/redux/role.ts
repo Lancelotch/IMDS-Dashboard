@@ -12,7 +12,8 @@ const initialState: IStore = {
       status: '',
       statusCode: '',
       totalPages: 0,
-      totalRow: 0
+      totalRow: 0,
+      loading: false
     }
 };
 

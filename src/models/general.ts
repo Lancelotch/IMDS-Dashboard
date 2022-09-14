@@ -13,11 +13,19 @@ export interface ITableAtribute {
 }
 
 export interface ICustomer {
-    customerName: string,
-    address: string,
-    pic: string,
-    phoneNumber: string,
-    email: string
+  id: number,
+  customerId: string,
+  customerName: string,
+  address: string,
+  pic: string,
+  phoneNumber: string,
+  email: string,
+  createdAt: Date,
+  createdBy: string,
+  updatedAt: Date | null,
+  updatedBy: string | null,
+  isActive: boolean,
+  quantityProduct: number
   }
   
   export interface IInternalUser {
@@ -54,6 +62,14 @@ export interface ICustomer {
   export interface IPayloadAddRole {
     roleName: string;
   }
+  
+  export interface IPayloadAddCustomer {
+    customerName: string,
+    address: string,
+    pic: string,
+    phoneNumber: string,
+    email: string
+  }
 
   export interface IPayloadLogin {
     username: string,
@@ -82,7 +98,13 @@ export interface ICustomer {
     totalRow: number;
   }
   
-  export interface IResponseAddRole extends IResponseBody<IRole>{}
+  export interface IResponseCustomerList extends IResponseBody<Array<ICustomer>>{
+    totalPages: number;
+    totalRow: number;
+  }
+  
+  export interface IResponseAddRole extends IResponseBody<IRole>{};
+  export interface IResponseAddCustomer extends IResponseBody<ICustomer>{};
 
   export interface IPayloadGetList {
     page: number;

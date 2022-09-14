@@ -33,6 +33,13 @@ const InternalUser = Loader(
   lazy(() => import('src/content/core/InternalUser'))
 );
 
+// Core
+const Customer = Loader(lazy(() => import('src/content/master/Customer')));
+const Product = Loader(lazy(() => import('src/content/master/Product')));
+const CustomerProduct = Loader(
+  lazy(() => import('src/content/master/CustomerProduct'))
+);
+
 // User
 const SignIn = Loader(lazy(() => import('src/content/user/SignIn')));
 
@@ -124,6 +131,32 @@ const routes = (isAuthenticated: boolean): RouteObject[] => {
         {
           path: 'internal_user',
           element: <InternalUser />
+        }
+      ]
+    },
+    {
+      path: 'master',
+      element: (
+        <ProtectedRouter isAuth={isAuthenticated}>
+          <SidebarLayout />
+        </ProtectedRouter>
+      ),
+      children: [
+        {
+          path: '',
+          element: <Navigate to="role" replace />
+        },
+        {
+          path: 'customer',
+          element: <Customer />
+        },
+        {
+          path: 'product',
+          element: <Product />
+        },
+        {
+          path: 'customer_product',
+          element: <CustomerProduct />
         }
       ]
     },

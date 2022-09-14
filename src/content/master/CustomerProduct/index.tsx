@@ -1,4 +1,5 @@
 import { Container, Grid, useTheme } from '@mui/material';
+import { Box } from '@mui/system';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
@@ -8,7 +9,7 @@ import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import FormRole from './components/FormRole';
 import TableRole from './components/Table';
 
-const InternalUser = () => {
+const CustomerProduct = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -20,14 +21,14 @@ const InternalUser = () => {
   return (
     <>
       <Helmet>
-        <title>Core - Internal User</title>
+        <title>Master - CustomerProduct</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader
-          title="Internal User"
+          title="Customer Product"
           onClick={handleClickCreateRole}
-          labelButton="Create Internal User"
-          subtitle="Definition of Internal User"
+          labelButton="Create Customer Product"
+          subtitle="Definition of Customer Product"
         />
       </PageTitleWrapper>
       <Container maxWidth="lg">
@@ -44,11 +45,11 @@ const InternalUser = () => {
         </Grid>
       </Container>
       <Footer />
-      <ModalForm title="Add Internal User" open={open} onClose={handleClose}>
+      <ModalForm title="Add Customer Product" open={open} onClose={handleClose}>
         <FormRole />
       </ModalForm>
     </>
   );
 };
 
-export default InternalUser;
+export default CustomerProduct;
