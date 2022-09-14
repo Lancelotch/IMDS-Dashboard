@@ -9,7 +9,7 @@ const initialState: IStoreUsers = {
   isAuthenticated: token ? true : false
 };
 
-export const usersStore = createSlice({
+const usersStore = createSlice({
   name: 'users',
   initialState,
   reducers: {

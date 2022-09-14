@@ -969,7 +969,8 @@ export const PureLightTheme = createTheme({
       styleOverrides: {
         root: {
           borderBottomColor: colors.alpha.black[10],
-          fontSize: 14
+          fontSize: 14,
+          padding: 8
         },
         head: {
           textTransform: 'uppercase',

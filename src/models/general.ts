@@ -41,7 +41,18 @@ export interface ICustomer {
   }
 
   export interface IRole {
-    roleName: string
+    id: string;
+    roleId: string;
+    roleName: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: Date | null;
+    updatedBy: string | null;
+    isActive: boolean;
+  }
+
+  export interface IPayloadAddRole {
+    roleName: string;
   }
 
   export interface IPayloadLogin {
@@ -58,12 +69,20 @@ export interface ICustomer {
     message: string;
     status: string;
     statusCode: string;
+    loading?: boolean;
     data: T;
   }
 
   export interface IResponseLogin extends IResponseBody<IUser>{
     token: string;
   }
+
+  export interface IResponseRoleList extends IResponseBody<Array<IRole>>{
+    totalPages: number;
+    totalRow: number;
+  }
+  
+  export interface IResponseAddRole extends IResponseBody<IRole>{}
 
   export interface IPayloadGetList {
     page: number;

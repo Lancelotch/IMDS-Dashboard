@@ -1,19 +1,43 @@
-import { Card, Container, Grid, styled } from '@mui/material';
+import {
+  Card,
+  Container,
+  Grid,
+  Modal,
+  styled,
+  Typography,
+  useTheme
+} from '@mui/material';
 import { Box } from '@mui/system';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
+import ModalForm from 'src/components/ModalForm';
 import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
+import FormRole from './components/FormRole';
 import TableRole from './components/Table';
 
-const MainContent = styled(Box)(
-  ({ theme }) => `
-      padding: ${theme.spacing(3)}
-  `
-);
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '1px solid #000',
+  boxShadow: 24,
+  p: 4
+};
 
 const Role = () => {
-  const handleClickCreateRole = () => {};
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleClickCreateRole = () => {
+    handleOpen();
+  };
+
+  const theme = useTheme();
   return (
     <>
       <Helmet>
@@ -41,6 +65,9 @@ const Role = () => {
         </Grid>
       </Container>
       <Footer />
+      <ModalForm title="Add Role" open={open} onClose={handleClose}>
+        <FormRole />
+      </ModalForm>
     </>
   );
 };

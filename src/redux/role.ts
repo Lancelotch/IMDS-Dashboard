@@ -1,26 +1,41 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IRole } from 'src/models/general';
+import { IResponseAddRole, IResponseRoleList, IRole } from 'src/models/general';
 
 interface IStore {
-  roleList: Array<IRole>;
+  roleList: IResponseRoleList;
 }
 
 const initialState: IStore = {
-    roleList: []
+    roleList: {
+      data: [],
+      message: '',
+      status: '',
+      statusCode: '',
+      totalPages: 0,
+      totalRow: 0
+    }
 };
 
-export const usersStore = createSlice({
-  name: 'users',
+const roleStore = createSlice({
+  name: 'role',
   initialState,
   reducers: {
-    reducerUpdateRoleList: (state: IStore, action: PayloadAction<Array<IRole>>) => {
+    reducerUpdateLoadingRoleList: (state: IStore, action: PayloadAction<boolean>) => {
+      state.roleList.loading = action.payload;
+    },
+    reducerUpdateRoleList: (state: IStore, action: PayloadAction<IResponseRoleList>) => {
       state.roleList = action.payload;
+    },
+    reducerUpdateAddRole: (state: IStore, action: PayloadAction<IRole>) => {
+      state.roleList.data = [...state.roleList.data, action.payload];
     },
   }
 });
 
 export const {
+  reducerUpdateLoadingRoleList,
     reducerUpdateRoleList,
-} = usersStore.actions;
+    reducerUpdateAddRole
+} = roleStore.actions;
 
-export default usersStore.reducer;
+export default roleStore.reducer;
