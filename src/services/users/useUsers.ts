@@ -28,5 +28,9 @@ export const useUsers = ()=> {
         }
          
     }
-    return {postUserSignin};
+    const signOut = ()=> {
+        window.localStorage.removeItem('token');
+        dispatch(reducerUpdateAuthentication(false));
+    }
+    return {postUserSignin, signOut};
 }

@@ -199,7 +199,9 @@ const TableCustomer = () => {
               <TableBody>
                 {customerList.data.map((customer, index) => (
                   <TableRow key={customer.id}>
-                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="center">
+                      {stateTable.limit * (stateTable.page - 1) + index + 1}
+                    </TableCell>
                     <TableCell align="left">{customer.customerName}</TableCell>
                     <TableCell align="left">{customer.pic}</TableCell>
                     <TableCell align="left">{customer.phoneNumber}</TableCell>

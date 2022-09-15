@@ -197,7 +197,9 @@ const TableProduct = () => {
               <TableBody>
                 {productList.data.map((product, index) => (
                   <TableRow key={product.id}>
-                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="center">
+                      {stateTable.limit * (stateTable.page - 1) + index + 1}
+                    </TableCell>
                     <TableCell align="left">{product.productName}</TableCell>
                     <TableCell align="left">{product.isStaging}</TableCell>
                     <TableCell align="left">{product.type}</TableCell>

@@ -165,7 +165,7 @@ const TableRole = () => {
 
               <TableBody>
                 {roleList.data.map((role, index) => (
-                  <TableRow key={role.roleName}>
+                  <TableRow key={role.id}>
                     <TableCell align="center">
                       {stateTable.limit * (stateTable.page - 1) + index + 1}
                     </TableCell>
