@@ -170,7 +170,9 @@ const TableRole = () => {
               <TableBody>
                 {internalUserList.data.map((internalUser, index) => (
                   <TableRow key={internalUser.id}>
-                    <TableCell align="center">{index + 1}</TableCell>
+                    <TableCell align="center">
+                      {stateTable.limit * (stateTable.page - 1) + index + 1}
+                    </TableCell>
                     <TableCell align="left">{internalUser.username}</TableCell>
                     <TableCell align="left">{internalUser.firstName}</TableCell>
                     <TableCell align="left">{internalUser.lastName}</TableCell>
