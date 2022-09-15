@@ -27,8 +27,8 @@ const roleStore = createSlice({
     reducerUpdateRoleList: (state: IStore, action: PayloadAction<IResponseRoleList>) => {
       state.roleList = action.payload;
     },
-    reducerUpdateAddRole: (state: IStore, action: PayloadAction<Array<IRole>>) => {
-      state.roleList.data = [...state.roleList.data, ...action.payload];
+    reducerUpdateAddRole: (state: IStore, action: PayloadAction<IRole>) => {
+      state.roleList.data = [...state.roleList.data, action.payload];
     },
   }
 });

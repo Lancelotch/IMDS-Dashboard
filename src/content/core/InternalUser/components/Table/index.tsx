@@ -24,11 +24,8 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import TooltipCustomize from 'src/components/TooltipCustomize';
 import { useEffect, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
-import Empty from 'src/components/Empty';
 import TableHeader from './Header';
 import { IAction, ITableAtribute } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
@@ -36,32 +33,7 @@ import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import role from 'src/redux/role';
-
-const CustomButton = styled(Button)(
-  ({ theme }) => `
-    min-width: unset;
-    max-height: ${theme.spacing(3)};
-    padding-left: ${theme.spacing(2.8)};
-    padding-right: ${theme.spacing(2.8)};
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    border-radius: 8px;
-      `
-);
-
-const FabSmall = styled(Fab)(
-  ({ theme }) => `
-        min-height: unset;
-        background-color: transparent;
-        width: ${theme.spacing(3)};
-        height: ${theme.spacing(3)};
-        color: #E35200;
-        border: 1px solid #E35200;
-    
-      `
-);
+import { useInternalUser } from 'src/services/internal_user/useInternalUser';
 
 const TableRole = () => {
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -70,9 +42,11 @@ const TableRole = () => {
   const [openEditLabel, setOpenEditLabel] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
 
-  const roleList = useAppSelector((state) => state.storeRole.roleList);
+  const internalUserList = useAppSelector(
+    (state) => state.storeInternalUser.internalUserList
+  );
 
-  const { getRoleList } = useRole();
+  const { getInternalUserList } = useInternalUser();
 
   const handleChangeSearch = (value: string) => {
     setSearch(value);
@@ -148,7 +122,7 @@ const TableRole = () => {
 
   useEffect(() => {
     const { page, limit, sortingMethod } = stateTable;
-    getRoleList({ page: page, limit: limit, sort: sortingMethod });
+    getInternalUserList({ page: page, limit: limit, sort: sortingMethod });
   }, [stateTable]);
 
   const theme = useTheme();
@@ -194,10 +168,13 @@ const TableRole = () => {
               />
 
               <TableBody>
-                {roleList.data.map((role, index) => (
-                  <TableRow key={role.roleName}>
+                {internalUserList.data.map((internalUser, index) => (
+                  <TableRow key={internalUser.id}>
                     <TableCell align="center">{index + 1}</TableCell>
-                    <TableCell align="left">{role.roleName}</TableCell>
+                    <TableCell align="left">{internalUser.username}</TableCell>
+                    <TableCell align="left">{internalUser.firstName}</TableCell>
+                    <TableCell align="left">{internalUser.lastName}</TableCell>
+                    <TableCell align="left">{internalUser.roleName}</TableCell>
                     <TableCell align="center">
                       <Stack
                         direction="row"
@@ -262,13 +239,13 @@ const TableRole = () => {
                         </Select>
                       </FormControl>
                       <Pagination
-                        count={roleList.totalPages}
+                        count={internalUserList.totalPages}
                         shape="rounded"
                         color="primary"
                         size="large"
                         page={stateTable.page}
                         onChange={(_, page) => handleChangePagination(page)}
-                        disabled={roleList.loading}
+                        disabled={internalUserList.loading}
                       />
                     </Stack>
                   </TableCell>

@@ -27,8 +27,8 @@ const widgetStore = createSlice({
     reducerUpdateWidgetList: (state: IStore, action: PayloadAction<IResponseWidgetList>) => {
       state.widgetList = action.payload;
     },
-    reducerUpdateAddWidget: (state: IStore, action: PayloadAction<Array<IWidget>>) => {
-      state.widgetList.data = [...state.widgetList.data, ...action.payload];
+    reducerUpdateAddWidget: (state: IStore, action: PayloadAction<IWidget>) => {
+      state.widgetList.data = [...state.widgetList.data, action.payload];
     },
   }
 });

@@ -29,11 +29,19 @@ export interface ICustomer {
   }
   
   export interface IInternalUser {
+    id: number;
+    internalUserId: string;
     username: string;
     firstName: string;
     lastName: string;
     roleId: string;
-    password: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: null | Date;
+    updatedBy: null | string;
+    isActive: boolean;
+    isSuspend: boolean;
+    roleName: string;
   }
 
   export interface ICustomerProduct {
@@ -116,6 +124,14 @@ export interface ICustomer {
     apiUrl: string
   }
 
+  export interface IPayloadAddInternalUser {
+    username: string;
+    firstName: string;
+    lastName: string;
+    roleId: string;
+    password: string;
+  }
+
   export interface IPayloadLogin {
     username: string,
     password: string
@@ -175,12 +191,18 @@ export interface ICustomer {
     totalPages: number;
     totalRow: number;
   }
+
+  export interface IResponseInternalUserList extends IResponseBody<Array<IInternalUser>>{
+    totalPages: number;
+    totalRow: number;
+  }
   
-  export interface IResponseAddRole extends IResponseBody<Array<IRole>>{};
-  export interface IResponseAddCustomer extends IResponseBody<Array<ICustomer>>{};
-  export interface IResponseAddProduct extends IResponseBody<Array<IProduct>>{};
-  export interface IResponseAddWidget extends IResponseBody<Array<IWidget>>{};
-  export interface IResponseAddCustomerProduct extends IResponseBody<Array<ICustomerProduct>>{};
+  export interface IResponseAddRole extends IResponseBody<IRole>{};
+  export interface IResponseAddCustomer extends IResponseBody<ICustomer>{};
+  export interface IResponseAddProduct extends IResponseBody<IProduct>{};
+  export interface IResponseAddWidget extends IResponseBody<IWidget>{};
+  export interface IResponseAddCustomerProduct extends IResponseBody<ICustomerProduct>{};
+  export interface IResponseAddInternalUser extends IResponseBody<IInternalUser>{};
 
   export interface IPayloadGetList {
     page: number;

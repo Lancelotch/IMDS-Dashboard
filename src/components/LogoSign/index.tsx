@@ -8,6 +8,7 @@ import {
   useTheme
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+import logoIdx from 'src/assets/images/icon_idx.jpeg';
 
 const LogoWrapper = styled(Link)(
   ({ theme }) => `
@@ -99,25 +100,14 @@ function Logo() {
 
   return (
     <TooltipWrapper title="Idms Dasboard" arrow>
-      <LogoWrapper to="/core/role">
-        {/* <Badge
-          sx={{
-            '.MuiBadge-badge': {
-              fontSize: theme.typography.pxToRem(11),
-              right: -2,
-              top: 8
-            }
+      <LogoWrapper to="/home">
+        <img
+          src={logoIdx}
+          alt="logo idx"
+          style={{
+            width: theme.spacing(28)
           }}
-          overlap="circular"
-          color="success"
-          badgeContent="2.0"
-        >
-          <LogoSignWrapper>
-            <LogoSign>
-              <LogoSignInner />
-            </LogoSign>
-          </LogoSignWrapper>
-        </Badge> */}
+        />
       </LogoWrapper>
     </TooltipWrapper>
   );

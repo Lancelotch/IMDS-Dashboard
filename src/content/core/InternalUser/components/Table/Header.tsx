@@ -1,11 +1,11 @@
 import React from 'react';
 import { TableHead, TableRow, TableCell, TableSortLabel } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import { IRole, Order } from 'src/models/general';
+import { IInternalUser, Order } from 'src/models/general';
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof IRole;
+  id: keyof IInternalUser;
   label: string;
   size?: number;
   needSorting: boolean;
@@ -15,7 +15,7 @@ interface HeadCell {
 interface EnhancedTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof IRole
+    property: keyof IInternalUser
   ) => void;
   order: Order;
   orderBy: string;
@@ -23,9 +23,30 @@ interface EnhancedTableProps {
 
 const headCells: HeadCell[] = [
   {
+    id: 'username',
+    disablePadding: false,
+    label: 'Username',
+    needSorting: false,
+    align: 'left'
+  },
+  {
+    id: 'firstName',
+    disablePadding: false,
+    label: 'First Name',
+    needSorting: false,
+    align: 'left'
+  },
+  {
+    id: 'lastName',
+    disablePadding: false,
+    label: 'Last Name',
+    needSorting: false,
+    align: 'left'
+  },
+  {
     id: 'roleName',
     disablePadding: false,
-    label: 'Name',
+    label: 'Role',
     needSorting: false,
     align: 'left'
   }
@@ -37,7 +58,7 @@ const Header: React.FC<EnhancedTableProps> = ({
   orderBy
 }) => {
   const createSortHandler =
-    (property: keyof IRole) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof IInternalUser) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 

@@ -10,7 +10,6 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
   useTheme,
   FormControl,
   InputLabel,
@@ -24,11 +23,8 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import TooltipCustomize from 'src/components/TooltipCustomize';
 import { useEffect, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
-import Empty from 'src/components/Empty';
 import TableHeader from './Header';
 import { IAction, ITableAtribute } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
@@ -36,32 +32,6 @@ import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import role from 'src/redux/role';
-
-const CustomButton = styled(Button)(
-  ({ theme }) => `
-    min-width: unset;
-    max-height: ${theme.spacing(3)};
-    padding-left: ${theme.spacing(2.8)};
-    padding-right: ${theme.spacing(2.8)};
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    border-radius: 8px;
-      `
-);
-
-const FabSmall = styled(Fab)(
-  ({ theme }) => `
-        min-height: unset;
-        background-color: transparent;
-        width: ${theme.spacing(3)};
-        height: ${theme.spacing(3)};
-        color: #E35200;
-        border: 1px solid #E35200;
-    
-      `
-);
 
 const TableRole = () => {
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);

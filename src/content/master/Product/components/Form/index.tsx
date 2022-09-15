@@ -69,7 +69,7 @@ const FormProduct: FC<Props> = ({ onClose }) => {
             '/product/create',
             value
           );
-          if (response.status === 200) {
+          if (response.status === 201) {
             dispatch(reducerUpdateAddRole(response.data.data));
           }
           setLoading(false);

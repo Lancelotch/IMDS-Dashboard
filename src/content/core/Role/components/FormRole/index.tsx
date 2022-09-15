@@ -5,15 +5,12 @@ import {
   FormLabel,
   Grid,
   OutlinedInput,
-  Typography,
   useTheme
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box } from '@mui/system';
-import { useNavigate } from 'react-router';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { useRole } from 'src/services/role/useRole';
+import { useAppDispatch } from 'src/app/hooks';
 import { useState } from 'react';
 import { IPayloadAddRole, IResponseAddRole } from 'src/models/general';
 import httpClient from 'src/services';
@@ -41,7 +38,7 @@ const FormRole = () => {
             '/role/create',
             value
           );
-          if (response.status === 200) {
+          if (response.status === 201) {
             dispatch(reducerUpdateAddRole(response.data.data));
           }
           setLoading(false);

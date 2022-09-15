@@ -15,7 +15,7 @@ export const useCustomerProduct = ()=> {
               '/customer_product/create',
               payload
             );
-            if (response.status === 200) {
+            if (response.status === 201) {
               dispatch(reducerUpdateAddCustomerProduct(response.data.data));
               dispatch(reducerUpdateLoadingCustomerProductList(false));
             }
