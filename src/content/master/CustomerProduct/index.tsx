@@ -6,8 +6,8 @@ import Footer from 'src/components/Footer';
 import ModalForm from 'src/components/ModalForm';
 import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import FormRole from './components/FormRole';
-import TableRole from './components/Table';
+import FormRole from './components/Form';
+import Table from './components/Table';
 
 const CustomerProduct = () => {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ const CustomerProduct = () => {
   return (
     <>
       <Helmet>
-        <title>Master - CustomerProduct</title>
+        <title>Master - Customer Product</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader
@@ -40,13 +40,13 @@ const CustomerProduct = () => {
           spacing={3}
         >
           <Grid item xs={12}>
-            <TableRole />
+            <Table />
           </Grid>
         </Grid>
       </Container>
       <Footer />
       <ModalForm title="Add Customer Product" open={open} onClose={handleClose}>
-        <FormRole />
+        <FormRole onClose={handleClose} />
       </ModalForm>
     </>
   );

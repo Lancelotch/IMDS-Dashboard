@@ -5,7 +5,7 @@ import Footer from 'src/components/Footer';
 import ModalForm from 'src/components/ModalForm';
 import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import FormRole from './components/Form';
+import FormProduct from './components/Form';
 import TableProduct from './components/Table';
 
 const Product = () => {
@@ -45,7 +45,7 @@ const Product = () => {
       </Container>
       <Footer />
       <ModalForm title="Add Product" open={open} onClose={handleClose}>
-        <FormRole />
+        <FormProduct onClose={handleClose} />
       </ModalForm>
     </>
   );

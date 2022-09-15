@@ -27,8 +27,8 @@ const productStore = createSlice({
     reducerUpdateProductList: (state: IStore, action: PayloadAction<IResponseProductList>) => {
       state.productList = action.payload;
     },
-    reducerUpdateAddProduct: (state: IStore, action: PayloadAction<IProduct>) => {
-      state.productList.data = [...state.productList.data, action.payload];
+    reducerUpdateAddProduct: (state: IStore, action: PayloadAction<Array<IProduct>>) => {
+      state.productList.data = [...state.productList.data, ...action.payload];
     },
   }
 });

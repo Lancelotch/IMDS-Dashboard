@@ -37,6 +37,7 @@ import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import role from 'src/redux/role';
+import { useProduct } from 'src/services/product/useProduct';
 
 const CustomButton = styled(Button)(
   ({ theme }) => `
@@ -72,7 +73,7 @@ const TableProduct = () => {
 
   const productList = useAppSelector((state) => state.storeProduct.productList);
 
-  const { getRoleList } = useRole();
+  const { getProductList } = useProduct();
 
   const handleChangeSearch = (value: string) => {
     setSearch(value);
@@ -148,7 +149,7 @@ const TableProduct = () => {
 
   useEffect(() => {
     const { page, limit, sortingMethod } = stateTable;
-    getRoleList({ page: page, limit: limit, sort: sortingMethod });
+    getProductList({ page: page, limit: limit, sort: sortingMethod });
   }, [stateTable]);
 
   const theme = useTheme();

@@ -3,6 +3,8 @@ import usersStore from 'src/redux/users';
 import roleStore from 'src/redux/role';
 import customerStore from 'src/redux/customer';
 import productStore from 'src/redux/product';
+import widgetStore from 'src/redux/widget';
+import customerProductStore from 'src/redux/customerProduct';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -14,6 +16,8 @@ export const store = configureStore({
     storeRole: roleStore,
     storeCustomer: customerStore,
     storeProduct: productStore,
+    storeWidget: widgetStore,
+    storeCustomerProduct: customerProductStore,
   }
 });
 

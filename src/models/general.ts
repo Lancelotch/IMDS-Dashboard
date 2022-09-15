@@ -13,27 +13,44 @@ export interface ITableAtribute {
 }
 
 export interface ICustomer {
-  id: number,
-  customerId: string,
-  customerName: string,
-  address: string,
-  pic: string,
-  phoneNumber: string,
-  email: string,
-  createdAt: Date,
-  createdBy: string,
-  updatedAt: Date | null,
-  updatedBy: string | null,
-  isActive: boolean,
-  quantityProduct: number
+  id: number;
+  customerId: string;
+  customerName: string;
+  address: string;
+  pic: string;
+  phoneNumber: string;
+  email: string;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: Date | null;
+  updatedBy: string | null;
+  isActive: boolean;
+  quantityProduct: number;
   }
   
   export interface IInternalUser {
-    username: string,
-    firstName: string,
-    lastName: string,
-    roleId: string,
-    password: string
+    username: string;
+    firstName: string;
+    lastName: string;
+    roleId: string;
+    password: string;
+  }
+
+  export interface ICustomerProduct {
+    id: string;
+    username: string;
+    startDate: Date;
+    endDate: Date;
+    customerProductId: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: Date;
+    updatedBy: string;
+    isActive: boolean;
+    customerName: string;
+    customerId: string;
+    productName: string;
+    productId: string;
   }
 
   export type TTypeProduct = 'widget' | 'streaming' | 'api';
@@ -67,6 +84,17 @@ export interface ICustomer {
     isActive: boolean;
   }
 
+  export interface IWidget {
+    id: number;
+    widgetId: string;
+    widgetName: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: null | string;
+    updatedBy: null | string;
+    isActive: boolean;
+  }
+
   export interface IPayloadAddRole {
     roleName: string;
   }
@@ -81,7 +109,7 @@ export interface ICustomer {
 
   export interface IPayloadAddProduct {
     productName: string,
-    isStaging: true,
+    isStaging: boolean,
     type: TTypeProduct,
     widgetId: string,
     topic: string,
@@ -91,6 +119,19 @@ export interface ICustomer {
   export interface IPayloadLogin {
     username: string,
     password: string
+  }
+
+  export interface IPayloadAddWidget {
+    widgetName: string;
+  }
+  
+  export interface IPayloadAddCustomerProduct {
+    productId: string;
+    customerId: string;
+    startDate: Date;
+    endDate: Date;
+    username: string;
+    password: string;
   }
 
   export interface IUser {
@@ -124,10 +165,22 @@ export interface ICustomer {
     totalPages: number;
     totalRow: number;
   }
+
+  export interface IResponseWidgetList extends IResponseBody<Array<IWidget>>{
+    totalPages: number;
+    totalRow: number;
+  }
+
+  export interface IResponseCustomerProductList extends IResponseBody<Array<ICustomerProduct>>{
+    totalPages: number;
+    totalRow: number;
+  }
   
-  export interface IResponseAddRole extends IResponseBody<IRole>{};
-  export interface IResponseAddCustomer extends IResponseBody<ICustomer>{};
-  export interface IResponseAddProduct extends IResponseBody<IProduct>{};
+  export interface IResponseAddRole extends IResponseBody<Array<IRole>>{};
+  export interface IResponseAddCustomer extends IResponseBody<Array<ICustomer>>{};
+  export interface IResponseAddProduct extends IResponseBody<Array<IProduct>>{};
+  export interface IResponseAddWidget extends IResponseBody<Array<IWidget>>{};
+  export interface IResponseAddCustomerProduct extends IResponseBody<Array<ICustomerProduct>>{};
 
   export interface IPayloadGetList {
     page: number;
