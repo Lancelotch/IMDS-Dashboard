@@ -23,26 +23,49 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import { IAction, IRole, ITableAtribute } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import { useFirstRender } from 'src/hooks/useFirstRender';
+import FormRoleEdit from '../FormRoleEdit';
+import ModalForm from 'src/components/ModalForm';
 
 const TableRole = () => {
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [fieldId, setFieldId] = useState<string>();
-  const [editingLabelVal, setEditingLabelVal] = useState<Array<any>>();
-  const [openEditLabel, setOpenEditLabel] = useState<boolean>(false);
+  const [field, setField] = useState<IRole>();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [search, setSearch] = useState<string>('');
+  const isFirstRender = useFirstRender();
+  const { roleList, loading } = useAppSelector((state) => state.storeRole);
 
-  const roleList = useAppSelector((state) => state.storeRole.roleList);
+  const filterRoleListActive = useMemo(() => {
+    const filterDataActive = roleList.data.filter((role) => role.isActive);
+    return { ...roleList, data: filterDataActive };
+  }, [roleList]);
 
-  const { getRoleList } = useRole();
+  const handleClickEdit = function (role: IRole) {
+    handleOpen();
+    setField(role);
+  };
+
+  const handleClickDelete = (role: IRole) => {
+    setField(role);
+    setOpenConfirmation(true);
+  };
+
+  const handleOkDelete = function () {
+    deleteRole(field.roleId);
+  };
+
+  const { getRoleList, deleteRole } = useRole();
 
   const handleChangeSearch = (value: string) => {
     setSearch(value);
@@ -50,20 +73,6 @@ const TableRole = () => {
   const handleClickSearch = () => {};
 
   const optionLimits = [10, 25, 50, 100];
-
-  const handleClickEdit = function (label: any) {
-    setEditingLabelVal(label);
-    setOpenEditLabel(true);
-  };
-
-  const handleClickDelete = (id: string) => {
-    setOpenConfirmation(true);
-    setFieldId(id);
-  };
-
-  const deleteHandler = () => {};
-
-  const handleOk = function () {};
 
   const initialTableAttribute: ITableAtribute = {
     columnName: '',
@@ -186,6 +195,7 @@ const TableRole = () => {
                             }}
                             color="inherit"
                             size="small"
+                            onClick={() => handleClickEdit(role)}
                           >
                             <EditTwoToneIcon fontSize="small" />
                           </IconButton>
@@ -200,6 +210,7 @@ const TableRole = () => {
                             }}
                             color="inherit"
                             size="small"
+                            onClick={() => handleClickDelete(role)}
                           >
                             <DeleteTwoToneIcon fontSize="small" />
                           </IconButton>
@@ -249,12 +260,17 @@ const TableRole = () => {
             </Table>
           </TableContainer>
         </Box>
+        {open && (
+          <ModalForm title="Edit Role" open={open} onClose={handleClose}>
+            <FormRoleEdit onClose={handleClose} initFormValue={field} />
+          </ModalForm>
+        )}
         <Confirmation
           onClose={() => setOpenConfirmation(false)}
-          onOk={handleOk}
+          onOk={handleOkDelete}
           open={openConfirmation}
           labelButton="Delete"
-          title="Are you sure want to remove?"
+          title={`Are you sure want to remove ${field?.roleName} ?`}
           message="This might be effect your data, consider that what has been deleted cannot be recover."
         />
       </Card>

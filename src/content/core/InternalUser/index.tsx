@@ -5,8 +5,8 @@ import Footer from 'src/components/Footer';
 import ModalForm from 'src/components/ModalForm';
 import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import FormRole from './components/FormRole';
-import TableRole from './components/Table';
+import Form from './components/Form';
+import Table from './components/Table';
 
 const InternalUser = () => {
   const [open, setOpen] = useState(false);
@@ -39,13 +39,13 @@ const InternalUser = () => {
           spacing={3}
         >
           <Grid item xs={12}>
-            <TableRole />
+            <Table />
           </Grid>
         </Grid>
       </Container>
       <Footer />
       <ModalForm title="Add Internal User" open={open} onClose={handleClose}>
-        <FormRole />
+        <Form onClose={handleClose} />
       </ModalForm>
     </>
   );

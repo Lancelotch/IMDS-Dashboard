@@ -1,8 +1,6 @@
 import {
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   FormLabel,
   Grid,
@@ -15,11 +13,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box } from '@mui/system';
 import { useAppSelector } from 'src/app/hooks';
-import { FC, useEffect } from 'react';
-import { IPayloadAddProduct, TTypeProduct } from 'src/models/general';
-import { useWidget } from 'src/services/widget/useWidget';
+import { useRole } from 'src/services/role/useRole';
+import { FC, useEffect, useState } from 'react';
+import { IPayloadAddInternalUser } from 'src/models/general';
+import { useInternalUser } from 'src/services/internal_user/useInternalUser';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import { useProduct } from 'src/services/product/useProduct';
 
 interface Props {
   onClose: () => void;
@@ -27,44 +25,41 @@ interface Props {
 
 function validationSchema() {
   return Yup.object({
-    isStaging: Yup.boolean().required(),
-    productName: Yup.string().required(),
-    type: Yup.string().required(),
-    topic: Yup.string(),
-    apiUrl: Yup.string(),
-    widgetId: Yup.string()
+    username: Yup.string().required(),
+    firstName: Yup.string().required(),
+    lastName: Yup.string().required(),
+    password: Yup.string().required(),
+    roleId: Yup.string().required()
   });
 }
 
-const types: Array<TTypeProduct> = ['widget', 'streaming', 'api'];
-
-const FormProduct: FC<Props> = ({ onClose }) => {
-  const { addProduct } = useProduct();
-  const { getWidgetList } = useWidget();
-  const widgetList = useAppSelector((state) => state.storeWidget.widgetList);
-  useEffect(() => {
-    getWidgetList({ page: 1, limit: 1000 });
-  }, []);
-  const { handleChange, handleSubmit, errors, values, touched } =
-    useFormik<IPayloadAddProduct>({
+const FormInternalUser: FC<Props> = ({ onClose }) => {
+  const { addInternalUser } = useInternalUser();
+  const { getRoleList } = useRole();
+  const isFirstRender = useFirstRender();
+  const loading = useAppSelector((state) => state.storeInternalUser.loading);
+  const roleList = useAppSelector((state) => state.storeRole.roleList);
+  const { handleChange, handleSubmit, errors, values, touched, setFieldValue } =
+    useFormik<IPayloadAddInternalUser>({
       initialValues: {
-        apiUrl: '',
-        isStaging: false,
-        productName: '',
-        topic: '',
-        type: 'widget',
-        widgetId: ''
+        username: '',
+        firstName: '',
+        lastName: '',
+        password: '',
+        roleId: ''
       },
       validationSchema: validationSchema(),
       onSubmit: async (value) => {
-        addProduct(value);
+        addInternalUser(value);
       }
     });
 
   const theme = useTheme();
 
-  const isFirstRender = useFirstRender();
-  const loading = useAppSelector((store) => store.storeProduct.loading);
+  useEffect(() => {
+    getRoleList({ page: 1, limit: 1000 });
+  }, []);
+
   useEffect(() => {
     if (isFirstRender) return;
     if (!loading) onClose();
@@ -76,12 +71,12 @@ const FormProduct: FC<Props> = ({ onClose }) => {
         <Grid container spacing={2}>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Product Name</FormLabel>
+              <FormLabel>Username</FormLabel>
               <OutlinedInput
-                name="productName"
+                name="username"
                 onChange={handleChange}
-                error={errors.productName && touched.productName}
-                value={values.productName}
+                error={errors.username && touched.username}
+                value={values.username}
                 fullWidth
                 size="small"
               />
@@ -91,24 +86,90 @@ const FormProduct: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.productName &&
-                  touched.productName &&
-                  errors.productName}
+                {errors.username && touched.username && errors.username}
               </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Type</FormLabel>
+              <FormLabel>Password</FormLabel>
+              <OutlinedInput
+                name="password"
+                onChange={handleChange}
+                error={errors.password && touched.password}
+                value={values.password}
+                fullWidth
+                size="small"
+                autoComplete="new-password"
+                inputProps={{
+                  type: 'password',
+                  autoComplete: 'new-password'
+                }}
+              />
+              <FormHelperText
+                error
+                variant="outlined"
+                margin="dense"
+                sx={{ ml: 0 }}
+              >
+                {errors.password && touched.password && errors.password}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item lg={6}>
+            <FormControl fullWidth size="medium">
+              <FormLabel>First Name</FormLabel>
+              <OutlinedInput
+                name="firstName"
+                onChange={handleChange}
+                error={errors.firstName && touched.firstName}
+                value={values.firstName}
+                fullWidth
+                size="small"
+              />
+              <FormHelperText
+                error
+                variant="outlined"
+                margin="dense"
+                sx={{ ml: 0 }}
+              >
+                {errors.firstName && touched.firstName && errors.firstName}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item lg={6}>
+            <FormControl fullWidth size="medium">
+              <FormLabel>Last Name</FormLabel>
+              <OutlinedInput
+                name="lastName"
+                onChange={handleChange}
+                error={errors.lastName && touched.lastName}
+                value={values.lastName}
+                fullWidth
+                size="small"
+              />
+              <FormHelperText
+                error
+                variant="outlined"
+                margin="dense"
+                sx={{ ml: 0 }}
+              >
+                {errors.lastName && touched.lastName && errors.lastName}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item lg={6}>
+            <FormControl fullWidth size="medium">
+              <FormLabel>Role</FormLabel>
               <Select
-                value={values.type}
+                value={values.roleId}
                 onChange={handleChange}
                 size="small"
-                name="type"
+                name="roleId"
               >
-                {types.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
+                {roleList.data.map((role) => (
+                  <MenuItem key={role.id} value={role.roleId}>
+                    {role.roleName}
                   </MenuItem>
                 ))}
               </Select>
@@ -118,94 +179,8 @@ const FormProduct: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.type && touched.type && errors.type}
+                {errors.roleId && touched.roleId && errors.roleId}
               </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item lg={6}>
-            <FormControl fullWidth size="medium">
-              <FormLabel>Topic</FormLabel>
-              <OutlinedInput
-                name="topic"
-                onChange={handleChange}
-                error={errors.topic && touched.topic}
-                value={values.topic}
-                fullWidth
-                size="small"
-                disabled={values.type !== 'streaming'}
-              />
-              <FormHelperText
-                error
-                variant="outlined"
-                margin="dense"
-                sx={{ ml: 0 }}
-              >
-                {errors.topic && touched.topic && errors.topic}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={6}>
-            <FormControl fullWidth size="medium">
-              <FormLabel>API Url</FormLabel>
-              <OutlinedInput
-                name="apiUrl"
-                onChange={handleChange}
-                error={errors.apiUrl && touched.apiUrl}
-                value={values.apiUrl}
-                fullWidth
-                size="small"
-                disabled={values.type !== 'api'}
-              />
-              <FormHelperText
-                error
-                variant="outlined"
-                margin="dense"
-                sx={{ ml: 0 }}
-              >
-                {errors.apiUrl && touched.apiUrl && errors.apiUrl}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item lg={6}>
-            <FormControl fullWidth size="medium">
-              <FormLabel>Widget</FormLabel>
-              <Select
-                value={values.widgetId}
-                onChange={handleChange}
-                size="small"
-                name="widgetId"
-                disabled={values.type !== 'widget'}
-              >
-                {widgetList.data.map((widget) => (
-                  <MenuItem key={widget.id} value={widget.widgetId}>
-                    {widget.widgetName}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText
-                error
-                variant="outlined"
-                margin="dense"
-                sx={{ ml: 0 }}
-              >
-                {errors.widgetId && touched.widgetId && errors.widgetId}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item lg={6}>
-            <FormControl fullWidth size="medium">
-              <FormLabel>Is Staging</FormLabel>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="isStaging"
-                    value={values.isStaging}
-                    onChange={handleChange}
-                  />
-                }
-                label={values.isStaging ? 'Staging' : 'Not Staging'}
-              />
             </FormControl>
           </Grid>
           <Grid item lg={12}>
@@ -236,4 +211,4 @@ const FormProduct: FC<Props> = ({ onClose }) => {
   );
 };
 
-export default FormProduct;
+export default FormInternalUser;

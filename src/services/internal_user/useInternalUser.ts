@@ -1,7 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddInternalUser, IPayloadGetList, IResponseAddInternalUser, IResponseInternalUserList } from "src/models/general";
-import { reducerUpdateAddInternalUser, reducerUpdateInternalUserList, reducerUpdateLoadingInternalUser } from "src/redux/internalUser";
+import { IPayloadAddInternalUser, IPayloadEditInternalUser, IPayloadGetList, IResponseAddInternalUser, IResponseInternalUserList } from "src/models/general";
+import { reducerEditInternalUser, reducerUpdateAddInternalUser, reducerUpdateInternalUserList, reducerUpdateLoadingInternalUser } from "src/redux/internalUser";
 import httpClient from "..";
 
 export const useInternalUser = ()=> {
@@ -25,7 +25,56 @@ export const useInternalUser = ()=> {
             handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',
-                message: 'Failed add Customer Product',
+                message: 'Failed add Internal User',
+                severity: 'error'
+              });
+              dispatch(reducerUpdateLoadingInternalUser(false));
+          }
+    }
+    
+    const deleteInternalUser =async (id:string) => {
+        dispatch(reducerUpdateLoadingInternalUser(true));
+        try {
+            const response = await httpClient.put<IResponseAddInternalUser>(
+              `/internal_user/delete/${id}`,
+              {
+                isActive: false
+              }
+            );
+            if (response.status === 201) {
+              dispatch(reducerEditInternalUser(response.data.data));
+              
+            }
+            dispatch(reducerUpdateLoadingInternalUser(false));
+          } catch (e) {
+            console.log(e);
+            handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Failed delete Internal User',
+                severity: 'error'
+              });
+              dispatch(reducerUpdateLoadingInternalUser(false));
+          }
+    }
+    
+    const editInternalUser =async (id:string, payload: IPayloadEditInternalUser) => {
+        dispatch(reducerUpdateLoadingInternalUser(true));
+        try {
+            const response = await httpClient.put<IResponseAddInternalUser>(
+              `/internal_user/update/${id}`,payload
+            );
+            if (response.status === 201) {
+              dispatch(reducerEditInternalUser(response.data.data));
+              
+            }
+            dispatch(reducerUpdateLoadingInternalUser(false));
+          } catch (e) {
+            console.log(e);
+            handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Failed edit Internal User',
                 severity: 'error'
               });
               dispatch(reducerUpdateLoadingInternalUser(false));
@@ -54,5 +103,5 @@ export const useInternalUser = ()=> {
         }
          
     }
-    return { addInternalUser, getInternalUserList };
+    return { addInternalUser, editInternalUser, deleteInternalUser, getInternalUserList };
 }

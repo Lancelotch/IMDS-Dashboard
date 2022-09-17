@@ -4,55 +4,61 @@ import {
   FormHelperText,
   FormLabel,
   Grid,
+  MenuItem,
   OutlinedInput,
+  Select,
   useTheme
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box } from '@mui/system';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { FC, useEffect, useState } from 'react';
-import { IPayloadAddCustomer, IResponseAddCustomer } from 'src/models/general';
-import httpClient from 'src/services';
-import { reducerUpdateAddCustomer } from 'src/redux/customer';
+import { useAppSelector } from 'src/app/hooks';
+import { useRole } from 'src/services/role/useRole';
+import { FC, useEffect } from 'react';
+import { IInternalUser, IPayloadEditInternalUser } from 'src/models/general';
+import { useInternalUser } from 'src/services/internal_user/useInternalUser';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import { useCustomer } from 'src/services/customer/useCustomer';
 
 interface Props {
   onClose: () => void;
+  initFormValue?: IInternalUser;
 }
 
 function validationSchema() {
   return Yup.object({
-    customerName: Yup.string().required(),
-    address: Yup.string(),
-    pic: Yup.string(),
-    phoneNumber: Yup.string(),
-    email: Yup.string().email().required()
+    username: Yup.string().required(),
+    firstName: Yup.string().required(),
+    lastName: Yup.string().required(),
+    roleId: Yup.string().required()
   });
 }
 
-const FormCustomer: FC<Props> = ({ onClose }) => {
-  const { addCustomer } = useCustomer();
+const FormEditInternalUser: FC<Props> = ({ onClose, initFormValue }) => {
+  const { editInternalUser } = useInternalUser();
+  const { getRoleList } = useRole();
+  const isFirstRender = useFirstRender();
+  const loading = useAppSelector((state) => state.storeInternalUser.loading);
+  const roleList = useAppSelector((state) => state.storeRole.roleList);
   const { handleChange, handleSubmit, errors, values, touched } =
-    useFormik<IPayloadAddCustomer>({
+    useFormik<IPayloadEditInternalUser>({
       initialValues: {
-        customerName: '',
-        address: '',
-        email: '',
-        phoneNumber: '',
-        pic: ''
+        username: initFormValue.username,
+        firstName: initFormValue.firstName,
+        lastName: initFormValue.lastName,
+        roleId: initFormValue.roleId
       },
       validationSchema: validationSchema(),
       onSubmit: async (value) => {
-        addCustomer(value);
+        editInternalUser(initFormValue.internalUserId, value);
       }
     });
 
   const theme = useTheme();
 
-  const isFirstRender = useFirstRender();
-  const loading = useAppSelector((store) => store.storeCustomer.loading);
+  useEffect(() => {
+    getRoleList({ page: 1, limit: 1000 });
+  }, []);
+
   useEffect(() => {
     if (isFirstRender) return;
     if (!loading) onClose();
@@ -61,17 +67,18 @@ const FormCustomer: FC<Props> = ({ onClose }) => {
   return (
     <Box sx={{ mt: theme.spacing(2) }}>
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Customer Name</FormLabel>
+              <FormLabel>Username</FormLabel>
               <OutlinedInput
-                name="customerName"
+                name="username"
                 onChange={handleChange}
-                error={errors.customerName && touched.customerName}
-                value={values.customerName}
+                error={errors.username && touched.username}
+                value={values.username}
                 fullWidth
                 size="small"
+                disabled
               />
               <FormHelperText
                 error
@@ -79,20 +86,18 @@ const FormCustomer: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.customerName &&
-                  touched.customerName &&
-                  errors.customerName}
+                {errors.username && touched.username && errors.username}
               </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>First Name</FormLabel>
               <OutlinedInput
-                name="phoneNumber"
+                name="firstName"
                 onChange={handleChange}
-                error={errors.phoneNumber && touched.phoneNumber}
-                value={values.phoneNumber}
+                error={errors.firstName && touched.firstName}
+                value={values.firstName}
                 fullWidth
                 size="small"
               />
@@ -102,42 +107,18 @@ const FormCustomer: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.phoneNumber &&
-                  touched.phoneNumber &&
-                  errors.phoneNumber}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item lg={6}>
-            <FormControl fullWidth size="medium">
-              <FormLabel>Email</FormLabel>
-              <OutlinedInput
-                name="email"
-                onChange={handleChange}
-                error={errors.email && touched.email}
-                value={values.email}
-                fullWidth
-                size="small"
-              />
-              <FormHelperText
-                error
-                variant="outlined"
-                margin="dense"
-                sx={{ ml: 0 }}
-              >
-                {errors.email && touched.email && errors.email}
+                {errors.firstName && touched.firstName && errors.firstName}
               </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>PIC</FormLabel>
+              <FormLabel>Last Name</FormLabel>
               <OutlinedInput
-                name="pic"
+                name="lastName"
                 onChange={handleChange}
-                error={errors.pic && touched.pic}
-                value={values.pic}
+                error={errors.lastName && touched.lastName}
+                value={values.lastName}
                 fullWidth
                 size="small"
               />
@@ -147,28 +128,32 @@ const FormCustomer: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.pic && touched.pic && errors.pic}
+                {errors.lastName && touched.lastName && errors.lastName}
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item lg={12}>
+          <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Address</FormLabel>
-              <OutlinedInput
-                name="address"
+              <FormLabel>Role</FormLabel>
+              <Select
+                value={values.roleId}
                 onChange={handleChange}
-                error={errors.address && touched.address}
-                value={values.address}
-                fullWidth
                 size="small"
-              />
+                name="roleId"
+              >
+                {roleList.data.map((role) => (
+                  <MenuItem key={role.id} value={role.roleId}>
+                    {role.roleName}
+                  </MenuItem>
+                ))}
+              </Select>
               <FormHelperText
                 error
                 variant="outlined"
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.address && touched.address && errors.address}
+                {errors.roleId && touched.roleId && errors.roleId}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -200,4 +185,4 @@ const FormCustomer: FC<Props> = ({ onClose }) => {
   );
 };
 
-export default FormCustomer;
+export default FormEditInternalUser;

@@ -1,14 +1,10 @@
 import {
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   FormLabel,
   Grid,
-  MenuItem,
   OutlinedInput,
-  Select,
   useTheme
 } from '@mui/material';
 import { useFormik } from 'formik';
@@ -16,55 +12,46 @@ import * as Yup from 'yup';
 import { Box } from '@mui/system';
 import { useAppSelector } from 'src/app/hooks';
 import { FC, useEffect } from 'react';
-import { IPayloadAddProduct, TTypeProduct } from 'src/models/general';
-import { useWidget } from 'src/services/widget/useWidget';
+import { ICustomer, IPayloadAddCustomer } from 'src/models/general';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import { useProduct } from 'src/services/product/useProduct';
+import { useCustomer } from 'src/services/customer/useCustomer';
 
 interface Props {
   onClose: () => void;
+  initFormValue?: ICustomer;
 }
 
 function validationSchema() {
   return Yup.object({
-    isStaging: Yup.boolean().required(),
-    productName: Yup.string().required(),
-    type: Yup.string().required(),
-    topic: Yup.string(),
-    apiUrl: Yup.string(),
-    widgetId: Yup.string()
+    customerName: Yup.string().required(),
+    address: Yup.string(),
+    pic: Yup.string(),
+    phoneNumber: Yup.string(),
+    email: Yup.string().email().required()
   });
 }
 
-const types: Array<TTypeProduct> = ['widget', 'streaming', 'api'];
-
-const FormProduct: FC<Props> = ({ onClose }) => {
-  const { addProduct } = useProduct();
-  const { getWidgetList } = useWidget();
-  const widgetList = useAppSelector((state) => state.storeWidget.widgetList);
-  useEffect(() => {
-    getWidgetList({ page: 1, limit: 1000 });
-  }, []);
+const FormEditCustomer: FC<Props> = ({ onClose, initFormValue }) => {
+  const { editCustomer } = useCustomer();
   const { handleChange, handleSubmit, errors, values, touched } =
-    useFormik<IPayloadAddProduct>({
+    useFormik<IPayloadAddCustomer>({
       initialValues: {
-        apiUrl: '',
-        isStaging: false,
-        productName: '',
-        topic: '',
-        type: 'widget',
-        widgetId: ''
+        customerName: initFormValue.customerName,
+        address: initFormValue.address,
+        email: initFormValue.email,
+        phoneNumber: initFormValue.phoneNumber,
+        pic: initFormValue.pic
       },
       validationSchema: validationSchema(),
       onSubmit: async (value) => {
-        addProduct(value);
+        editCustomer(initFormValue.customerId, value);
       }
     });
 
   const theme = useTheme();
 
   const isFirstRender = useFirstRender();
-  const loading = useAppSelector((store) => store.storeProduct.loading);
+  const loading = useAppSelector((store) => store.storeCustomer.loading);
   useEffect(() => {
     if (isFirstRender) return;
     if (!loading) onClose();
@@ -73,15 +60,15 @@ const FormProduct: FC<Props> = ({ onClose }) => {
   return (
     <Box sx={{ mt: theme.spacing(2) }}>
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Product Name</FormLabel>
+              <FormLabel>Customer Name</FormLabel>
               <OutlinedInput
-                name="productName"
+                name="customerName"
                 onChange={handleChange}
-                error={errors.productName && touched.productName}
-                value={values.productName}
+                error={errors.customerName && touched.customerName}
+                value={values.customerName}
                 fullWidth
                 size="small"
               />
@@ -91,48 +78,22 @@ const FormProduct: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.productName &&
-                  touched.productName &&
-                  errors.productName}
+                {errors.customerName &&
+                  touched.customerName &&
+                  errors.customerName}
               </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Type</FormLabel>
-              <Select
-                value={values.type}
-                onChange={handleChange}
-                size="small"
-                name="type"
-              >
-                {types.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText
-                error
-                variant="outlined"
-                margin="dense"
-                sx={{ ml: 0 }}
-              >
-                {errors.type && touched.type && errors.type}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item lg={6}>
-            <FormControl fullWidth size="medium">
-              <FormLabel>Topic</FormLabel>
+              <FormLabel>Phone Number</FormLabel>
               <OutlinedInput
-                name="topic"
+                name="phoneNumber"
                 onChange={handleChange}
-                error={errors.topic && touched.topic}
-                value={values.topic}
+                error={errors.phoneNumber && touched.phoneNumber}
+                value={values.phoneNumber}
                 fullWidth
                 size="small"
-                disabled={values.type !== 'streaming'}
               />
               <FormHelperText
                 error
@@ -140,22 +101,23 @@ const FormProduct: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.topic && touched.topic && errors.topic}
+                {errors.phoneNumber &&
+                  touched.phoneNumber &&
+                  errors.phoneNumber}
               </FormHelperText>
             </FormControl>
           </Grid>
 
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>API Url</FormLabel>
+              <FormLabel>Email</FormLabel>
               <OutlinedInput
-                name="apiUrl"
+                name="email"
                 onChange={handleChange}
-                error={errors.apiUrl && touched.apiUrl}
-                value={values.apiUrl}
+                error={errors.email && touched.email}
+                value={values.email}
                 fullWidth
                 size="small"
-                disabled={values.type !== 'api'}
               />
               <FormHelperText
                 error
@@ -163,49 +125,50 @@ const FormProduct: FC<Props> = ({ onClose }) => {
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.apiUrl && touched.apiUrl && errors.apiUrl}
+                {errors.email && touched.email && errors.email}
               </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item lg={6}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Widget</FormLabel>
-              <Select
-                value={values.widgetId}
+              <FormLabel>PIC</FormLabel>
+              <OutlinedInput
+                name="pic"
                 onChange={handleChange}
+                error={errors.pic && touched.pic}
+                value={values.pic}
+                fullWidth
                 size="small"
-                name="widgetId"
-                disabled={values.type !== 'widget'}
-              >
-                {widgetList.data.map((widget) => (
-                  <MenuItem key={widget.id} value={widget.widgetId}>
-                    {widget.widgetName}
-                  </MenuItem>
-                ))}
-              </Select>
+              />
               <FormHelperText
                 error
                 variant="outlined"
                 margin="dense"
                 sx={{ ml: 0 }}
               >
-                {errors.widgetId && touched.widgetId && errors.widgetId}
+                {errors.pic && touched.pic && errors.pic}
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid item lg={6}>
+          <Grid item lg={12}>
             <FormControl fullWidth size="medium">
-              <FormLabel>Is Staging</FormLabel>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="isStaging"
-                    value={values.isStaging}
-                    onChange={handleChange}
-                  />
-                }
-                label={values.isStaging ? 'Staging' : 'Not Staging'}
+              <FormLabel>Address</FormLabel>
+              <OutlinedInput
+                name="address"
+                onChange={handleChange}
+                error={errors.address && touched.address}
+                value={values.address}
+                fullWidth
+                size="small"
               />
+              <FormHelperText
+                error
+                variant="outlined"
+                margin="dense"
+                sx={{ ml: 0 }}
+              >
+                {errors.address && touched.address && errors.address}
+              </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item lg={12}>
@@ -236,4 +199,4 @@ const FormProduct: FC<Props> = ({ onClose }) => {
   );
 };
 
-export default FormProduct;
+export default FormEditCustomer;

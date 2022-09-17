@@ -5,7 +5,8 @@ import {
   IconButton,
   useTheme,
   Breakpoint,
-  Typography
+  Typography,
+  Stack
 } from '@mui/material';
 import { FC } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -57,7 +58,12 @@ const Confirmation: FC<Props> = ({
         <Box sx={{ my: theme.spacing(2) }} />
         <Typography variant="subtitle1">{message}</Typography>
       </Box>
-      <DialogActions>
+      <Stack
+        sx={{ p: theme.spacing(0, 8, 3, 8) }}
+        spacing={2}
+        direction="row"
+        justifyContent="flex-end"
+      >
         <Button
           variant="outlined"
           color="primary"
@@ -83,7 +89,7 @@ const Confirmation: FC<Props> = ({
         >
           {labelButton}
         </Button>
-      </DialogActions>
+      </Stack>
     </Dialog>
   );
 };

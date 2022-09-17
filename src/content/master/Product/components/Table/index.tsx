@@ -10,7 +10,6 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
   useTheme,
   FormControl,
   InputLabel,
@@ -24,56 +23,43 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import TooltipCustomize from 'src/components/TooltipCustomize';
 import { useEffect, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
-import Empty from 'src/components/Empty';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import { IAction, IProduct, ITableAtribute } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
-import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import role from 'src/redux/role';
 import { useProduct } from 'src/services/product/useProduct';
-
-const CustomButton = styled(Button)(
-  ({ theme }) => `
-    min-width: unset;
-    max-height: ${theme.spacing(3)};
-    padding-left: ${theme.spacing(2.8)};
-    padding-right: ${theme.spacing(2.8)};
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    border-radius: 8px;
-      `
-);
-
-const FabSmall = styled(Fab)(
-  ({ theme }) => `
-        min-height: unset;
-        background-color: transparent;
-        width: ${theme.spacing(3)};
-        height: ${theme.spacing(3)};
-        color: #E35200;
-        border: 1px solid #E35200;
-    
-      `
-);
+import FormEditProduct from '../FormEditProduct';
+import ModalForm from 'src/components/ModalForm';
 
 const TableProduct = () => {
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [fieldId, setFieldId] = useState<string>();
-  const [editingLabelVal, setEditingLabelVal] = useState<Array<any>>();
-  const [openEditLabel, setOpenEditLabel] = useState<boolean>(false);
+  const [field, setField] = useState<IProduct>();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [search, setSearch] = useState<string>('');
 
   const productList = useAppSelector((state) => state.storeProduct.productList);
 
-  const { getProductList } = useProduct();
+  const { getProductList, deleteProduct } = useProduct();
+
+  const handleClickEdit = function (product: IProduct) {
+    handleOpen();
+    setField(product);
+  };
+
+  const handleClickDelete = (product: IProduct) => {
+    setField(product);
+    setOpenConfirmation(true);
+  };
+
+  const handleOkDelete = function () {
+    deleteProduct(field.productId);
+  };
 
   const handleChangeSearch = (value: string) => {
     setSearch(value);
@@ -81,20 +67,6 @@ const TableProduct = () => {
   const handleClickSearch = () => {};
 
   const optionLimits = [10, 25, 50, 100];
-
-  const handleClickEdit = function (label: any) {
-    setEditingLabelVal(label);
-    setOpenEditLabel(true);
-  };
-
-  const handleClickDelete = (id: string) => {
-    setOpenConfirmation(true);
-    setFieldId(id);
-  };
-
-  const deleteHandler = () => {};
-
-  const handleOk = function () {};
 
   const initialTableAttribute: ITableAtribute = {
     columnName: '',
@@ -220,6 +192,7 @@ const TableProduct = () => {
                             }}
                             color="inherit"
                             size="small"
+                            onClick={() => handleClickEdit(product)}
                           >
                             <EditTwoToneIcon fontSize="small" />
                           </IconButton>
@@ -234,6 +207,7 @@ const TableProduct = () => {
                             }}
                             color="inherit"
                             size="small"
+                            onClick={() => handleClickDelete(product)}
                           >
                             <DeleteTwoToneIcon fontSize="small" />
                           </IconButton>
@@ -283,12 +257,17 @@ const TableProduct = () => {
             </Table>
           </TableContainer>
         </Box>
+        {open && (
+          <ModalForm title="Edit Product" open={open} onClose={handleClose}>
+            <FormEditProduct onClose={handleClose} initFormValue={field} />
+          </ModalForm>
+        )}
         <Confirmation
           onClose={() => setOpenConfirmation(false)}
-          onOk={handleOk}
+          onOk={handleOkDelete}
           open={openConfirmation}
           labelButton="Delete"
-          title="Are you sure want to remove?"
+          title={`Are you sure want to remove ${field?.productName} ?`}
           message="This might be effect your data, consider that what has been deleted cannot be recover."
         />
       </Card>

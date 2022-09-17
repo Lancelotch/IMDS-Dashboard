@@ -16,13 +16,14 @@ import * as Yup from 'yup';
 import { Box } from '@mui/system';
 import { useAppSelector } from 'src/app/hooks';
 import { FC, useEffect } from 'react';
-import { IPayloadAddProduct, TTypeProduct } from 'src/models/general';
+import { IPayloadAddProduct, IProduct, TTypeProduct } from 'src/models/general';
 import { useWidget } from 'src/services/widget/useWidget';
 import { useFirstRender } from 'src/hooks/useFirstRender';
 import { useProduct } from 'src/services/product/useProduct';
 
 interface Props {
   onClose: () => void;
+  initFormValue?: IProduct;
 }
 
 function validationSchema() {
@@ -38,8 +39,8 @@ function validationSchema() {
 
 const types: Array<TTypeProduct> = ['widget', 'streaming', 'api'];
 
-const FormProduct: FC<Props> = ({ onClose }) => {
-  const { addProduct } = useProduct();
+const FormEditProduct: FC<Props> = ({ onClose, initFormValue }) => {
+  const { editProduct } = useProduct();
   const { getWidgetList } = useWidget();
   const widgetList = useAppSelector((state) => state.storeWidget.widgetList);
   useEffect(() => {
@@ -48,16 +49,16 @@ const FormProduct: FC<Props> = ({ onClose }) => {
   const { handleChange, handleSubmit, errors, values, touched } =
     useFormik<IPayloadAddProduct>({
       initialValues: {
-        apiUrl: '',
-        isStaging: false,
-        productName: '',
-        topic: '',
-        type: 'widget',
-        widgetId: ''
+        apiUrl: initFormValue.apiUrl,
+        isStaging: initFormValue.isStaging === 1 ? true : false,
+        productName: initFormValue.productName,
+        topic: initFormValue.topic,
+        type: initFormValue.type,
+        widgetId: initFormValue.widgetId
       },
       validationSchema: validationSchema(),
-      onSubmit: async (value) => {
-        addProduct(value);
+      onSubmit: (value) => {
+        editProduct(initFormValue.productId, value);
       }
     });
 
@@ -236,4 +237,4 @@ const FormProduct: FC<Props> = ({ onClose }) => {
   );
 };
 
-export default FormProduct;
+export default FormEditProduct;

@@ -24,29 +24,41 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import { useEffect, useReducer, useState } from 'react';
+import { FC, useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import { IAction, IInternalUser, ITableAtribute } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useInternalUser } from 'src/services/internal_user/useInternalUser';
+import { useFirstRender } from 'src/hooks/useFirstRender';
+import ModalForm from 'src/components/ModalForm';
+import Form from '../Form';
+import FormEditInternalUser from '../FormEdit';
 
 const TableRole = () => {
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
-  const [fieldId, setFieldId] = useState<string>();
-  const [editingLabelVal, setEditingLabelVal] = useState<Array<any>>();
-  const [openEditLabel, setOpenEditLabel] = useState<boolean>(false);
+  const [field, setField] = useState<IInternalUser>();
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [search, setSearch] = useState<string>('');
-
-  const internalUserList = useAppSelector(
-    (state) => state.storeInternalUser.internalUserList
+  const isFirstRender = useFirstRender();
+  const { internalUserList, loading } = useAppSelector(
+    (state) => state.storeInternalUser
   );
 
-  const { getInternalUserList } = useInternalUser();
+  const filterInternalUserListActive = useMemo(() => {
+    const filterDataActive = internalUserList.data.filter(
+      (internalUser) => internalUser.isActive
+    );
+    return { ...internalUserList, data: filterDataActive };
+  }, [internalUserList]);
+
+  const { getInternalUserList, deleteInternalUser } = useInternalUser();
 
   const handleChangeSearch = (value: string) => {
     setSearch(value);
@@ -55,19 +67,19 @@ const TableRole = () => {
 
   const optionLimits = [10, 25, 50, 100];
 
-  const handleClickEdit = function (label: any) {
-    setEditingLabelVal(label);
-    setOpenEditLabel(true);
+  const handleClickEdit = function (internalUser: IInternalUser) {
+    handleOpen();
+    setField(internalUser);
   };
 
-  const handleClickDelete = (id: string) => {
+  const handleClickDelete = (internalUser: IInternalUser) => {
+    setField(internalUser);
     setOpenConfirmation(true);
-    setFieldId(id);
   };
 
-  const deleteHandler = () => {};
-
-  const handleOk = function () {};
+  const handleOkDelete = function () {
+    deleteInternalUser(field.internalUserId);
+  };
 
   const initialTableAttribute: ITableAtribute = {
     columnName: '',
@@ -125,6 +137,11 @@ const TableRole = () => {
     getInternalUserList({ page: page, limit: limit, sort: sortingMethod });
   }, [stateTable]);
 
+  useEffect(() => {
+    if (isFirstRender) return;
+    if (!loading) setOpenConfirmation(false);
+  }, [loading]);
+
   const theme = useTheme();
 
   return (
@@ -168,53 +185,65 @@ const TableRole = () => {
               />
 
               <TableBody>
-                {internalUserList.data.map((internalUser, index) => (
-                  <TableRow key={internalUser.id}>
-                    <TableCell align="center">
-                      {stateTable.limit * (stateTable.page - 1) + index + 1}
-                    </TableCell>
-                    <TableCell align="left">{internalUser.username}</TableCell>
-                    <TableCell align="left">{internalUser.firstName}</TableCell>
-                    <TableCell align="left">{internalUser.lastName}</TableCell>
-                    <TableCell align="left">{internalUser.roleName}</TableCell>
-                    <TableCell align="center">
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        justifyContent="center"
-                      >
-                        <Tooltip title="Edit Role" arrow>
-                          <IconButton
-                            sx={{
-                              '&:hover': {
-                                background: theme.colors.primary.lighter
-                              },
-                              color: theme.palette.primary.main
-                            }}
-                            color="inherit"
-                            size="small"
-                          >
-                            <EditTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete Role" arrow>
-                          <IconButton
-                            sx={{
-                              '&:hover': {
-                                background: theme.colors.error.lighter
-                              },
-                              color: theme.palette.error.main
-                            }}
-                            color="inherit"
-                            size="small"
-                          >
-                            <DeleteTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {filterInternalUserListActive.data.map(
+                  (internalUser, index) => (
+                    <TableRow key={internalUser.id}>
+                      <TableCell align="center">
+                        {stateTable.limit * (stateTable.page - 1) + index + 1}
+                      </TableCell>
+                      <TableCell align="left">
+                        {internalUser.username}
+                      </TableCell>
+                      <TableCell align="left">
+                        {internalUser.firstName}
+                      </TableCell>
+                      <TableCell align="left">
+                        {internalUser.lastName}
+                      </TableCell>
+                      <TableCell align="left">
+                        {internalUser.roleName}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          justifyContent="center"
+                        >
+                          <Tooltip title="Edit Role" arrow>
+                            <IconButton
+                              sx={{
+                                '&:hover': {
+                                  background: theme.colors.primary.lighter
+                                },
+                                color: theme.palette.primary.main
+                              }}
+                              color="inherit"
+                              size="small"
+                              onClick={() => handleClickEdit(internalUser)}
+                            >
+                              <EditTwoToneIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete Role" arrow>
+                            <IconButton
+                              sx={{
+                                '&:hover': {
+                                  background: theme.colors.error.lighter
+                                },
+                                color: theme.palette.error.main
+                              }}
+                              color="inherit"
+                              size="small"
+                              onClick={() => handleClickDelete(internalUser)}
+                            >
+                              <DeleteTwoToneIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
                 <TableRow hover={false}>
                   <TableCell colSpan={3}>
                     <Stack
@@ -256,12 +285,22 @@ const TableRole = () => {
             </Table>
           </TableContainer>
         </Box>
+        {open && (
+          <ModalForm
+            title="Edit Internal User"
+            open={open}
+            onClose={handleClose}
+          >
+            <FormEditInternalUser onClose={handleClose} initFormValue={field} />
+          </ModalForm>
+        )}
         <Confirmation
           onClose={() => setOpenConfirmation(false)}
-          onOk={handleOk}
+          onOk={handleOkDelete}
           open={openConfirmation}
+          loading={loading}
           labelButton="Delete"
-          title="Are you sure want to remove?"
+          title={`Are you sure want to remove ${field?.username} ?`}
           message="This might be effect your data, consider that what has been deleted cannot be recover."
         />
       </Card>

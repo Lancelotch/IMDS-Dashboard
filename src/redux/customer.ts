@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ICustomer, IResponseCustomerList } from 'src/models/general';
 
 interface IStore {
+  loading?: boolean;
   customerList: IResponseCustomerList;
 }
 
 const initialState: IStore = {
+  loading: false,
   customerList: {
       data: [],
       message: '',
@@ -21,8 +23,8 @@ const customerStore = createSlice({
   name: 'customer',
   initialState,
   reducers: {
-    reducerUpdateLoadingCustomerList: (state: IStore, action: PayloadAction<boolean>) => {
-      state.customerList.loading = action.payload;
+    reducerUpdateLoadingCustomer: (state: IStore, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
     reducerUpdateCustomerList: (state: IStore, action: PayloadAction<IResponseCustomerList>) => {
       state.customerList = action.payload;
@@ -30,13 +32,20 @@ const customerStore = createSlice({
     reducerUpdateAddCustomer: (state: IStore, action: PayloadAction<ICustomer>) => {
       state.customerList.data = [...state.customerList.data, action.payload];
     },
+    reducerEditCustomer: (state: IStore, action: PayloadAction<ICustomer>) => {
+      state.customerList.data = state.customerList.data.map(item=> {
+        if(item.customerId !== action.payload.customerId) return item;
+        return action.payload;
+      });
+    },
   }
 });
 
 export const {
-  reducerUpdateLoadingCustomerList,
+  reducerUpdateLoadingCustomer,
   reducerUpdateCustomerList,
-  reducerUpdateAddCustomer
+  reducerUpdateAddCustomer,
+  reducerEditCustomer
 } = customerStore.actions;
 
 export default customerStore.reducer;

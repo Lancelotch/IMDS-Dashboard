@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {  IProduct, IResponseProductList} from 'src/models/general';
 
 interface IStore {
+  loading?: boolean;
   productList: IResponseProductList;
 }
 
 const initialState: IStore = {
+  loading: false,
   productList: {
       data: [],
       message: '',
@@ -21,8 +23,8 @@ const productStore = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    reducerUpdateLoadingProductList: (state: IStore, action: PayloadAction<boolean>) => {
-      state.productList.loading = action.payload;
+    reducerUpdateLoadingProduct: (state: IStore, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
     reducerUpdateProductList: (state: IStore, action: PayloadAction<IResponseProductList>) => {
       state.productList = action.payload;
@@ -30,13 +32,20 @@ const productStore = createSlice({
     reducerUpdateAddProduct: (state: IStore, action: PayloadAction<IProduct>) => {
       state.productList.data = [...state.productList.data, action.payload];
     },
+    reducerEditProduct: (state: IStore, action: PayloadAction<IProduct>) => {
+      state.productList.data = state.productList.data.map(item=> {
+        if(item.productId !== action.payload.productId) return item;
+        return action.payload;
+      });
+    },
   }
 });
 
 export const {
-  reducerUpdateLoadingProductList,
+  reducerUpdateLoadingProduct,
   reducerUpdateProductList,
-  reducerUpdateAddProduct
+  reducerUpdateAddProduct,
+  reducerEditProduct
 } = productStore.actions;
 
 export default productStore.reducer;

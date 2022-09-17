@@ -131,6 +131,13 @@ export interface ICustomer {
     roleId: string;
     password: string;
   }
+  
+  export interface IPayloadEditInternalUser {
+    username: string;
+    firstName: string;
+    lastName: string;
+    roleId: string;
+  }
 
   export interface IPayloadLogin {
     username: string,

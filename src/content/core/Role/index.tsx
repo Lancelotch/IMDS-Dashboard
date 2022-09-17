@@ -66,7 +66,7 @@ const Role = () => {
       </Container>
       <Footer />
       <ModalForm title="Add Role" open={open} onClose={handleClose}>
-        <FormRole />
+        <FormRole onClose={handleClose} />
       </ModalForm>
     </>
   );

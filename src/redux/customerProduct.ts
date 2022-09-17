@@ -23,7 +23,7 @@ const customerProductStore = createSlice({
   name: 'customerProduct',
   initialState,
   reducers: {
-    reducerUpdateLoadingCustomerProductList: (state: IStore, action: PayloadAction<boolean>) => {
+    reducerUpdateLoadingCustomerProduct: (state: IStore, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
     reducerUpdateCustomerProductList: (state: IStore, action: PayloadAction<IResponseCustomerProductList>) => {
@@ -32,13 +32,20 @@ const customerProductStore = createSlice({
     reducerUpdateAddCustomerProduct: (state: IStore, action: PayloadAction<ICustomerProduct>) => {
       state.customerProductList.data = [...state.customerProductList.data, action.payload];
     },
+    reducerEditCustomerProduct: (state: IStore, action: PayloadAction<ICustomerProduct>) => {
+      state.customerProductList.data = state.customerProductList.data.map(item=> {
+        if(item.productId !== action.payload.productId) return item;
+        return action.payload;
+      });
+    },
   }
 });
 
 export const {
-  reducerUpdateLoadingCustomerProductList,
+  reducerUpdateLoadingCustomerProduct,
   reducerUpdateCustomerProductList,
-  reducerUpdateAddCustomerProduct
+  reducerUpdateAddCustomerProduct,
+  reducerEditCustomerProduct
 } = customerProductStore.actions;
 
 export default customerProductStore.reducer;

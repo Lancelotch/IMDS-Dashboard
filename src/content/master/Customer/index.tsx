@@ -66,7 +66,7 @@ const Customer = () => {
       </Container>
       <Footer />
       <ModalForm title="Add Customer" open={open} onClose={handleClose}>
-        <FormCustomer />
+        <FormCustomer onClose={handleClose} />
       </ModalForm>
     </>
   );

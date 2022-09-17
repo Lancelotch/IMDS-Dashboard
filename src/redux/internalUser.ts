@@ -32,13 +32,20 @@ const internalUserStore = createSlice({
     reducerUpdateAddInternalUser: (state: IStore, action: PayloadAction<IInternalUser>) => {
       state.internalUserList.data = [...state.internalUserList.data, action.payload];
     },
+    reducerEditInternalUser: (state: IStore, action: PayloadAction<IInternalUser>) => {
+      state.internalUserList.data = state.internalUserList.data.map(internalUser=> {
+        if(internalUser.internalUserId !== action.payload.internalUserId) return internalUser;
+        return action.payload;
+      });
+    },
   }
 });
 
 export const {
   reducerUpdateLoadingInternalUser,
   reducerUpdateInternalUserList,
-  reducerUpdateAddInternalUser
+  reducerUpdateAddInternalUser,
+  reducerEditInternalUser
 } = internalUserStore.actions;
 
 export default internalUserStore.reducer;

@@ -10,11 +10,15 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box } from '@mui/system';
-import { useAppDispatch } from 'src/app/hooks';
-import { useState } from 'react';
-import { IPayloadAddRole, IResponseAddRole } from 'src/models/general';
-import httpClient from 'src/services';
-import { reducerUpdateAddRole } from 'src/redux/role';
+import { useAppSelector } from 'src/app/hooks';
+import { IPayloadAddRole } from 'src/models/general';
+import { useRole } from 'src/services/role/useRole';
+import { FC, useEffect } from 'react';
+import { useFirstRender } from 'src/hooks/useFirstRender';
+
+interface Props {
+  onClose: () => void;
+}
 
 function validationSchema() {
   return Yup.object({
@@ -22,34 +26,28 @@ function validationSchema() {
   });
 }
 
-const FormRole = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const { handleChange, handleSubmit, errors, values, touched, setFieldValue } =
+const FormRole: FC<Props> = ({ onClose }) => {
+  const { addRole } = useRole();
+
+  const { handleChange, handleSubmit, errors, values, touched } =
     useFormik<IPayloadAddRole>({
       initialValues: {
         roleName: ''
       },
       validationSchema: validationSchema(),
       onSubmit: async (value) => {
-        setLoading(true);
-        try {
-          const response = await httpClient.post<IResponseAddRole>(
-            '/role/create',
-            value
-          );
-          if (response.status === 201) {
-            dispatch(reducerUpdateAddRole(response.data.data));
-          }
-          setLoading(false);
-        } catch (e) {
-          console.log(e);
-          setLoading(false);
-        }
+        addRole(value);
       }
     });
 
   const theme = useTheme();
+
+  const isFirstRender = useFirstRender();
+  const loading = useAppSelector((store) => store.storeRole.loading);
+  useEffect(() => {
+    if (isFirstRender) return;
+    if (!loading) onClose();
+  }, [loading]);
 
   return (
     <Box sx={{ mt: theme.spacing(2) }}>
