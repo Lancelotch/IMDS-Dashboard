@@ -23,7 +23,7 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
 import { IAction, IProduct, ITableAtribute } from 'src/models/general';
@@ -44,6 +44,12 @@ const TableProduct = () => {
   const [search, setSearch] = useState<string>('');
 
   const productList = useAppSelector((state) => state.storeProduct.productList);
+  const filterProductListActive = useMemo(() => {
+    const filterDataActive = productList.data.filter(
+      (product) => product.isActive === 1
+    );
+    return { ...productList, data: filterDataActive };
+  }, [productList]);
 
   const { getProductList, deleteProduct } = useProduct();
 
@@ -167,7 +173,7 @@ const TableProduct = () => {
               />
 
               <TableBody>
-                {productList.data.map((product, index) => (
+                {filterProductListActive.data.map((product, index) => (
                   <TableRow key={product.id}>
                     <TableCell align="center">
                       {stateTable.limit * (stateTable.page - 1) + index + 1}

@@ -53,7 +53,7 @@ const TableRole = () => {
 
   const filterInternalUserListActive = useMemo(() => {
     const filterDataActive = internalUserList.data.filter(
-      (internalUser) => internalUser.isActive
+      (internalUser) => internalUser.isActive === 1
     );
     return { ...internalUserList, data: filterDataActive };
   }, [internalUserList]);

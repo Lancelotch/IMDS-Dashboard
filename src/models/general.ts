@@ -24,7 +24,7 @@ export interface ICustomer {
   createdBy: string;
   updatedAt: Date | null;
   updatedBy: string | null;
-  isActive: boolean;
+  isActive: number;
   quantityProduct: number;
   }
   
@@ -39,7 +39,7 @@ export interface ICustomer {
     createdBy: string;
     updatedAt: null | Date;
     updatedBy: null | string;
-    isActive: boolean;
+    isActive: number;
     isSuspend: boolean;
     roleName: string;
   }
@@ -54,7 +54,7 @@ export interface ICustomer {
     createdBy: string;
     updatedAt: Date;
     updatedBy: string;
-    isActive: boolean;
+    isActive: number;
     customerName: string;
     customerId: string;
     productName: string;
@@ -77,7 +77,7 @@ export interface ICustomer {
     createdBy: string;
     updatedAt: null | Date;
     updatedBy: null | string;
-    isActive: boolean;
+    isActive: number;
     typeValue: string;
   }
 
@@ -89,7 +89,7 @@ export interface ICustomer {
     createdBy: string;
     updatedAt: Date | null;
     updatedBy: string | null;
-    isActive: boolean;
+    isActive: number;
   }
 
   export interface IWidget {
@@ -100,7 +100,7 @@ export interface ICustomer {
     createdBy: string;
     updatedAt: null | string;
     updatedBy: null | string;
-    isActive: boolean;
+    isActive: number;
   }
 
   export interface IPayloadAddRole {
@@ -131,7 +131,7 @@ export interface ICustomer {
     roleId: string;
     password: string;
   }
-  
+
   export interface IPayloadEditInternalUser {
     username: string;
     firstName: string;

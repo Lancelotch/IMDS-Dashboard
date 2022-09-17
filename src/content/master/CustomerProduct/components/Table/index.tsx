@@ -24,7 +24,7 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
 import { IAction, ICustomerProduct, ITableAtribute } from 'src/models/general';
@@ -48,6 +48,13 @@ const TableCustomerProduct = () => {
   const customerProductList = useAppSelector(
     (state) => state.storeCustomerProduct.customerProductList
   );
+
+  const filterCustomerProductListActive = useMemo(() => {
+    const filterDataActive = customerProductList.data.filter(
+      (customer) => customer.isActive === 1
+    );
+    return { ...customerProductList, data: filterDataActive };
+  }, [customerProductList]);
 
   const { getCustomerProductList, deleteCustomerProduct } =
     useCustomerProduct();
@@ -172,70 +179,72 @@ const TableCustomerProduct = () => {
               />
 
               <TableBody>
-                {customerProductList.data.map((customerProduct, index) => (
-                  <TableRow key={customerProduct.id}>
-                    <TableCell align="center">
-                      {stateTable.limit * (stateTable.page - 1) + index + 1}
-                    </TableCell>
-                    <TableCell align="left">
-                      {customerProduct.productName}
-                    </TableCell>
-                    <TableCell align="left">
-                      {customerProduct.customerName}
-                    </TableCell>
-                    <TableCell align="left">
-                      {customerProduct.startDate
-                        ? moment(customerProduct.startDate).format('LL')
-                        : '-'}
-                    </TableCell>
-                    <TableCell align="left">
-                      {customerProduct.endDate
-                        ? moment(customerProduct.endDate).format('LL')
-                        : '-'}
-                    </TableCell>
-                    <TableCell align="left">
-                      {customerProduct.username}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        justifyContent="center"
-                      >
-                        <Tooltip title="Edit Role" arrow>
-                          <IconButton
-                            sx={{
-                              '&:hover': {
-                                background: theme.colors.primary.lighter
-                              },
-                              color: theme.palette.primary.main
-                            }}
-                            color="inherit"
-                            size="small"
-                            onClick={() => handleClickEdit(customerProduct)}
-                          >
-                            <EditTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete Role" arrow>
-                          <IconButton
-                            sx={{
-                              '&:hover': {
-                                background: theme.colors.error.lighter
-                              },
-                              color: theme.palette.error.main
-                            }}
-                            color="inherit"
-                            size="small"
-                            onClick={() => handleClickDelete(customerProduct)}
-                          >
-                            <DeleteTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {filterCustomerProductListActive.data.map(
+                  (customerProduct, index) => (
+                    <TableRow key={customerProduct.id}>
+                      <TableCell align="center">
+                        {stateTable.limit * (stateTable.page - 1) + index + 1}
+                      </TableCell>
+                      <TableCell align="left">
+                        {customerProduct.productName}
+                      </TableCell>
+                      <TableCell align="left">
+                        {customerProduct.customerName}
+                      </TableCell>
+                      <TableCell align="left">
+                        {customerProduct.startDate
+                          ? moment(customerProduct.startDate).format('LL')
+                          : '-'}
+                      </TableCell>
+                      <TableCell align="left">
+                        {customerProduct.endDate
+                          ? moment(customerProduct.endDate).format('LL')
+                          : '-'}
+                      </TableCell>
+                      <TableCell align="left">
+                        {customerProduct.username}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Stack
+                          direction="row"
+                          spacing={2}
+                          justifyContent="center"
+                        >
+                          <Tooltip title="Edit Role" arrow>
+                            <IconButton
+                              sx={{
+                                '&:hover': {
+                                  background: theme.colors.primary.lighter
+                                },
+                                color: theme.palette.primary.main
+                              }}
+                              color="inherit"
+                              size="small"
+                              onClick={() => handleClickEdit(customerProduct)}
+                            >
+                              <EditTwoToneIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete Role" arrow>
+                            <IconButton
+                              sx={{
+                                '&:hover': {
+                                  background: theme.colors.error.lighter
+                                },
+                                color: theme.palette.error.main
+                              }}
+                              color="inherit"
+                              size="small"
+                              onClick={() => handleClickDelete(customerProduct)}
+                            >
+                              <DeleteTwoToneIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
                 <TableRow hover={false}>
                   <TableCell colSpan={3}>
                     <Stack

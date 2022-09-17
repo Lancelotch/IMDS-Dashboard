@@ -23,7 +23,7 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
 import { IAction, ICustomer, ITableAtribute } from 'src/models/general';
@@ -46,6 +46,13 @@ const TableCustomer = () => {
   const customerList = useAppSelector(
     (state) => state.storeCustomer.customerList
   );
+
+  const filterCustomerListActive = useMemo(() => {
+    const filterDataActive = customerList.data.filter(
+      (customer) => customer.isActive === 1
+    );
+    return { ...customerList, data: filterDataActive };
+  }, [customerList]);
 
   const { getCustomerList, deleteCustomer } = useCustomer();
 
@@ -169,7 +176,7 @@ const TableCustomer = () => {
               />
 
               <TableBody>
-                {customerList.data.map((customer, index) => (
+                {filterCustomerListActive.data.map((customer, index) => (
                   <TableRow key={customer.id}>
                     <TableCell align="center">
                       {stateTable.limit * (stateTable.page - 1) + index + 1}

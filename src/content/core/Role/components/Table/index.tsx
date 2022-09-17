@@ -43,11 +43,12 @@ const TableRole = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [search, setSearch] = useState<string>('');
-  const isFirstRender = useFirstRender();
-  const { roleList, loading } = useAppSelector((state) => state.storeRole);
+  const { roleList } = useAppSelector((state) => state.storeRole);
 
   const filterRoleListActive = useMemo(() => {
-    const filterDataActive = roleList.data.filter((role) => role.isActive);
+    const filterDataActive = roleList.data.filter(
+      (role) => role.isActive === 1
+    );
     return { ...roleList, data: filterDataActive };
   }, [roleList]);
 
@@ -173,7 +174,7 @@ const TableRole = () => {
               />
 
               <TableBody>
-                {roleList.data.map((role, index) => (
+                {filterRoleListActive.data.map((role, index) => (
                   <TableRow key={role.id}>
                     <TableCell align="center">
                       {stateTable.limit * (stateTable.page - 1) + index + 1}
