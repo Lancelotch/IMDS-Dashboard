@@ -17,7 +17,12 @@ export const useProduct = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerUpdateAddProduct(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Add product has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingProduct(false));
           } catch (e) {
@@ -43,7 +48,12 @@ export const useProduct = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditProduct(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Delete product has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingProduct(false));
           } catch (e) {
@@ -66,7 +76,12 @@ export const useProduct = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditProduct(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Edit product has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingProduct(false));
           } catch (e) {

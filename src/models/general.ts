@@ -12,6 +12,11 @@ export interface ITableAtribute {
   limit: number;
 }
 
+export interface IUser {
+  username: string;
+  roleId: string;
+}
+
 export interface ICustomer {
   id: number;
   customerId: string;

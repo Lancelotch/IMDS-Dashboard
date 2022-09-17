@@ -17,7 +17,12 @@ export const useCustomerProduct = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerUpdateAddCustomerProduct(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Add customer product user has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingCustomerProduct(false));
           } catch (e) {
@@ -36,14 +41,19 @@ export const useCustomerProduct = ()=> {
       dispatch(reducerUpdateLoadingCustomerProduct(true));
       try {
           const response = await httpClient.put<IResponseAddCustomerProduct>(
-            `/internal_user/delete/${id}`,
+            `/customer_product/delete/${id}`,
             {
               isActive: false
             }
           );
           if (response.status === 201) {
             dispatch(reducerEditCustomerProduct(response.data.data));
-            
+            handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'Delete customer product user has successfully',
+              severity: 'success'
+            });
           }
           dispatch(reducerUpdateLoadingCustomerProduct(false));
         } catch (e) {
@@ -51,7 +61,7 @@ export const useCustomerProduct = ()=> {
           handleClickAlert({
               horizontal: 'center',
               vertical: 'top',
-              message: 'Failed delete Internal User',
+              message: 'Failed delete customer product',
               severity: 'error'
             });
             dispatch(reducerUpdateLoadingCustomerProduct(false));
@@ -62,11 +72,16 @@ export const useCustomerProduct = ()=> {
       dispatch(reducerUpdateLoadingCustomerProduct(true));
       try {
           const response = await httpClient.put<IResponseAddCustomerProduct>(
-            `/internal_user/update/${id}`,payload
+            `/customer_product/update/${id}`,payload
           );
           if (response.status === 201) {
             dispatch(reducerEditCustomerProduct(response.data.data));
-            
+            handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'Edit customer product user has successfully',
+              severity: 'success'
+            });
           }
           dispatch(reducerUpdateLoadingCustomerProduct(false));
         } catch (e) {

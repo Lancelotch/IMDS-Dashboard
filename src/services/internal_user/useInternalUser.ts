@@ -17,7 +17,12 @@ export const useInternalUser = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerUpdateAddInternalUser(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Add internal user has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingInternalUser(false));
           } catch (e) {
@@ -43,7 +48,12 @@ export const useInternalUser = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditInternalUser(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Delete internal user has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingInternalUser(false));
           } catch (e) {
@@ -66,7 +76,12 @@ export const useInternalUser = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditInternalUser(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Edit internal user has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingInternalUser(false));
           } catch (e) {

@@ -17,7 +17,12 @@ export const useCustomer = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerUpdateAddCustomer(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Add customer has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingCustomer(false));
           } catch (e) {
@@ -43,7 +48,12 @@ export const useCustomer = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditCustomer(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Delete customer has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingCustomer(false));
           } catch (e) {
@@ -66,7 +76,12 @@ export const useCustomer = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditCustomer(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Edit customer has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingCustomer(false));
           } catch (e) {

@@ -15,6 +15,12 @@ export const useUsers = ()=> {
                 const isAuth = token ? true : false;
                 window.localStorage.setItem('token', token);
                 dispatch(reducerUpdateAuthentication(isAuth));
+                handleClickAlert({
+                    horizontal: 'center',
+                    vertical: 'top',
+                    message: 'Signin has successfully',
+                    severity: 'success'
+                  });
             }
             
         }catch(e){

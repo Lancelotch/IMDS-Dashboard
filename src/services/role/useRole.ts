@@ -17,7 +17,12 @@ export const useRole = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditRole(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Add role has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingRole(false));
           } catch (e) {
@@ -43,7 +48,12 @@ export const useRole = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditRole(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Delete role has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingRole(false));
           } catch (e) {
@@ -66,7 +76,12 @@ export const useRole = ()=> {
             );
             if (response.status === 201) {
               dispatch(reducerEditRole(response.data.data));
-              
+              handleClickAlert({
+                horizontal: 'center',
+                vertical: 'top',
+                message: 'Edit role has successfully',
+                severity: 'success'
+              });
             }
             dispatch(reducerUpdateLoadingRole(false));
           } catch (e) {

@@ -6,6 +6,7 @@ import productStore from 'src/redux/product';
 import widgetStore from 'src/redux/widget';
 import customerProductStore from 'src/redux/customerProduct';
 import internalUserStore from 'src/redux/internalUser';
+import alertStore from 'src/redux/alert';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -13,6 +14,7 @@ export const store = configureStore({
       serializableCheck: false
     }),
   reducer: {
+    storeAlert: alertStore,
     storeUsers: usersStore,
     storeRole: roleStore,
     storeCustomer: customerStore,
