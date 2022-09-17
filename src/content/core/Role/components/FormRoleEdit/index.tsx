@@ -37,7 +37,7 @@ const FormRoleEdit: FC<Props> = ({ onClose, initFormValue }) => {
       },
       validationSchema: validationSchema(),
       onSubmit: async (value) => {
-        editRole(initFormValue.id, value);
+        editRole(initFormValue.roleId, value);
       }
     });
 

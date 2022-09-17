@@ -139,7 +139,7 @@ const FormEditCustomerProduct: FC<Props> = ({ onClose, initFormValue }) => {
                 name="customerId"
               >
                 {customerList.data.map((customer) => (
-                  <MenuItem key={customer.id} value={customer.customerName}>
+                  <MenuItem key={customer.id} value={customer.customerId}>
                     {customer.customerName}
                   </MenuItem>
                 ))}
