@@ -7,3 +7,4 @@ export const MASTER = `/master`;
 export const MASTER_CUSTOMER = `${MASTER}/customer`;
 export const MASTER_PRODUCT = `${MASTER}/product`;
 export const MASTER_CUSTOMER_PRODUCT = `${MASTER}/customer_product`;
+export const MASTER_TOPIC = `${MASTER}/topic`;

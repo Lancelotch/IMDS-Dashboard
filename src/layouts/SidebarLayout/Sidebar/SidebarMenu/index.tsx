@@ -27,7 +27,8 @@ import {
   CORE_ROLE,
   MASTER_CUSTOMER,
   MASTER_CUSTOMER_PRODUCT,
-  MASTER_PRODUCT
+  MASTER_PRODUCT,
+  MASTER_TOPIC
 } from 'src/route';
 
 const MenuWrapper = styled(Box)(
@@ -254,6 +255,17 @@ function SidebarMenu() {
                   startIcon={<PersonIcon />}
                 >
                   Customer Product
+                </Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to={MASTER_TOPIC}
+                  startIcon={<AccessibilityIcon />}
+                >
+                  Topic
                 </Button>
               </ListItem>
             </List>

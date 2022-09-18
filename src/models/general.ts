@@ -97,6 +97,17 @@ export interface ICustomer {
     isActive: number;
   }
 
+  export interface ITopic {
+    id: string;
+    topicId: string;
+    topicName: string;
+    createdAt: Date;
+    createdBy: string;
+    updatedAt: Date | null;
+    updatedBy: string | null;
+    isActive: number;
+  }
+
   export interface IWidget {
     id: number;
     widgetId: string;
@@ -110,6 +121,10 @@ export interface ICustomer {
 
   export interface IPayloadAddRole {
     roleName: string;
+  }
+
+  export interface IPayloadAddTopic {
+    topicName: string;
   }
   
   export interface IPayloadAddCustomer {
@@ -183,6 +198,12 @@ export interface ICustomer {
     totalPages: number;
     totalRow: number;
   }
+
+  
+  export interface IResponseTopicList extends IResponseBody<Array<ITopic>>{
+    totalPages: number;
+    totalRow: number;
+  }
   
   export interface IResponseCustomerList extends IResponseBody<Array<ICustomer>>{
     totalPages: number;
@@ -215,6 +236,7 @@ export interface ICustomer {
   export interface IResponseAddWidget extends IResponseBody<IWidget>{};
   export interface IResponseAddCustomerProduct extends IResponseBody<ICustomerProduct>{};
   export interface IResponseAddInternalUser extends IResponseBody<IInternalUser>{};
+  export interface IResponseAddTopic extends IResponseBody<ITopic>{};
 
   export interface IPayloadGetList {
     page: number;
