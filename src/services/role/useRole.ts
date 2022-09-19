@@ -1,7 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
 import { IPayloadAddRole, IPayloadGetList, IResponseAddRole, IResponseRoleList } from "src/models/general"
-import { reducerEditRole, reducerUpdateLoadingRole, reducerUpdateRoleList } from "src/redux/role";
+import { reducerEditRole, reducerUpdateAddRole, reducerUpdateLoadingRole, reducerUpdateRoleList } from "src/redux/role";
 import httpClient from "..";
 
 export const useRole = ()=> {
@@ -16,7 +16,7 @@ export const useRole = ()=> {
               payload
             );
             if (response.status === 201) {
-              dispatch(reducerEditRole(response.data.data));
+              dispatch(reducerUpdateAddRole(response.data.data));
               handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',

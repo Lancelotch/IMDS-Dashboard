@@ -40,6 +40,9 @@ const CustomerProduct = Loader(
   lazy(() => import('src/content/master/CustomerProduct'))
 );
 
+//topic
+const Topic = Loader(lazy(() => import('src/content/master/Topic')));
+
 // User
 const SignIn = Loader(lazy(() => import('src/content/user/SignIn')));
 
@@ -157,6 +160,10 @@ const routes = (isAuthenticated: boolean): RouteObject[] => {
         {
           path: 'customer_product',
           element: <CustomerProduct />
+        },
+        {
+          path: 'topic',
+          element: <Topic />
         }
       ]
     },

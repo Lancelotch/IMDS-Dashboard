@@ -6,6 +6,7 @@ import productStore from 'src/redux/product';
 import widgetStore from 'src/redux/widget';
 import customerProductStore from 'src/redux/customerProduct';
 import internalUserStore from 'src/redux/internalUser';
+import topicStore from 'src/redux/topic';
 import alertStore from 'src/redux/alert';
 
 export const store = configureStore({
@@ -22,6 +23,7 @@ export const store = configureStore({
     storeWidget: widgetStore,
     storeCustomerProduct: customerProductStore,
     storeInternalUser: internalUserStore,
+    storeTopic: topicStore,
   }
 });
 
