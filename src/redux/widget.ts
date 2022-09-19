@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IResponseWidgetList, IWidget } from 'src/models/general';
+import { IResponseWidgetList, IWidget } from 'src/models/widget';
 
 interface IStore {
   widgetList: IResponseWidgetList;

@@ -1,6 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddCustomer, IPayloadGetList, IResponseAddCustomer, IResponseCustomerList,  } from "src/models/general"
+import { IPayloadAddCustomer, IResponseAddCustomer, IResponseCustomerList } from "src/models/customer";
+import { IPayloadGetList  } from "src/models/general"
 import { reducerEditCustomer, reducerUpdateAddCustomer, reducerUpdateCustomerList, reducerUpdateLoadingCustomer } from "src/redux/customer";
 import httpClient from "..";
 

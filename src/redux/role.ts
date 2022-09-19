@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IResponseAddRole, IResponseRoleList, IRole } from 'src/models/general';
+import { IResponseRoleList, IRole } from 'src/models/role';
 
 interface IStore {
   loading?: boolean;

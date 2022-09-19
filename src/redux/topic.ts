@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IResponseAddTopic, IResponseTopicList, ITopic } from 'src/models/general';
+import { IResponseTopicList, ITopic } from 'src/models/topic';
 
 interface IStore {
   loading?: boolean;

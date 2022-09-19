@@ -1,6 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddTopic, IPayloadGetList, IResponseAddTopic, IResponseTopicList } from "src/models/general"
+import { IPayloadGetList } from "src/models/general"
+import { IPayloadAddTopic, IResponseAddTopic, IResponseTopicList } from "src/models/topic";
 import { reducerEditTopic, reducerUpdateAddTopic, reducerUpdateLoadingTopic, reducerUpdateTopicList } from "src/redux/topic";
 import httpClient from "..";
 

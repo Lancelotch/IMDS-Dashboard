@@ -1,6 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddRole, IPayloadGetList, IResponseAddRole, IResponseRoleList } from "src/models/general"
+import { IPayloadGetList} from "src/models/general"
+import { IPayloadAddRole, IResponseAddRole, IResponseRoleList } from "src/models/role";
 import { reducerEditRole, reducerUpdateAddRole, reducerUpdateLoadingRole, reducerUpdateRoleList } from "src/redux/role";
 import httpClient from "..";
 

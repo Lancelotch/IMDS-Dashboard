@@ -1,6 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddInternalUser, IPayloadEditInternalUser, IPayloadGetList, IResponseAddInternalUser, IResponseInternalUserList } from "src/models/general";
+import { IPayloadGetList} from "src/models/general";
+import { IPayloadAddInternalUser, IPayloadEditInternalUser, IResponseAddInternalUser, IResponseInternalUserList } from "src/models/internalUser";
 import { reducerEditInternalUser, reducerUpdateAddInternalUser, reducerUpdateInternalUserList, reducerUpdateLoadingInternalUser } from "src/redux/internalUser";
 import httpClient from "..";
 

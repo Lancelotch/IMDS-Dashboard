@@ -1,6 +1,7 @@
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadGetList, IResponseWidgetList } from "src/models/general"
+import { IPayloadGetList } from "src/models/general"
+import { IResponseWidgetList } from "src/models/widget";
 import { reducerUpdateLoadingWidgetList, reducerUpdateWidgetList } from "src/redux/widget";
 import httpClient from "..";
 

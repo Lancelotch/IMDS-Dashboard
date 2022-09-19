@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IInternalUser, IResponseInternalUserList } from 'src/models/general';
+import { IInternalUser, IResponseInternalUserList } from 'src/models/internalUser';
 
 interface IStore {
   loading?: boolean;
