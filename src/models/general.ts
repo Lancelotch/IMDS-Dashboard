@@ -5,10 +5,10 @@ export interface IAction {
 
 export type Order = 'asc' | 'desc';
 
-export interface ITableAtribute {
+export interface ITableAtribute<T> {
   page: number;
   sortingMethod: Order;
-  columnName: string;
+  columnName: keyof T;
   limit: number;
 }
 
@@ -27,4 +27,9 @@ export interface IPayloadGetList {
   sort?: "asc" | "desc";
   searchField?: string;
   searchValue?: string;
+}
+
+export interface IPayloadSort<T> {
+  columnName: keyof T;
+  sortingMethod: 'asc' | 'desc';
 }

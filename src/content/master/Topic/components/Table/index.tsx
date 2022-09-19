@@ -76,11 +76,11 @@ const TableTopic = () => {
 
  const optionLimits = [10, 25, 50, 100];
 
- const initialTableAttribute: ITableAtribute = {
-  columnName: '',
+ const initialTableAttribute: ITableAtribute<ITopic> = {
+  columnName: 'topicName',
   limit: 10,
   page: 1,
-  sortingMethod: 'desc'
+  sortingMethod: 'asc'
  };
 
  function reducerTopTalker(state, action) {
@@ -101,7 +101,7 @@ const TableTopic = () => {
  }
 
  const [stateTable, dispatchTable] = useReducer<
-  React.Reducer<ITableAtribute, IAction>
+  React.Reducer<ITableAtribute<ITopic>, IAction>
  >(reducerTopTalker, initialTableAttribute);
 
  const handleSort = function (payloadSort) {
@@ -128,8 +128,13 @@ const TableTopic = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod } = stateTable;
-  getTopicList({ page: page, limit: limit, sort: sortingMethod });
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getTopicList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `topic.${columnName}`
+  });
  }, [stateTable]);
 
  const theme = useTheme();

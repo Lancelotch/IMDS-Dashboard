@@ -82,11 +82,11 @@ const TableRole = () => {
   deleteInternalUser(field.internalUserId);
  };
 
- const initialTableAttribute: ITableAtribute = {
-  columnName: '',
+ const initialTableAttribute: ITableAtribute<IInternalUser> = {
+  columnName: 'username',
   limit: 10,
   page: 1,
-  sortingMethod: 'desc'
+  sortingMethod: 'asc'
  };
 
  function reducerTopTalker(state, action) {
@@ -107,7 +107,7 @@ const TableRole = () => {
  }
 
  const [stateTable, dispatchTable] = useReducer<
-  React.Reducer<ITableAtribute, IAction>
+  React.Reducer<ITableAtribute<IInternalUser>, IAction>
  >(reducerTopTalker, initialTableAttribute);
 
  const handleSort = function (payloadSort) {
@@ -134,8 +134,13 @@ const TableRole = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod } = stateTable;
-  getInternalUserList({ page: page, limit: limit, sort: sortingMethod });
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getInternalUserList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `user.${columnName}`
+  });
  }, [stateTable]);
 
  useEffect(() => {

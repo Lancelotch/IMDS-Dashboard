@@ -78,11 +78,11 @@ const TableCustomer = () => {
 
  const optionLimits = [10, 25, 50, 100];
 
- const initialTableAttribute: ITableAtribute = {
-  columnName: '',
+ const initialTableAttribute: ITableAtribute<ICustomer> = {
+  columnName: 'customerName',
   limit: 10,
   page: 1,
-  sortingMethod: 'desc'
+  sortingMethod: 'asc'
  };
 
  function reducerTopTalker(state, action) {
@@ -103,7 +103,7 @@ const TableCustomer = () => {
  }
 
  const [stateTable, dispatchTable] = useReducer<
-  React.Reducer<ITableAtribute, IAction>
+  React.Reducer<ITableAtribute<ICustomer>, IAction>
  >(reducerTopTalker, initialTableAttribute);
 
  const handleSort = function (payloadSort) {
@@ -130,8 +130,13 @@ const TableCustomer = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod } = stateTable;
-  getCustomerList({ page: page, limit: limit, sort: sortingMethod });
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getCustomerList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `customer.${columnName}`
+  });
  }, [stateTable]);
 
  const theme = useTheme();

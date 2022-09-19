@@ -26,7 +26,7 @@ import {
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import { IAction, IPayloadSort, ITableAtribute } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
@@ -74,11 +74,11 @@ const TableRole = () => {
 
  const optionLimits = [10, 25, 50, 100];
 
- const initialTableAttribute: ITableAtribute = {
-  columnName: '',
+ const initialTableAttribute: ITableAtribute<IRole> = {
+  columnName: 'roleName',
   limit: 10,
   page: 1,
-  sortingMethod: 'desc'
+  sortingMethod: 'asc'
  };
 
  function reducerTopTalker(state, action) {
@@ -99,10 +99,10 @@ const TableRole = () => {
  }
 
  const [stateTable, dispatchTable] = useReducer<
-  React.Reducer<ITableAtribute, IAction>
+  React.Reducer<ITableAtribute<IRole>, IAction>
  >(reducerTopTalker, initialTableAttribute);
 
- const handleSort = function (payloadSort) {
+ const handleSort = function (payloadSort: IPayloadSort<IRole>) {
   dispatchTable({
    type: 'sortingMethod',
    payload: { ...payloadSort }
@@ -126,8 +126,13 @@ const TableRole = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod } = stateTable;
-  getRoleList({ page: page, limit: limit, sort: sortingMethod });
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getRoleList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `role.${columnName}`
+  });
  }, [stateTable]);
 
  const theme = useTheme();

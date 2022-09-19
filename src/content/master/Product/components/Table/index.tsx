@@ -75,11 +75,11 @@ const TableProduct = () => {
 
  const optionLimits = [10, 25, 50, 100];
 
- const initialTableAttribute: ITableAtribute = {
-  columnName: '',
+ const initialTableAttribute: ITableAtribute<IProduct> = {
+  columnName: 'productName',
   limit: 10,
   page: 1,
-  sortingMethod: 'desc'
+  sortingMethod: 'asc'
  };
 
  function reducerTopTalker(state, action) {
@@ -100,7 +100,7 @@ const TableProduct = () => {
  }
 
  const [stateTable, dispatchTable] = useReducer<
-  React.Reducer<ITableAtribute, IAction>
+  React.Reducer<ITableAtribute<IProduct>, IAction>
  >(reducerTopTalker, initialTableAttribute);
 
  const handleSort = function (payloadSort) {
@@ -127,8 +127,13 @@ const TableProduct = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod } = stateTable;
-  getProductList({ page: page, limit: limit, sort: sortingMethod });
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getProductList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `product.${columnName}`
+  });
  }, [stateTable]);
 
  const theme = useTheme();

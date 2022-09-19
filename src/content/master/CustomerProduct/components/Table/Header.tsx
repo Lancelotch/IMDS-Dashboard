@@ -1,7 +1,7 @@
 import React from 'react';
 import { TableHead, TableRow, TableCell, TableSortLabel } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import { Order } from 'src/models/general';
+import { IPayloadSort, Order } from 'src/models/general';
 import { ICustomerProduct } from 'src/models/customerProduct';
 
 interface HeadCell {
@@ -14,10 +14,7 @@ interface HeadCell {
 }
 
 interface EnhancedTableProps {
- onRequestSort: (
-  event: React.MouseEvent<unknown>,
-  property: keyof ICustomerProduct
- ) => void;
+ onRequestSort: (payload: IPayloadSort<ICustomerProduct>) => void;
  order: Order;
  orderBy: string;
 }
@@ -67,7 +64,10 @@ const Header: React.FC<EnhancedTableProps> = ({
 }) => {
  const createSortHandler =
   (property: keyof ICustomerProduct) => (event: React.MouseEvent<unknown>) => {
-   onRequestSort(event, property);
+   onRequestSort({
+    columnName: property,
+    sortingMethod: order === 'asc' ? 'desc' : 'asc'
+   });
   };
 
  return (
