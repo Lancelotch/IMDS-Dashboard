@@ -27,7 +27,11 @@ import {
 import { FC, useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import {
+ IAction,
+ IOptionSearchField,
+ ITableAtribute
+} from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
@@ -39,6 +43,26 @@ import ModalForm from 'src/components/ModalForm';
 import Form from '../Form';
 import FormEditInternalUser from '../FormEdit';
 import { IInternalUser } from 'src/models/internalUser';
+import SearchBySelectField from 'src/components/SearchBySelectField';
+
+const optionFields: Array<IOptionSearchField> = [
+ {
+  label: 'Username',
+  value: 'username'
+ },
+ {
+  label: 'First Name',
+  value: 'firstName'
+ },
+ {
+  label: 'Last Name',
+  value: 'lastName'
+ },
+ {
+  label: 'Role Name',
+  value: 'roleName'
+ }
+];
 
 const TableRole = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -46,6 +70,9 @@ const TableRole = () => {
  const [open, setOpen] = useState(false);
  const handleOpen = () => setOpen(true);
  const handleClose = () => setOpen(false);
+ const [searchField, setSearchField] = useState<IOptionSearchField>(
+  optionFields[0]
+ );
  const [search, setSearch] = useState<string>('');
  const isFirstRender = useFirstRender();
  const { internalUserList, loading } = useAppSelector(
@@ -64,7 +91,6 @@ const TableRole = () => {
  const handleChangeSearch = (value: string) => {
   setSearch(value);
  };
- const handleClickSearch = () => {};
 
  const optionLimits = [10, 25, 50, 100];
 
@@ -133,13 +159,27 @@ const TableRole = () => {
   });
  };
 
+ const handleClickSearch = () => {
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getInternalUserList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `user.${columnName}`,
+   searchField: `user.${searchField.value}`,
+   searchValue: search
+  });
+ };
+
  useEffect(() => {
   const { page, limit, sortingMethod, columnName } = stateTable;
   getInternalUserList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `user.${columnName}`
+   dir: `user.${columnName}`,
+   searchField: `user.${searchField.value}`,
+   searchValue: search
   });
  }, [stateTable]);
 
@@ -160,8 +200,19 @@ const TableRole = () => {
         id="outlined-search"
         type="text"
         value={search}
+        sx={{ width: theme.spacing(60) }}
         size="small"
+        placeholder="search..."
         onChange={(e) => handleChangeSearch(e.target.value)}
+        startAdornment={
+         <SearchBySelectField
+          options={optionFields}
+          onSearchBy={(searchField: IOptionSearchField) => {
+           setSearchField(searchField);
+          }}
+          optionSelected={searchField}
+         />
+        }
         endAdornment={
          <InputAdornment position="end">
           <IconButton
@@ -173,6 +224,11 @@ const TableRole = () => {
           </IconButton>
          </InputAdornment>
         }
+        onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+          handleClickSearch();
+         }
+        }}
        />
       </Box>
      }

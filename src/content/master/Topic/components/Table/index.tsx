@@ -26,7 +26,11 @@ import {
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import {
+ IAction,
+ IOptionSearchField,
+ ITableAtribute
+} from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTopic } from 'src/services/topic/useTopic';
 import { useAppSelector } from 'src/app/hooks';
@@ -36,6 +40,14 @@ import { useFirstRender } from 'src/hooks/useFirstRender';
 import FormTopicEdit from '../FormTopicEdit';
 import ModalForm from 'src/components/ModalForm';
 import { ITopic } from 'src/models/topic';
+import SearchBySelectField from 'src/components/SearchBySelectField';
+
+const optionFields: Array<IOptionSearchField> = [
+ {
+  label: 'Topic Name',
+  value: 'topicName'
+ }
+];
 
 const TableTopic = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -44,7 +56,10 @@ const TableTopic = () => {
  const handleOpen = () => setOpen(true);
  const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
- const { topicList } = useAppSelector((state) => state.storeTopic);
+ const { topicList, loading } = useAppSelector((state) => state.storeTopic);
+ const [searchField, setSearchField] = useState<IOptionSearchField>(
+  optionFields[0]
+ );
 
  const filterTopicListActive = useMemo(() => {
   const filterDataActive = topicList.data.filter(
@@ -72,7 +87,6 @@ const TableTopic = () => {
  const handleChangeSearch = (value: string) => {
   setSearch(value);
  };
- const handleClickSearch = () => {};
 
  const optionLimits = [10, 25, 50, 100];
 
@@ -127,15 +141,35 @@ const TableTopic = () => {
   });
  };
 
+ const isFirstRender = useFirstRender();
+ const handleClickSearch = () => {
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getTopicList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `topic.${columnName}`,
+   searchField: `topic.${searchField.value}`,
+   searchValue: search
+  });
+ };
+
  useEffect(() => {
   const { page, limit, sortingMethod, columnName } = stateTable;
   getTopicList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `topic.${columnName}`
+   dir: `topic.${columnName}`,
+   searchField: `topic.${searchField.value}`,
+   searchValue: search
   });
  }, [stateTable]);
+
+ useEffect(() => {
+  if (isFirstRender) return;
+  if (!loading) setOpenConfirmation(false);
+ }, [loading]);
 
  const theme = useTheme();
 
@@ -149,8 +183,19 @@ const TableTopic = () => {
         id="outlined-search"
         type="text"
         value={search}
+        sx={{ width: theme.spacing(60) }}
         size="small"
+        placeholder="search..."
         onChange={(e) => handleChangeSearch(e.target.value)}
+        startAdornment={
+         <SearchBySelectField
+          options={optionFields}
+          onSearchBy={(searchField: IOptionSearchField) => {
+           setSearchField(searchField);
+          }}
+          optionSelected={searchField}
+         />
+        }
         endAdornment={
          <InputAdornment position="end">
           <IconButton
@@ -162,6 +207,11 @@ const TableTopic = () => {
           </IconButton>
          </InputAdornment>
         }
+        onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+          handleClickSearch();
+         }
+        }}
        />
       </Box>
      }

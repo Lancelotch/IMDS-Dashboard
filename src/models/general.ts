@@ -33,3 +33,8 @@ export interface IPayloadSort<T> {
   columnName: keyof T;
   sortingMethod: 'asc' | 'desc';
 }
+
+export interface IOptionSearchField {
+  label: string;
+  value: string;
+ }

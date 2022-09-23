@@ -26,7 +26,11 @@ import {
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import {
+ IAction,
+ IOptionSearchField,
+ ITableAtribute
+} from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -35,6 +39,19 @@ import { useProduct } from 'src/services/product/useProduct';
 import FormEditProduct from '../FormEditProduct';
 import ModalForm from 'src/components/ModalForm';
 import { IProduct } from 'src/models/product';
+import SearchBySelectField from 'src/components/SearchBySelectField';
+import { useFirstRender } from 'src/hooks/useFirstRender';
+
+const optionFields: Array<IOptionSearchField> = [
+ {
+  label: 'Product Name',
+  value: 'productName'
+ },
+ {
+  label: 'Widget Name',
+  value: 'widgetName'
+ }
+];
 
 const TableProduct = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -43,8 +60,11 @@ const TableProduct = () => {
  const handleOpen = () => setOpen(true);
  const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
+ const [searchField, setSearchField] = useState<IOptionSearchField>(
+  optionFields[0]
+ );
 
- const productList = useAppSelector((state) => state.storeProduct.productList);
+ const { productList, loading } = useAppSelector((state) => state.storeProduct);
  const filterProductListActive = useMemo(() => {
   const filterDataActive = productList.data.filter(
    (product) => product.isActive === 1
@@ -71,7 +91,6 @@ const TableProduct = () => {
  const handleChangeSearch = (value: string) => {
   setSearch(value);
  };
- const handleClickSearch = () => {};
 
  const optionLimits = [10, 25, 50, 100];
 
@@ -126,15 +145,35 @@ const TableProduct = () => {
   });
  };
 
+ const isFirstRender = useFirstRender();
+ const handleClickSearch = () => {
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getProductList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `product.${columnName}`,
+   searchField: `product.${searchField.value}`,
+   searchValue: search
+  });
+ };
+
  useEffect(() => {
   const { page, limit, sortingMethod, columnName } = stateTable;
   getProductList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `product.${columnName}`
+   dir: `product.${columnName}`,
+   searchField: `product.${searchField.value}`,
+   searchValue: search
   });
  }, [stateTable]);
+
+ useEffect(() => {
+  if (isFirstRender) return;
+  if (!loading) setOpenConfirmation(false);
+ }, [loading]);
 
  const theme = useTheme();
 
@@ -148,8 +187,19 @@ const TableProduct = () => {
         id="outlined-search"
         type="text"
         value={search}
+        sx={{ width: theme.spacing(60) }}
         size="small"
+        placeholder="search..."
         onChange={(e) => handleChangeSearch(e.target.value)}
+        startAdornment={
+         <SearchBySelectField
+          options={optionFields}
+          onSearchBy={(searchField: IOptionSearchField) => {
+           setSearchField(searchField);
+          }}
+          optionSelected={searchField}
+         />
+        }
         endAdornment={
          <InputAdornment position="end">
           <IconButton
@@ -161,6 +211,11 @@ const TableProduct = () => {
           </IconButton>
          </InputAdornment>
         }
+        onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+          handleClickSearch();
+         }
+        }}
        />
       </Box>
      }

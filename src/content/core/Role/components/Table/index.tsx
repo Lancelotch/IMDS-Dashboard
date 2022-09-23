@@ -26,7 +26,12 @@ import {
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, IPayloadSort, ITableAtribute } from 'src/models/general';
+import {
+ IAction,
+ IOptionSearchField,
+ IPayloadSort,
+ ITableAtribute
+} from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
@@ -36,6 +41,14 @@ import { useFirstRender } from 'src/hooks/useFirstRender';
 import FormRoleEdit from '../FormRoleEdit';
 import ModalForm from 'src/components/ModalForm';
 import { IRole } from 'src/models/role';
+import SearchBySelectField from 'src/components/SearchBySelectField';
+
+const optionFields: Array<IOptionSearchField> = [
+ {
+  label: 'Role Name',
+  value: 'roleName'
+ }
+];
 
 const TableRole = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -44,7 +57,11 @@ const TableRole = () => {
  const handleOpen = () => setOpen(true);
  const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
- const { roleList } = useAppSelector((state) => state.storeRole);
+ const [searchField, setSearchField] = useState<IOptionSearchField>(
+  optionFields[0]
+ );
+ const { roleList, loading } = useAppSelector((state) => state.storeRole);
+ const isFirstRender = useFirstRender();
 
  const filterRoleListActive = useMemo(() => {
   const filterDataActive = roleList.data.filter((role) => role.isActive === 1);
@@ -70,7 +87,6 @@ const TableRole = () => {
  const handleChangeSearch = (value: string) => {
   setSearch(value);
  };
- const handleClickSearch = () => {};
 
  const optionLimits = [10, 25, 50, 100];
 
@@ -125,15 +141,34 @@ const TableRole = () => {
   });
  };
 
+ const handleClickSearch = () => {
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getRoleList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `role.${columnName}`,
+   searchField: `role.${searchField.value}`,
+   searchValue: search
+  });
+ };
+
  useEffect(() => {
   const { page, limit, sortingMethod, columnName } = stateTable;
   getRoleList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `role.${columnName}`
+   dir: `role.${columnName}`,
+   searchField: `role.${searchField.value}`,
+   searchValue: search
   });
  }, [stateTable]);
+
+ useEffect(() => {
+  if (isFirstRender) return;
+  if (!loading) setOpenConfirmation(false);
+ }, [loading]);
 
  const theme = useTheme();
 
@@ -147,8 +182,19 @@ const TableRole = () => {
         id="outlined-search"
         type="text"
         value={search}
+        sx={{ width: theme.spacing(60) }}
         size="small"
+        placeholder="search..."
         onChange={(e) => handleChangeSearch(e.target.value)}
+        startAdornment={
+         <SearchBySelectField
+          options={optionFields}
+          onSearchBy={(searchField: IOptionSearchField) => {
+           setSearchField(searchField);
+          }}
+          optionSelected={searchField}
+         />
+        }
         endAdornment={
          <InputAdornment position="end">
           <IconButton
@@ -160,6 +206,11 @@ const TableRole = () => {
           </IconButton>
          </InputAdornment>
         }
+        onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+          handleClickSearch();
+         }
+        }}
        />
       </Box>
      }

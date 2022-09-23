@@ -26,7 +26,11 @@ import {
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
-import { IAction, ITableAtribute } from 'src/models/general';
+import {
+ IAction,
+ IOptionSearchField,
+ ITableAtribute
+} from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
@@ -35,6 +39,31 @@ import { useCustomer } from 'src/services/customer/useCustomer';
 import ModalForm from 'src/components/ModalForm';
 import FormEditCustomer from '../FormEditCustomer';
 import { ICustomer } from 'src/models/customer';
+import { useFirstRender } from 'src/hooks/useFirstRender';
+import SearchBySelectField from 'src/components/SearchBySelectField';
+
+const optionFields: Array<IOptionSearchField> = [
+ {
+  label: 'Customer Name',
+  value: 'customerName'
+ },
+ {
+  label: 'Address',
+  value: 'address'
+ },
+ {
+  label: 'Pic',
+  value: 'pic'
+ },
+ {
+  label: 'Phone Number',
+  value: 'phoneNumber'
+ },
+ {
+  label: 'Email',
+  value: 'email'
+ }
+];
 
 const TableCustomer = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
@@ -43,9 +72,12 @@ const TableCustomer = () => {
  const handleOpen = () => setOpen(true);
  const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
+ const [searchField, setSearchField] = useState<IOptionSearchField>(
+  optionFields[0]
+ );
 
- const customerList = useAppSelector(
-  (state) => state.storeCustomer.customerList
+ const { customerList, loading } = useAppSelector(
+  (state) => state.storeCustomer
  );
 
  const filterCustomerListActive = useMemo(() => {
@@ -74,7 +106,6 @@ const TableCustomer = () => {
  const handleChangeSearch = (value: string) => {
   setSearch(value);
  };
- const handleClickSearch = () => {};
 
  const optionLimits = [10, 25, 50, 100];
 
@@ -129,15 +160,35 @@ const TableCustomer = () => {
   });
  };
 
+ const isFirstRender = useFirstRender();
+ const handleClickSearch = () => {
+  const { page, limit, sortingMethod, columnName } = stateTable;
+  getCustomerList({
+   page: page,
+   limit: limit,
+   sort: sortingMethod,
+   dir: `customer.${columnName}`,
+   searchField: `customer.${searchField.value}`,
+   searchValue: search
+  });
+ };
+
  useEffect(() => {
   const { page, limit, sortingMethod, columnName } = stateTable;
   getCustomerList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `customer.${columnName}`
+   dir: `customer.${columnName}`,
+   searchField: `customer.${searchField.value}`,
+   searchValue: search
   });
  }, [stateTable]);
+
+ useEffect(() => {
+  if (isFirstRender) return;
+  if (!loading) setOpenConfirmation(false);
+ }, [loading]);
 
  const theme = useTheme();
 
@@ -151,8 +202,19 @@ const TableCustomer = () => {
         id="outlined-search"
         type="text"
         value={search}
+        sx={{ width: theme.spacing(60) }}
         size="small"
+        placeholder="search..."
         onChange={(e) => handleChangeSearch(e.target.value)}
+        startAdornment={
+         <SearchBySelectField
+          options={optionFields}
+          onSearchBy={(searchField: IOptionSearchField) => {
+           setSearchField(searchField);
+          }}
+          optionSelected={searchField}
+         />
+        }
         endAdornment={
          <InputAdornment position="end">
           <IconButton
@@ -164,6 +226,11 @@ const TableCustomer = () => {
           </IconButton>
          </InputAdornment>
         }
+        onKeyPress={(e) => {
+         if (e.key === 'Enter') {
+          handleClickSearch();
+         }
+        }}
        />
       </Box>
      }
