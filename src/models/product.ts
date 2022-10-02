@@ -35,4 +35,5 @@ export type TTypeProduct = 'widget' | 'streaming' | 'api';
   }
 
 
+  export interface IResponseProductById extends IResponseBody<IProduct>{};
   export interface IResponseAddProduct extends IResponseBody<IProduct>{};

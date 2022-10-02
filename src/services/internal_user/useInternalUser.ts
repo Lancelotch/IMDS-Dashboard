@@ -1,14 +1,15 @@
+import { useNavigate } from "react-router";
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
 import { IPayloadGetList} from "src/models/general";
-import { IPayloadAddInternalUser, IPayloadEditInternalUser, IResponseAddInternalUser, IResponseInternalUserList } from "src/models/internalUser";
-import { reducerEditInternalUser, reducerUpdateAddInternalUser, reducerUpdateInternalUserList, reducerUpdateLoadingInternalUser } from "src/redux/internalUser";
+import { IPayloadAddInternalUser, IPayloadEditInternalUser, IResponseAddInternalUser, IResponseInternalUserById, IResponseInternalUserList } from "src/models/internalUser";
+import { reducerEditInternalUser, reducerUpdateAddInternalUser, reducerUpdateInternalUserById, reducerUpdateInternalUserList, reducerUpdateLoadingInternalUser } from "src/redux/internalUser";
 import httpClient from "..";
 
 export const useInternalUser = ()=> {
     const { handleClickAlert } = useAlert();
     const dispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const addInternalUser =async (payload:IPayloadAddInternalUser) => {
         dispatch(reducerUpdateLoadingInternalUser(true));
         try {
@@ -26,6 +27,7 @@ export const useInternalUser = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingInternalUser(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -85,6 +87,7 @@ export const useInternalUser = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingInternalUser(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -119,5 +122,28 @@ export const useInternalUser = ()=> {
         }
          
     }
-    return { addInternalUser, editInternalUser, deleteInternalUser, getInternalUserList };
+
+    const getInternalUserById = async (id: string) => {
+      dispatch(reducerUpdateLoadingInternalUser(true));
+      try{
+          const response = await httpClient.get<IResponseInternalUserById>(`/internal_user/find_by_internal_user_id/${id}`);
+          if(response.status === 200){
+              const internalUser = response.data;
+              dispatch(reducerUpdateInternalUserById(internalUser.data));
+          }
+          dispatch(reducerUpdateLoadingInternalUser(false));
+          
+      }catch(e){
+          dispatch(reducerUpdateLoadingInternalUser(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get InternalUser by id',
+              severity: 'error'
+            });
+            navigate(window.location.pathname);
+      }
+    }
+
+    return { addInternalUser, editInternalUser, deleteInternalUser, getInternalUserList, getInternalUserById };
 }

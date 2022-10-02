@@ -37,10 +37,11 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useCustomer } from 'src/services/customer/useCustomer';
 import ModalForm from 'src/components/ModalForm';
-import FormEditCustomer from '../FormEditCustomer';
 import { ICustomer } from 'src/models/customer';
 import { useFirstRender } from 'src/hooks/useFirstRender';
 import SearchBySelectField from 'src/components/SearchBySelectField';
+import { MASTER_CUSTOMER } from 'src/route';
+import { useNavigate } from 'react-router';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -66,11 +67,9 @@ const optionFields: Array<IOptionSearchField> = [
 ];
 
 const TableCustomer = () => {
+ const navigate = useNavigate();
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<ICustomer>();
- const [open, setOpen] = useState(false);
- const handleOpen = () => setOpen(true);
- const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
@@ -90,8 +89,7 @@ const TableCustomer = () => {
  const { getCustomerList, deleteCustomer } = useCustomer();
 
  const handleClickEdit = function (customer: ICustomer) {
-  handleOpen();
-  setField(customer);
+  navigate(`${MASTER_CUSTOMER}?action=edit&id=${customer.customerId}`);
  };
 
  const handleClickDelete = (customer: ICustomer) => {
@@ -332,11 +330,6 @@ const TableCustomer = () => {
       </Table>
      </TableContainer>
     </Box>
-    {open && (
-     <ModalForm title="Edit Customer" open={open} onClose={handleClose}>
-      <FormEditCustomer onClose={handleClose} initFormValue={field} />
-     </ModalForm>
-    )}
     <Confirmation
      onClose={() => setOpenConfirmation(false)}
      onOk={handleOkDelete}

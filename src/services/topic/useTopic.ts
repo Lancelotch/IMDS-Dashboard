@@ -1,14 +1,15 @@
+import { useNavigate } from "react-router";
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
 import { IPayloadGetList } from "src/models/general"
-import { IPayloadAddTopic, IResponseAddTopic, IResponseTopicList } from "src/models/topic";
-import { reducerEditTopic, reducerUpdateAddTopic, reducerUpdateLoadingTopic, reducerUpdateTopicList } from "src/redux/topic";
+import { IPayloadAddTopic, IResponseAddTopic, IResponseTopicById, IResponseTopicList } from "src/models/topic";
+import { reducerEditTopic, reducerUpdateAddTopic, reducerUpdateLoadingTopic, reducerUpdateTopicById, reducerUpdateTopicList } from "src/redux/topic";
 import httpClient from "..";
 
 export const useTopic = ()=> {
     const { handleClickAlert } = useAlert();
     const dispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const addTopic =async (payload:IPayloadAddTopic) => {
         dispatch(reducerUpdateLoadingTopic(true));
         try {
@@ -26,6 +27,7 @@ export const useTopic = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingTopic(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -85,8 +87,8 @@ export const useTopic = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingTopic(false));
+            navigate(window.location.pathname);
           } catch (e) {
-            console.log(e);
             handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',
@@ -118,5 +120,27 @@ export const useTopic = ()=> {
         }
          
     }
-    return { getTopicList, addTopic, editTopic, deleteTopic };
+
+    const getTopicById = async (id: string) => {
+      dispatch(reducerUpdateLoadingTopic(true));
+      try{
+          const response = await httpClient.get<IResponseTopicById>(`/topic/find_by_topic_id/${id}`);
+          if(response.status === 200){
+              const topic = response.data;
+              dispatch(reducerUpdateTopicById(topic.data));
+          }
+          dispatch(reducerUpdateLoadingTopic(false));
+          
+      }catch(e){
+          dispatch(reducerUpdateLoadingTopic(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get Topic by id',
+              severity: 'error'
+            });
+            navigate(window.location.pathname);
+      }
+    }
+    return { getTopicList, addTopic, editTopic, deleteTopic, getTopicById };
 }

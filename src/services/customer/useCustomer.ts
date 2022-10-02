@@ -1,14 +1,15 @@
+import { useNavigate } from "react-router";
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddCustomer, IResponseAddCustomer, IResponseCustomerList } from "src/models/customer";
+import { IPayloadAddCustomer, IResponseAddCustomer, IResponseCustomerById, IResponseCustomerList } from "src/models/customer";
 import { IPayloadGetList  } from "src/models/general"
-import { reducerEditCustomer, reducerUpdateAddCustomer, reducerUpdateCustomerList, reducerUpdateLoadingCustomer } from "src/redux/customer";
+import { reducerEditCustomer, reducerUpdateAddCustomer, reducerUpdateCustomerById, reducerUpdateCustomerList, reducerUpdateLoadingCustomer } from "src/redux/customer";
 import httpClient from "..";
 
 export const useCustomer = ()=> {
     const { handleClickAlert } = useAlert();
     const dispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const addCustomer =async (payload:IPayloadAddCustomer) => {
         dispatch(reducerUpdateLoadingCustomer(true));
         try {
@@ -26,6 +27,7 @@ export const useCustomer = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingCustomer(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -85,6 +87,7 @@ export const useCustomer = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingCustomer(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -111,11 +114,33 @@ export const useCustomer = ()=> {
             handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',
-                message: 'cannot get role list',
+                message: 'cannot get Customer list',
                 severity: 'error'
               });
         }
          
     }
-    return { getCustomerList, addCustomer, editCustomer, deleteCustomer };
+
+    const getCustomerById = async (id: string) => {
+      dispatch(reducerUpdateLoadingCustomer(true));
+      try{
+          const response = await httpClient.get<IResponseCustomerById>(`/customer/find_by_customer_id/${id}`);
+          if(response.status === 200){
+              const customer = response.data;
+              dispatch(reducerUpdateCustomerById(customer.data));
+          }
+          dispatch(reducerUpdateLoadingCustomer(false));
+          
+      }catch(e){
+          dispatch(reducerUpdateLoadingCustomer(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get Customer by id',
+              severity: 'error'
+            });
+            navigate(window.location.pathname);
+      }
+    }
+    return { getCustomerList, addCustomer, editCustomer, deleteCustomer, getCustomerById };
 }

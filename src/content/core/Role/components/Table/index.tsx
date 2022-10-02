@@ -38,10 +38,10 @@ import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import FormRoleEdit from '../FormRoleEdit';
-import ModalForm from 'src/components/ModalForm';
 import { IRole } from 'src/models/role';
 import SearchBySelectField from 'src/components/SearchBySelectField';
+import { CORE_ROLE } from 'src/route';
+import { useNavigate } from 'react-router';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -53,9 +53,7 @@ const optionFields: Array<IOptionSearchField> = [
 const TableRole = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<IRole>();
- const [open, setOpen] = useState(false);
- const handleOpen = () => setOpen(true);
- const handleClose = () => setOpen(false);
+ const navigate = useNavigate();
  const [search, setSearch] = useState<string>('');
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
@@ -69,8 +67,7 @@ const TableRole = () => {
  }, [roleList]);
 
  const handleClickEdit = function (role: IRole) {
-  handleOpen();
-  setField(role);
+  navigate(`${CORE_ROLE}?action=edit&id=${role.roleId}`);
  };
 
  const handleClickDelete = (role: IRole) => {
@@ -308,11 +305,7 @@ const TableRole = () => {
       </Table>
      </TableContainer>
     </Box>
-    {open && (
-     <ModalForm title="Edit Role" open={open} onClose={handleClose}>
-      <FormRoleEdit onClose={handleClose} initFormValue={field} />
-     </ModalForm>
-    )}
+
     <Confirmation
      onClose={() => setOpenConfirmation(false)}
      onOk={handleOkDelete}

@@ -17,7 +17,8 @@ import { useCustomer } from 'src/services/customer/useCustomer';
 import { IPayloadAddCustomer } from 'src/models/customer';
 
 interface Props {
- onClose: () => void;
+ action: string;
+ id?: string;
 }
 
 function validationSchema() {
@@ -30,31 +31,58 @@ function validationSchema() {
  });
 }
 
-const FormCustomer: FC<Props> = ({ onClose }) => {
- const { addCustomer } = useCustomer();
- const { handleChange, handleSubmit, errors, values, touched } =
-  useFormik<IPayloadAddCustomer>({
-   initialValues: {
-    customerName: '',
-    address: '',
-    email: '',
-    phoneNumber: '',
-    pic: ''
-   },
-   validationSchema: validationSchema(),
-   onSubmit: async (value) => {
+const FormCustomer: FC<Props> = ({ action, id }) => {
+ const { addCustomer, editCustomer, getCustomerById } = useCustomer();
+ const {
+  handleChange,
+  handleSubmit,
+  errors,
+  values,
+  touched,
+  setFieldValue,
+  resetForm
+ } = useFormik<IPayloadAddCustomer>({
+  initialValues: {
+   customerName: '',
+   address: '',
+   email: '',
+   phoneNumber: '',
+   pic: ''
+  },
+  validationSchema: validationSchema(),
+  onSubmit: async (value) => {
+   if (action === 'create') {
+    resetForm();
     addCustomer(value);
+    return;
    }
-  });
+   editCustomer(id, value);
+  }
+ });
 
  const theme = useTheme();
 
  const isFirstRender = useFirstRender();
- const loading = useAppSelector((store) => store.storeCustomer.loading);
+ const { loading, customerById } = useAppSelector(
+  (store) => store.storeCustomer
+ );
+
+ useEffect(() => {
+  if (action === 'edit' && id) {
+   getCustomerById(id);
+  }
+ }, [action, id]);
+
  useEffect(() => {
   if (isFirstRender) return;
-  if (!loading) onClose();
- }, [loading]);
+  if (action === 'edit' && customerById) {
+   setFieldValue('customerName', customerById.customerName);
+   setFieldValue('address', customerById.address);
+   setFieldValue('email', customerById.email);
+   setFieldValue('phoneNumber', customerById.phoneNumber);
+   setFieldValue('pic', customerById.pic);
+  }
+ }, [customerById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>

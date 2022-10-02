@@ -16,6 +16,7 @@ export interface ITopic {
     totalRow: number;
   }
 
+  export interface IResponseTopicById extends IResponseBody<ITopic>{};
   export interface IResponseAddTopic extends IResponseBody<ITopic>{};
   
   export interface IPayloadAddTopic {

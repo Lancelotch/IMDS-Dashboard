@@ -20,7 +20,8 @@ import { useFirstRender } from 'src/hooks/useFirstRender';
 import { IPayloadAddInternalUser } from 'src/models/internalUser';
 
 interface Props {
- onClose: () => void;
+ action: string;
+ id?: string;
 }
 
 function validationSchema() {
@@ -33,26 +34,42 @@ function validationSchema() {
  });
 }
 
-const FormInternalUser: FC<Props> = ({ onClose }) => {
- const { addInternalUser } = useInternalUser();
+const FormInternalUser: FC<Props> = ({ action, id }) => {
+ const { addInternalUser, getInternalUserById, editInternalUser } =
+  useInternalUser();
  const { getRoleList } = useRole();
  const isFirstRender = useFirstRender();
- const loading = useAppSelector((state) => state.storeInternalUser.loading);
+ const { loading, internalUserById } = useAppSelector(
+  (state) => state.storeInternalUser
+ );
  const roleList = useAppSelector((state) => state.storeRole.roleList);
- const { handleChange, handleSubmit, errors, values, touched, setFieldValue } =
-  useFormik<IPayloadAddInternalUser>({
-   initialValues: {
-    username: '',
-    firstName: '',
-    lastName: '',
-    password: '',
-    roleId: ''
-   },
-   validationSchema: validationSchema(),
-   onSubmit: async (value) => {
+ const {
+  handleChange,
+  handleSubmit,
+  errors,
+  values,
+  touched,
+  setFieldValue,
+  resetForm,
+  setValues
+ } = useFormik<IPayloadAddInternalUser>({
+  initialValues: {
+   username: '',
+   firstName: '',
+   lastName: '',
+   password: '',
+   roleId: ''
+  },
+  validationSchema: validationSchema(),
+  onSubmit: async (value) => {
+   if (action === 'create') {
+    resetForm();
     addInternalUser(value);
+    return;
    }
-  });
+   editInternalUser(id, value);
+  }
+ });
 
  const theme = useTheme();
 
@@ -61,9 +78,20 @@ const FormInternalUser: FC<Props> = ({ onClose }) => {
  }, []);
 
  useEffect(() => {
+  if (action === 'edit' && id) {
+   getInternalUserById(id);
+  }
+ }, [action, id]);
+
+ useEffect(() => {
   if (isFirstRender) return;
-  if (!loading) onClose();
- }, [loading]);
+  if (action === 'edit' && internalUserById) {
+   setFieldValue('username', internalUserById.username);
+   setFieldValue('firstName', internalUserById.firstName);
+   setFieldValue('lastName', internalUserById.lastName);
+   setFieldValue('roleId', internalUserById.roleId);
+  }
+ }, [internalUserById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>

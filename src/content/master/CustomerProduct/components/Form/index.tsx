@@ -23,7 +23,8 @@ import { useFirstRender } from 'src/hooks/useFirstRender';
 import { IPayloadAddCustomerProduct } from 'src/models/customerProduct';
 
 interface Props {
- onClose: () => void;
+ action: string;
+ id?: string;
 }
 
 function validationSchema() {
@@ -37,31 +38,46 @@ function validationSchema() {
  });
 }
 
-const FormCustomerProduct: FC<Props> = ({ onClose }) => {
- const { addCustomerProduct } = useCustomerProduct();
+const FormCustomerProduct: FC<Props> = ({ action, id }) => {
+ const { addCustomerProduct, editCustomerProduct, getCustomerProductById } =
+  useCustomerProduct();
  const { getProductList } = useProduct();
  const { getCustomerList } = useCustomer();
  const isFirstRender = useFirstRender();
- const loading = useAppSelector((state) => state.storeCustomerProduct.loading);
+ const { loading, customerProductById } = useAppSelector(
+  (state) => state.storeCustomerProduct
+ );
  const productList = useAppSelector((state) => state.storeProduct.productList);
  const customerList = useAppSelector(
   (state) => state.storeCustomer.customerList
  );
- const { handleChange, handleSubmit, errors, values, touched, setFieldValue } =
-  useFormik<IPayloadAddCustomerProduct>({
-   initialValues: {
-    productId: '',
-    customerId: '',
-    startDate: new Date(),
-    endDate: new Date(),
-    username: '',
-    password: ''
-   },
-   validationSchema: validationSchema(),
-   onSubmit: async (value) => {
+ const {
+  handleChange,
+  handleSubmit,
+  errors,
+  values,
+  touched,
+  setFieldValue,
+  resetForm
+ } = useFormik<IPayloadAddCustomerProduct>({
+  initialValues: {
+   productId: '',
+   customerId: '',
+   startDate: new Date(),
+   endDate: new Date(),
+   username: '',
+   password: ''
+  },
+  validationSchema: validationSchema(),
+  onSubmit: async (value) => {
+   if (action === 'create') {
+    resetForm();
     addCustomerProduct(value);
+    return;
    }
-  });
+   editCustomerProduct(id, value);
+  }
+ });
 
  const theme = useTheme();
 
@@ -71,9 +87,21 @@ const FormCustomerProduct: FC<Props> = ({ onClose }) => {
  }, []);
 
  useEffect(() => {
+  if (action === 'edit' && id) {
+   getCustomerProductById(id);
+  }
+ }, [action, id]);
+
+ useEffect(() => {
   if (isFirstRender) return;
-  if (!loading) onClose();
- }, [loading]);
+  if (action === 'edit' && customerProductById) {
+   setFieldValue('productId', customerProductById.productId);
+   setFieldValue('customerId', customerProductById.customerId);
+   setFieldValue('startDate', customerProductById.startDate);
+   setFieldValue('endDate', customerProductById.endDate);
+   setFieldValue('username', customerProductById.username);
+  }
+ }, [customerProductById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>

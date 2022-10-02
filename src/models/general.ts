@@ -4,6 +4,7 @@ export interface IAction {
 }
 
 export type Order = 'asc' | 'desc';
+export type TAction = 'create' | 'edit';
 
 export interface ITableAtribute<T> {
   page: number;
