@@ -16,6 +16,7 @@ export interface IWidget {
     totalRow: number;
   }
 
+  export interface IResponseWidgetById extends IResponseBody<IWidget>{};
   export interface IResponseAddWidget extends IResponseBody<IWidget>{};
 
   export interface IPayloadAddWidget {

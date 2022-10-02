@@ -22,6 +22,7 @@ export interface ICustomer {
       }
 
 
+  export interface IResponseCustomerById extends IResponseBody<ICustomer>{};
   export interface IResponseAddCustomer extends IResponseBody<ICustomer>{};
 
   export interface IPayloadAddCustomer {

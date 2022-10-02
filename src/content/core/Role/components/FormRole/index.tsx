@@ -13,11 +13,12 @@ import { Box } from '@mui/system';
 import { useAppSelector } from 'src/app/hooks';
 import { useRole } from 'src/services/role/useRole';
 import { FC, useEffect } from 'react';
-import { useFirstRender } from 'src/hooks/useFirstRender';
 import { IPayloadAddRole } from 'src/models/role';
+import { useFirstRender } from 'src/hooks/useFirstRender';
 
 interface Props {
- onClose: () => void;
+ action: string;
+ id?: string;
 }
 
 function validationSchema() {
@@ -26,28 +27,49 @@ function validationSchema() {
  });
 }
 
-const FormRole: FC<Props> = ({ onClose }) => {
- const { addRole } = useRole();
-
- const { handleChange, handleSubmit, errors, values, touched } =
-  useFormik<IPayloadAddRole>({
-   initialValues: {
-    roleName: ''
-   },
-   validationSchema: validationSchema(),
-   onSubmit: async (value) => {
+const FormRole: FC<Props> = ({ action, id }) => {
+ const { addRole, editRole } = useRole();
+ const isFirstRender = useFirstRender();
+ const {
+  handleChange,
+  handleSubmit,
+  errors,
+  values,
+  touched,
+  setFieldValue,
+  resetForm
+ } = useFormik<IPayloadAddRole>({
+  initialValues: {
+   roleName: ''
+  },
+  validationSchema: validationSchema(),
+  onSubmit: async (value) => {
+   if (action === 'create') {
+    resetForm();
     addRole(value);
+    return;
    }
-  });
+   editRole(id, value);
+  }
+ });
 
  const theme = useTheme();
+ const { getRoleById } = useRole();
 
- const isFirstRender = useFirstRender();
- const loading = useAppSelector((store) => store.storeRole.loading);
+ const { loading, roleById } = useAppSelector((store) => store.storeRole);
+
+ useEffect(() => {
+  if (action === 'edit' && id) {
+   getRoleById(id);
+  }
+ }, [action, id]);
+
  useEffect(() => {
   if (isFirstRender) return;
-  if (!loading) onClose();
- }, [loading]);
+  if (action === 'edit' && roleById) {
+   setFieldValue('roleName', roleById.roleName);
+  }
+ }, [roleById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>
@@ -63,6 +85,7 @@ const FormRole: FC<Props> = ({ onClose }) => {
         value={values.roleName}
         fullWidth
         size="small"
+        disabled={loading}
        />
        <FormHelperText error variant="outlined" margin="dense" sx={{ ml: 0 }}>
         {errors.roleName && touched.roleName && errors.roleName}

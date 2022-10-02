@@ -15,6 +15,9 @@ export interface IRole {
     totalPages: number;
     totalRow: number;
   }
+
+  export interface IResponseRole extends IResponseBody<IRole>{};
+
   export interface IResponseAddRole extends IResponseBody<IRole>{};
 
   export interface IPayloadAddRole {

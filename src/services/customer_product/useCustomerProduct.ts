@@ -1,14 +1,15 @@
+import { useNavigate } from "react-router";
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
-import { IPayloadAddCustomerProduct, IResponseAddCustomerProduct, IResponseCustomerProductList } from "src/models/customerProduct";
+import { IPayloadAddCustomerProduct, IResponseAddCustomerProduct, IResponseCustomerProductById, IResponseCustomerProductList } from "src/models/customerProduct";
 import { IPayloadGetList } from "src/models/general"
-import { reducerEditCustomerProduct, reducerUpdateAddCustomerProduct, reducerUpdateCustomerProductList, reducerUpdateLoadingCustomerProduct } from "src/redux/customerProduct";
+import { reducerEditCustomerProduct, reducerUpdateAddCustomerProduct, reducerUpdateCustomerProductById, reducerUpdateCustomerProductList, reducerUpdateLoadingCustomerProduct } from "src/redux/customerProduct";
 import httpClient from "..";
 
 export const useCustomerProduct = ()=> {
     const { handleClickAlert } = useAlert();
     const dispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const addCustomerProduct =async (payload:IPayloadAddCustomerProduct) => {
         dispatch(reducerUpdateLoadingCustomerProduct(true));
         try {
@@ -26,6 +27,7 @@ export const useCustomerProduct = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingCustomerProduct(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -85,6 +87,7 @@ export const useCustomerProduct = ()=> {
             });
           }
           dispatch(reducerUpdateLoadingCustomerProduct(false));
+          navigate(window.location.pathname);
         } catch (e) {
           console.log(e);
           handleClickAlert({
@@ -112,11 +115,33 @@ export const useCustomerProduct = ()=> {
             handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',
-                message: 'cannot get role list',
+                message: 'cannot get CustomerProduct list',
                 severity: 'error'
               });
         }
          
     }
-    return { getCustomerProductList, addCustomerProduct, deleteCustomerProduct, editCustomerProduct };
+
+    const getCustomerProductById = async (id: string) => {
+      dispatch(reducerUpdateLoadingCustomerProduct(true));
+      try{
+          const response = await httpClient.get<IResponseCustomerProductById>(`/customer_product/find_by_customer_product_id/${id}`);
+          if(response.status === 200){
+              const customerProduct = response.data;
+              dispatch(reducerUpdateCustomerProductById(customerProduct.data));
+          }
+          dispatch(reducerUpdateLoadingCustomerProduct(false));
+          
+      }catch(e){
+          dispatch(reducerUpdateLoadingCustomerProduct(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get CustomerProduct by id',
+              severity: 'error'
+            });
+            navigate(window.location.pathname);
+      }
+    }
+    return { getCustomerProductList, addCustomerProduct, deleteCustomerProduct, editCustomerProduct, getCustomerProductById };
 }

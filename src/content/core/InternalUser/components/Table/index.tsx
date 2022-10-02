@@ -1,16 +1,12 @@
 import {
- Button,
  Box,
- Fab,
  Paper,
  Stack,
- styled,
  Table,
  TableBody,
  TableCell,
  TableContainer,
  TableRow,
- Typography,
  useTheme,
  FormControl,
  InputLabel,
@@ -24,7 +20,7 @@ import {
  IconButton,
  Tooltip
 } from '@mui/material';
-import { FC, useEffect, useMemo, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
 import TableHeader from './Header';
 import {
@@ -33,17 +29,15 @@ import {
  ITableAtribute
 } from 'src/models/general';
 import SearchIcon from '@mui/icons-material/Search';
-import { useRole } from 'src/services/role/useRole';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useInternalUser } from 'src/services/internal_user/useInternalUser';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import ModalForm from 'src/components/ModalForm';
-import Form from '../Form';
-import FormEditInternalUser from '../FormEdit';
 import { IInternalUser } from 'src/models/internalUser';
 import SearchBySelectField from 'src/components/SearchBySelectField';
+import { CORE_INTERNAL_USER } from 'src/route';
+import { useNavigate } from 'react-router';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -65,11 +59,9 @@ const optionFields: Array<IOptionSearchField> = [
 ];
 
 const TableRole = () => {
+ const navigate = useNavigate();
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<IInternalUser>();
- const [open, setOpen] = useState(false);
- const handleOpen = () => setOpen(true);
- const handleClose = () => setOpen(false);
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
  );
@@ -95,8 +87,9 @@ const TableRole = () => {
  const optionLimits = [10, 25, 50, 100];
 
  const handleClickEdit = function (internalUser: IInternalUser) {
-  handleOpen();
-  setField(internalUser);
+  navigate(
+   `${CORE_INTERNAL_USER}?action=edit&id=${internalUser.internalUserId}`
+  );
  };
 
  const handleClickDelete = (internalUser: IInternalUser) => {
@@ -329,11 +322,6 @@ const TableRole = () => {
       </Table>
      </TableContainer>
     </Box>
-    {open && (
-     <ModalForm title="Edit Internal User" open={open} onClose={handleClose}>
-      <FormEditInternalUser onClose={handleClose} initFormValue={field} />
-     </ModalForm>
-    )}
     <Confirmation
      onClose={() => setOpenConfirmation(false)}
      onOk={handleOkDelete}

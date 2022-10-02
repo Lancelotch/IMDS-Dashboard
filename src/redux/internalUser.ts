@@ -4,6 +4,7 @@ import { IInternalUser, IResponseInternalUserList } from 'src/models/internalUse
 interface IStore {
   loading?: boolean;
   internalUserList: IResponseInternalUserList;
+  internalUserById: IInternalUser;
 }
 
 const initialState: IStore = {
@@ -16,7 +17,8 @@ const initialState: IStore = {
       totalPages: 0,
       totalRow: 0,
       loading: false
-    }
+    },
+    internalUserById: undefined
 };
 
 const internalUserStore = createSlice({
@@ -38,6 +40,9 @@ const internalUserStore = createSlice({
         return action.payload;
       });
     },
+    reducerUpdateInternalUserById: (state: IStore, action: PayloadAction<IInternalUser>) => {
+      state.internalUserById = action.payload;
+    },
   }
 });
 
@@ -45,7 +50,8 @@ export const {
   reducerUpdateLoadingInternalUser,
   reducerUpdateInternalUserList,
   reducerUpdateAddInternalUser,
-  reducerEditInternalUser
+  reducerEditInternalUser,
+  reducerUpdateInternalUserById
 } = internalUserStore.actions;
 
 export default internalUserStore.reducer;

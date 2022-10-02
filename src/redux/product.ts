@@ -4,6 +4,7 @@ import { IProduct, IResponseProductList } from 'src/models/product';
 interface IStore {
   loading?: boolean;
   productList: IResponseProductList;
+  productById: IProduct;
 }
 
 const initialState: IStore = {
@@ -16,7 +17,8 @@ const initialState: IStore = {
       totalPages: 0,
       totalRow: 0,
       loading: false
-    }
+    },
+    productById: undefined
 };
 
 const productStore = createSlice({
@@ -38,6 +40,9 @@ const productStore = createSlice({
         return action.payload;
       });
     },
+    reducerUpdateProductById: (state: IStore, action: PayloadAction<IProduct>) => {
+      state.productById = action.payload;
+    },
   }
 });
 
@@ -45,7 +50,8 @@ export const {
   reducerUpdateLoadingProduct,
   reducerUpdateProductList,
   reducerUpdateAddProduct,
-  reducerEditProduct
+  reducerEditProduct,
+  reducerUpdateProductById
 } = productStore.actions;
 
 export default productStore.reducer;

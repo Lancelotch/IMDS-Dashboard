@@ -36,11 +36,12 @@ import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useProduct } from 'src/services/product/useProduct';
-import FormEditProduct from '../FormEditProduct';
 import ModalForm from 'src/components/ModalForm';
 import { IProduct } from 'src/models/product';
 import SearchBySelectField from 'src/components/SearchBySelectField';
 import { useFirstRender } from 'src/hooks/useFirstRender';
+import { useNavigate } from 'react-router';
+import { MASTER_PRODUCT } from 'src/route';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -54,11 +55,9 @@ const optionFields: Array<IOptionSearchField> = [
 ];
 
 const TableProduct = () => {
+ const navigate = useNavigate();
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<IProduct>();
- const [open, setOpen] = useState(false);
- const handleOpen = () => setOpen(true);
- const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
@@ -75,8 +74,7 @@ const TableProduct = () => {
  const { getProductList, deleteProduct } = useProduct();
 
  const handleClickEdit = function (product: IProduct) {
-  handleOpen();
-  setField(product);
+  navigate(`${MASTER_PRODUCT}?action=edit&id=${product.productId}`);
  };
 
  const handleClickDelete = (product: IProduct) => {
@@ -316,11 +314,6 @@ const TableProduct = () => {
       </Table>
      </TableContainer>
     </Box>
-    {open && (
-     <ModalForm title="Edit Product" open={open} onClose={handleClose}>
-      <FormEditProduct onClose={handleClose} initFormValue={field} />
-     </ModalForm>
-    )}
     <Confirmation
      onClose={() => setOpenConfirmation(false)}
      onOk={handleOkDelete}

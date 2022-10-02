@@ -4,6 +4,7 @@ import { IResponseTopicList, ITopic } from 'src/models/topic';
 interface IStore {
   loading?: boolean;
   topicList: IResponseTopicList;
+  topicById: ITopic;
 }
 
 const initialState: IStore = {
@@ -16,7 +17,8 @@ const initialState: IStore = {
     totalPages: 0,
     totalRow: 0,
     loading: false
-  }
+  },
+  topicById: undefined
 };
 
 const topicStore = createSlice({
@@ -38,6 +40,9 @@ const topicStore = createSlice({
         return action.payload;
       });
     },
+    reducerUpdateTopicById: (state: IStore, action: PayloadAction<ITopic>) => {
+      state.topicById = action.payload;
+    },
   }
 });
 
@@ -45,7 +50,8 @@ export const {
   reducerUpdateLoadingTopic,
     reducerUpdateTopicList,
     reducerUpdateAddTopic,
-    reducerEditTopic
+    reducerEditTopic,
+    reducerUpdateTopicById
 } = topicStore.actions;
 
 export default topicStore.reducer;

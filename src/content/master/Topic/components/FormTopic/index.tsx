@@ -17,7 +17,8 @@ import { useFirstRender } from 'src/hooks/useFirstRender';
 import { IPayloadAddTopic } from 'src/models/topic';
 
 interface Props {
- onClose: () => void;
+ action: string;
+ id?: string;
 }
 
 function validationSchema() {
@@ -26,28 +27,48 @@ function validationSchema() {
  });
 }
 
-const FormTopic: FC<Props> = ({ onClose }) => {
- const { addTopic } = useTopic();
+const FormTopic: FC<Props> = ({ action, id }) => {
+ const { addTopic, editTopic, getTopicById } = useTopic();
 
- const { handleChange, handleSubmit, errors, values, touched } =
-  useFormik<IPayloadAddTopic>({
-   initialValues: {
-    topicName: ''
-   },
-   validationSchema: validationSchema(),
-   onSubmit: async (value) => {
+ const {
+  handleChange,
+  handleSubmit,
+  errors,
+  values,
+  touched,
+  setFieldValue,
+  resetForm
+ } = useFormik<IPayloadAddTopic>({
+  initialValues: {
+   topicName: ''
+  },
+  validationSchema: validationSchema(),
+  onSubmit: async (value) => {
+   if (action === 'create') {
+    resetForm();
     addTopic(value);
+    return;
    }
-  });
+   editTopic(id, value);
+  }
+ });
 
  const theme = useTheme();
 
  const isFirstRender = useFirstRender();
- const loading = useAppSelector((store) => store.storeTopic.loading);
+ const { loading, topicById } = useAppSelector((store) => store.storeTopic);
+ useEffect(() => {
+  if (action === 'edit' && id) {
+   getTopicById(id);
+  }
+ }, [action, id]);
+
  useEffect(() => {
   if (isFirstRender) return;
-  if (!loading) onClose();
- }, [loading]);
+  if (action === 'edit' && topicById) {
+   setFieldValue('topicName', topicById.topicName);
+  }
+ }, [topicById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>

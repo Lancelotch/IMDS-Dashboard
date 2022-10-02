@@ -22,7 +22,8 @@ import { useProduct } from 'src/services/product/useProduct';
 import { IPayloadAddProduct, TTypeProduct } from 'src/models/product';
 
 interface Props {
- onClose: () => void;
+ action: string;
+ id?: string;
 }
 
 function validationSchema() {
@@ -38,37 +39,63 @@ function validationSchema() {
 
 const types: Array<TTypeProduct> = ['widget', 'streaming', 'api'];
 
-const FormProduct: FC<Props> = ({ onClose }) => {
- const { addProduct } = useProduct();
+const FormProduct: FC<Props> = ({ action, id }) => {
+ const { addProduct, editProduct, getProductById } = useProduct();
  const { getWidgetList } = useWidget();
  const widgetList = useAppSelector((state) => state.storeWidget.widgetList);
  useEffect(() => {
   getWidgetList({ page: 1, limit: 1000 });
  }, []);
- const { handleChange, handleSubmit, errors, values, touched } =
-  useFormik<IPayloadAddProduct>({
-   initialValues: {
-    apiUrl: '',
-    isStaging: false,
-    productName: '',
-    topic: '',
-    type: 'widget',
-    widgetId: ''
-   },
-   validationSchema: validationSchema(),
-   onSubmit: async (value) => {
+ const {
+  handleChange,
+  handleSubmit,
+  errors,
+  values,
+  touched,
+  resetForm,
+  setFieldValue
+ } = useFormik<IPayloadAddProduct>({
+  initialValues: {
+   apiUrl: '',
+   isStaging: false,
+   productName: '',
+   topic: '',
+   type: 'widget',
+   widgetId: ''
+  },
+  validationSchema: validationSchema(),
+  onSubmit: async (value) => {
+   if (action === 'create') {
+    resetForm();
     addProduct(value);
+    return;
    }
-  });
+   editProduct(id, value);
+  }
+ });
 
  const theme = useTheme();
 
  const isFirstRender = useFirstRender();
- const loading = useAppSelector((store) => store.storeProduct.loading);
+ const { loading, productById } = useAppSelector((store) => store.storeProduct);
+
+ useEffect(() => {
+  if (action === 'edit' && id) {
+   getProductById(id);
+  }
+ }, [action, id]);
+
  useEffect(() => {
   if (isFirstRender) return;
-  if (!loading) onClose();
- }, [loading]);
+  if (action === 'edit' && productById) {
+   setFieldValue('apiUrl', productById.apiUrl);
+   setFieldValue('isStaging', productById.isStaging);
+   setFieldValue('productName', productById.productName);
+   setFieldValue('topic', productById.topic);
+   setFieldValue('type', productById.type);
+   setFieldValue('widgetId', productById.widgetId);
+  }
+ }, [productById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>

@@ -4,6 +4,7 @@ import { IResponseRoleList, IRole } from 'src/models/role';
 interface IStore {
   loading?: boolean;
   roleList: IResponseRoleList;
+  roleById?: IRole;
 }
 
 const initialState: IStore = {
@@ -16,7 +17,8 @@ const initialState: IStore = {
     totalPages: 0,
     totalRow: 0,
     loading: false
-  }
+  },
+  roleById: undefined
 };
 
 const roleStore = createSlice({
@@ -38,6 +40,9 @@ const roleStore = createSlice({
         return action.payload;
       });
     },
+    reducerUpdateRoleById: (state: IStore, action: PayloadAction<IRole>) => {
+      state.roleById = action.payload;
+    },
   }
 });
 
@@ -45,7 +50,8 @@ export const {
   reducerUpdateLoadingRole,
     reducerUpdateRoleList,
     reducerUpdateAddRole,
-    reducerEditRole
+    reducerEditRole,
+    reducerUpdateRoleById
 } = roleStore.actions;
 
 export default roleStore.reducer;

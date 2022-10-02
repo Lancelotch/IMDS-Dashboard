@@ -1,14 +1,15 @@
+import { useNavigate } from "react-router";
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
 import { IPayloadGetList } from "src/models/general"
-import { IPayloadAddProduct, IResponseAddProduct, IResponseProductList } from "src/models/product";
-import { reducerEditProduct, reducerUpdateAddProduct, reducerUpdateLoadingProduct, reducerUpdateProductList } from "src/redux/product";
+import { IPayloadAddProduct, IResponseAddProduct, IResponseProductById, IResponseProductList } from "src/models/product";
+import { reducerEditProduct, reducerUpdateAddProduct, reducerUpdateLoadingProduct, reducerUpdateProductById, reducerUpdateProductList } from "src/redux/product";
 import httpClient from "..";
 
 export const useProduct = ()=> {
     const { handleClickAlert } = useAlert();
     const dispatch = useAppDispatch();
-
+    const navigate = useNavigate();
     const addProduct = async (payload:IPayloadAddProduct) => {
         dispatch(reducerUpdateLoadingProduct(true));
         try {
@@ -26,6 +27,7 @@ export const useProduct = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingProduct(false));
+            navigate(window.location.pathname);
           } catch (e) {
             console.log(e);
             handleClickAlert({
@@ -85,8 +87,8 @@ export const useProduct = ()=> {
               });
             }
             dispatch(reducerUpdateLoadingProduct(false));
+            navigate(window.location.pathname);
           } catch (e) {
-            console.log(e);
             handleClickAlert({
                 horizontal: 'center',
                 vertical: 'top',
@@ -119,5 +121,27 @@ export const useProduct = ()=> {
         }
          
     }
-    return { getProductList, addProduct, editProduct, deleteProduct };
+
+    const getProductById = async (id: string) => {
+      dispatch(reducerUpdateLoadingProduct(true));
+      try{
+          const response = await httpClient.get<IResponseProductById>(`/product/find_by_product_id/${id}`);
+          if(response.status === 200){
+              const product = response.data;
+              dispatch(reducerUpdateProductById(product.data));
+          }
+          dispatch(reducerUpdateLoadingProduct(false));
+          
+      }catch(e){
+          dispatch(reducerUpdateLoadingProduct(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get Product by id',
+              severity: 'error'
+            });
+            navigate(window.location.pathname);
+      }
+    }
+    return { getProductList, addProduct, editProduct, deleteProduct, getProductById };
 }

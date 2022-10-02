@@ -1,16 +1,12 @@
 import {
- Button,
  Box,
- Fab,
  Paper,
  Stack,
- styled,
  Table,
  TableBody,
  TableCell,
  TableContainer,
  TableRow,
- Typography,
  useTheme,
  FormControl,
  InputLabel,
@@ -39,10 +35,11 @@ import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useCustomerProduct } from 'src/services/customer_product/useCustomerProduct';
 import moment from 'moment';
 import ModalForm from 'src/components/ModalForm';
-import FormEditCustomerProduct from '../FormEditCustomerProduct';
 import { ICustomerProduct } from 'src/models/customerProduct';
 import { useFirstRender } from 'src/hooks/useFirstRender';
 import SearchBySelectField from 'src/components/SearchBySelectField';
+import { MASTER_CUSTOMER_PRODUCT } from 'src/route';
+import { useNavigate } from 'react-router';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -60,11 +57,9 @@ const optionFields: Array<IOptionSearchField> = [
 ];
 
 const TableCustomerProduct = () => {
+ const navigate = useNavigate();
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<ICustomerProduct>();
- const [open, setOpen] = useState(false);
- const handleOpen = () => setOpen(true);
- const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
@@ -84,8 +79,9 @@ const TableCustomerProduct = () => {
  const { getCustomerProductList, deleteCustomerProduct } = useCustomerProduct();
 
  const handleClickEdit = function (customerProduct: ICustomerProduct) {
-  handleOpen();
-  setField(customerProduct);
+  navigate(
+   `${MASTER_CUSTOMER_PRODUCT}?action=edit&id=${customerProduct.customerProductId}`
+  );
  };
 
  const handleClickDelete = (customerProduct: ICustomerProduct) => {
@@ -334,11 +330,6 @@ const TableCustomerProduct = () => {
       </Table>
      </TableContainer>
     </Box>
-    {open && (
-     <ModalForm title="Edit Customer Product" open={open} onClose={handleClose}>
-      <FormEditCustomerProduct onClose={handleClose} initFormValue={field} />
-     </ModalForm>
-    )}
     <Confirmation
      onClose={() => setOpenConfirmation(false)}
      onOk={handleOkDelete}

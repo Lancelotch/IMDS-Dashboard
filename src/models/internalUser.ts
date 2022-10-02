@@ -22,6 +22,7 @@ export interface IInternalUser {
   }
 
 
+  export interface IResponseInternalUserById extends IResponseBody<IInternalUser>{};
   export interface IResponseAddInternalUser extends IResponseBody<IInternalUser>{};
 
   export interface IPayloadAddInternalUser {

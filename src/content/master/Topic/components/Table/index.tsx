@@ -1,10 +1,7 @@
 import {
- Button,
  Box,
- Fab,
  Paper,
  Stack,
- styled,
  Table,
  TableBody,
  TableCell,
@@ -37,10 +34,10 @@ import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import FormTopicEdit from '../FormTopicEdit';
-import ModalForm from 'src/components/ModalForm';
 import { ITopic } from 'src/models/topic';
 import SearchBySelectField from 'src/components/SearchBySelectField';
+import { useNavigate } from 'react-router';
+import { MASTER_TOPIC } from 'src/route';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -50,11 +47,9 @@ const optionFields: Array<IOptionSearchField> = [
 ];
 
 const TableTopic = () => {
+ const navigate = useNavigate();
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<ITopic>();
- const [open, setOpen] = useState(false);
- const handleOpen = () => setOpen(true);
- const handleClose = () => setOpen(false);
  const [search, setSearch] = useState<string>('');
  const { topicList, loading } = useAppSelector((state) => state.storeTopic);
  const [searchField, setSearchField] = useState<IOptionSearchField>(
@@ -69,8 +64,7 @@ const TableTopic = () => {
  }, [topicList]);
 
  const handleClickEdit = function (topic: ITopic) {
-  handleOpen();
-  setField(topic);
+  navigate(`${MASTER_TOPIC}?action=edit&id=${topic.topicId}`);
  };
 
  const handleClickDelete = (topic: ITopic) => {
@@ -309,11 +303,6 @@ const TableTopic = () => {
       </Table>
      </TableContainer>
     </Box>
-    {open && (
-     <ModalForm title="Edit Topic" open={open} onClose={handleClose}>
-      <FormTopicEdit onClose={handleClose} initFormValue={field} />
-     </ModalForm>
-    )}
     <Confirmation
      onClose={() => setOpenConfirmation(false)}
      onOk={handleOkDelete}

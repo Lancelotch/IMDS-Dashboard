@@ -4,6 +4,7 @@ import { ICustomer, IResponseCustomerList } from 'src/models/customer';
 interface IStore {
   loading?: boolean;
   customerList: IResponseCustomerList;
+  customerById: ICustomer;
 }
 
 const initialState: IStore = {
@@ -16,7 +17,8 @@ const initialState: IStore = {
       totalPages: 0,
       totalRow: 0,
       loading: false
-    }
+    },
+    customerById: undefined
 };
 
 const customerStore = createSlice({
@@ -38,6 +40,9 @@ const customerStore = createSlice({
         return action.payload;
       });
     },
+    reducerUpdateCustomerById: (state: IStore, action: PayloadAction<ICustomer>) => {
+      state.customerById = action.payload;
+    },
   }
 });
 
@@ -45,7 +50,8 @@ export const {
   reducerUpdateLoadingCustomer,
   reducerUpdateCustomerList,
   reducerUpdateAddCustomer,
-  reducerEditCustomer
+  reducerEditCustomer,
+  reducerUpdateCustomerById
 } = customerStore.actions;
 
 export default customerStore.reducer;
