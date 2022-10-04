@@ -649,6 +649,7 @@ export const PureLightTheme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
+          border: `1px solid rgba(224, 224, 224, 1)`,
           borderRadius: 8,
           padding: 8,
 

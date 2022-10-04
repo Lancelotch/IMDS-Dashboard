@@ -7,9 +7,8 @@ import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { getValueParam } from 'src/hooks/useQueryUrl';
 import FormRole from './components/FormRole';
 import TableRole from './components/Table';
-import TableMenuPermission from './components/TableMenuPermission';
 
-const Role = () => {
+const RoleMenu = () => {
  const action = getValueParam('action');
  const id = getValueParam('id');
 
@@ -20,7 +19,7 @@ const Role = () => {
    </Helmet>
    <PageTitleWrapper>
     <PageHeader
-     title="Role"
+     title="Edit Role Menu Permission"
      labelButton="Create Role"
      subtitle="Permissions access to the system and access to specific functions"
     />
@@ -34,9 +33,7 @@ const Role = () => {
      spacing={3}
     >
      <Grid item xs={12}>
-      {action === 'edit_menu_permission' ? (
-       <TableMenuPermission />
-      ) : action ? (
+      {action ? (
        <ContainerContent>
         <FormRole action={action} id={id} />{' '}
        </ContainerContent>
@@ -51,4 +48,4 @@ const Role = () => {
  );
 };
 
-export default Role;
+export default RoleMenu;

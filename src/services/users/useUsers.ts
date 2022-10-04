@@ -3,9 +3,11 @@ import { useAlert } from "src/hooks/useAlert";
 import { IPayloadLogin, IResponseLogin } from "src/models/userCredentials";
 import { reducerUpdateAuthentication, reducerUpdateUserProfile } from "src/redux/users";
 import httpClient from "..";
+import { useRole } from "../role/useRole";
 
 export const useUsers = ()=> {
     const { handleClickAlert } = useAlert();
+    const { getRoleMenuSideBarList } = useRole();
     const dispatch = useAppDispatch();
     const postUserSignin = async (payload: IPayloadLogin) => {
         try{
@@ -15,6 +17,9 @@ export const useUsers = ()=> {
                 const token = response.data.token;
                 const isAuth = token ? true : false;
                 window.localStorage.setItem('token', token);
+                getRoleMenuSideBarList({
+                    roleId: user.roleId
+                })
                 dispatch(reducerUpdateUserProfile(user));
                 dispatch(reducerUpdateAuthentication(isAuth));
                 handleClickAlert({
