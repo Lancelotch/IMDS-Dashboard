@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { getValueParam } from 'src/hooks/useQueryUrl';
 import { useNavigate } from 'react-router';
 import firstWordToUpperCase from 'src/utils/firstWordToUppercase';
+import changeUnderscoresToSpaces from 'src/utils/changeUnderscoresToSpaces';
 
 interface Props {
  title: string;
@@ -26,7 +27,9 @@ const PageHeader: FC<Props> = ({ title, subtitle, labelButton }) => {
   <Grid container justifyContent="space-between" alignItems="center">
    <Grid item>
     <Typography variant="h3" component="h3" gutterBottom>
-     {action ? `${firstWordToUpperCase(action)} ${title}` : title}
+     {action
+      ? `${changeUnderscoresToSpaces(firstWordToUpperCase(action))} ${title}`
+      : title}
     </Typography>
     <Typography variant="subtitle2">{subtitle}</Typography>
    </Grid>

@@ -2,8 +2,8 @@ import { useNavigate } from "react-router";
 import { useAppDispatch } from "src/app/hooks";
 import { useAlert } from "src/hooks/useAlert";
 import { IPayloadGetList} from "src/models/general"
-import { IPayloadAddRole, IResponseAddRole, IResponseRole, IResponseRoleList, IRole } from "src/models/role";
-import { reducerEditRole, reducerUpdateAddRole, reducerUpdateLoadingRole, reducerUpdateRoleById, reducerUpdateRoleList } from "src/redux/role";
+import { IPayloadAddRole, IPayloadAddRoleMenu, IPayloadRoleMenuList, IResponseAddRole, IResponseAddRoleMenu, IResponseRole, IResponseRoleList, IResponseRoleMenuList, IRole } from "src/models/role";
+import { reducerEditRole, reducerUpdateAddRole, reducerUpdateLoadingRole, reducerUpdateManageRoleMenu, reducerUpdateMenuSideBarList, reducerUpdateRoleById, reducerUpdateRoleList, reducerUpdateRoleMenuList } from "src/redux/role";
 import httpClient from "..";
 
 export const useRole = ()=> {
@@ -143,6 +143,83 @@ export const useRole = ()=> {
           navigate(window.location.pathname);
       }
        
+    }
+
+    const getRoleMenuList = async (params: IPayloadRoleMenuList) => {
+      dispatch(reducerUpdateLoadingRole(true));
+      try{
+          const response = await httpClient.get<IResponseRoleMenuList>('/role_menu/find_all_menu_by_role_id', {params});
+          if(response.status === 200){
+              const roleMenuList = response.data;
+              dispatch(reducerUpdateRoleMenuList(roleMenuList));
+          }
+          dispatch(reducerUpdateLoadingRole(false));
+          
+      }catch(e){
+          dispatch(reducerUpdateLoadingRole(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get role list',
+              severity: 'error'
+            });
+            navigate(window.location.pathname);
+      }
+       
+    }
+
+    const getRoleMenuSideBarList = async (params: IPayloadRoleMenuList) => {
+      dispatch(reducerUpdateLoadingRole(true));
+      try{
+          const response = await httpClient.get<IResponseRoleMenuList>('/role_menu/find_all_menu_recursive_by_role_id', {params});
+          if(response.status === 200){
+              const roleMenuSideBar = response.data;
+              dispatch(reducerUpdateMenuSideBarList(roleMenuSideBar));
+          }
+          dispatch(reducerUpdateLoadingRole(false));
+          navigate(window.location.pathname);
+      }catch(e){
+          dispatch(reducerUpdateLoadingRole(false));
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'cannot get role list',
+              severity: 'error'
+            });
+      }
+       
+    }
+
+    const manageRoleMenu =async (payload:IPayloadAddRoleMenu) => {
+      dispatch(reducerUpdateLoadingRole(true));
+      try {
+          const response = await httpClient.post<IResponseRoleMenuList>(
+            '/role_menu/manage_role_menu',
+            payload
+          );
+          if (response.status === 201) {
+            dispatch(reducerUpdateRoleMenuList(response.data));
+            handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'Manage role menu has successfully',
+              severity: 'success'
+            });
+          }
+          dispatch(reducerUpdateLoadingRole(false));
+          //navigate(window.location.pathname);
+        } catch (e) {
+          console.log(e);
+          handleClickAlert({
+              horizontal: 'center',
+              vertical: 'top',
+              message: 'Failed add Internal User',
+              severity: 'error'
+            });
+            dispatch(reducerUpdateLoadingRole(false));
+        }
   }
-    return { getRoleList, addRole, editRole, deleteRole, getRoleById };
+
+
+    return { getRoleList, addRole, editRole, deleteRole, getRoleById, getRoleMenuList, getRoleMenuSideBarList, manageRoleMenu };
 }

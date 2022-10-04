@@ -41,7 +41,7 @@ import ListIcon from '@mui/icons-material/List';
 import { useFirstRender } from 'src/hooks/useFirstRender';
 import { IRole } from 'src/models/role';
 import SearchBySelectField from 'src/components/SearchBySelectField';
-import { CORE_ROLE, CORE_ROLE_MENU } from 'src/route';
+import { CORE_ROLE } from 'src/route';
 import { useNavigate } from 'react-router';
 
 const optionFields: Array<IOptionSearchField> = [
@@ -77,7 +77,8 @@ const TableRole = () => {
  };
 
  const handleClickMenuPermission = (role: IRole) => {
-  navigate(`${CORE_ROLE}?action=edit_menu_permission&id=${role.roleId}`);
+  setField(role);
+  setOpenConfirmation(true);
  };
 
  const handleOkDelete = function () {

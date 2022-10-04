@@ -9,35 +9,36 @@ import SuspenseLoader from 'src/components/SuspenseLoader';
 import { USERS_SIGN_IN } from './route';
 
 interface IProtectedRouter {
-  isAuth: boolean;
-  children: React.ReactChild;
+ isAuth: boolean;
+ children: React.ReactChild;
 }
 
 const ProtectedRouter: FC<IProtectedRouter> = ({ children, isAuth }) => {
-  return <>{!isAuth ? <Navigate to={USERS_SIGN_IN} /> : children}</>;
+ return <>{!isAuth ? <Navigate to={USERS_SIGN_IN} /> : children}</>;
 };
 
 const Loader = (Component) => (props) =>
-  (
-    <Suspense fallback={<SuspenseLoader />}>
-      <Component {...props} />
-    </Suspense>
-  );
+ (
+  <Suspense fallback={<SuspenseLoader />}>
+   <Component {...props} />
+  </Suspense>
+ );
 
 // Home
 const Home = Loader(lazy(() => import('src/content/Home')));
 
 // Core
 const Role = Loader(lazy(() => import('src/content/core/Role')));
+const RoleMenu = Loader(lazy(() => import('src/content/core/RoleMenu')));
 const InternalUser = Loader(
-  lazy(() => import('src/content/core/InternalUser'))
+ lazy(() => import('src/content/core/InternalUser'))
 );
 
 // Core
 const Customer = Loader(lazy(() => import('src/content/master/Customer')));
 const Product = Loader(lazy(() => import('src/content/master/Product')));
 const CustomerProduct = Loader(
-  lazy(() => import('src/content/master/CustomerProduct'))
+ lazy(() => import('src/content/master/CustomerProduct'))
 );
 
 //topic
@@ -48,136 +49,140 @@ const SignIn = Loader(lazy(() => import('src/content/user/SignIn')));
 
 // Status
 const Status404 = Loader(
-  lazy(() => import('src/content/pages/Status/Status404'))
+ lazy(() => import('src/content/pages/Status/Status404'))
 );
 const Status500 = Loader(
-  lazy(() => import('src/content/pages/Status/Status500'))
+ lazy(() => import('src/content/pages/Status/Status500'))
 );
 const StatusComingSoon = Loader(
-  lazy(() => import('src/content/pages/Status/ComingSoon'))
+ lazy(() => import('src/content/pages/Status/ComingSoon'))
 );
 const StatusMaintenance = Loader(
-  lazy(() => import('src/content/pages/Status/Maintenance'))
+ lazy(() => import('src/content/pages/Status/Maintenance'))
 );
 
 const routes = (isAuthenticated: boolean): RouteObject[] => {
-  return [
+ return [
+  {
+   path: '',
+   element: <BaseLayout />,
+   children: [
     {
-      path: '',
-      element: <BaseLayout />,
-      children: [
-        {
-          path: '/',
-          element: <Navigate to="home" replace />
-        },
-        {
-          path: 'status',
-          children: [
-            {
-              path: '',
-              element: <Navigate to="404" replace />
-            },
-            {
-              path: '404',
-              element: <Status404 />
-            },
-            {
-              path: '500',
-              element: <Status500 />
-            },
-            {
-              path: 'maintenance',
-              element: <StatusMaintenance />
-            },
-            {
-              path: 'coming-soon',
-              element: <StatusComingSoon />
-            }
-          ]
-        },
-        {
-          path: '*',
-          element: <Status404 />
-        }
-      ]
+     path: '/',
+     element: <Navigate to="home" replace />
     },
     {
-      path: '',
-      element: (
-        <ProtectedRouter isAuth={isAuthenticated}>
-          <SidebarLayout />
-        </ProtectedRouter>
-      ),
-      children: [
-        {
-          path: 'home',
-          element: <Home />
-        }
-      ]
+     path: 'status',
+     children: [
+      {
+       path: '',
+       element: <Navigate to="404" replace />
+      },
+      {
+       path: '404',
+       element: <Status404 />
+      },
+      {
+       path: '500',
+       element: <Status500 />
+      },
+      {
+       path: 'maintenance',
+       element: <StatusMaintenance />
+      },
+      {
+       path: 'coming-soon',
+       element: <StatusComingSoon />
+      }
+     ]
     },
     {
-      path: 'core',
-      element: (
-        <ProtectedRouter isAuth={isAuthenticated}>
-          <SidebarLayout />
-        </ProtectedRouter>
-      ),
-      children: [
-        {
-          path: '',
-          element: <Navigate to="role" replace />
-        },
-        {
-          path: 'role',
-          element: <Role />
-        },
-        {
-          path: 'internal_user',
-          element: <InternalUser />
-        }
-      ]
-    },
-    {
-      path: 'master',
-      element: (
-        <ProtectedRouter isAuth={isAuthenticated}>
-          <SidebarLayout />
-        </ProtectedRouter>
-      ),
-      children: [
-        {
-          path: '',
-          element: <Navigate to="role" replace />
-        },
-        {
-          path: 'customer',
-          element: <Customer />
-        },
-        {
-          path: 'product',
-          element: <Product />
-        },
-        {
-          path: 'customer_product',
-          element: <CustomerProduct />
-        },
-        {
-          path: 'topic',
-          element: <Topic />
-        }
-      ]
-    },
-    {
-      path: 'users',
-      element: <BaseLayout />,
-      children: [
-        {
-          path: 'sign_in',
-          element: isAuthenticated ? <Navigate to={'/'} replace /> : <SignIn />
-        }
-      ]
+     path: '*',
+     element: <Status404 />
     }
-  ];
+   ]
+  },
+  {
+   path: '',
+   element: (
+    <ProtectedRouter isAuth={isAuthenticated}>
+     <SidebarLayout />
+    </ProtectedRouter>
+   ),
+   children: [
+    {
+     path: 'home',
+     element: <Home />
+    }
+   ]
+  },
+  {
+   path: 'core',
+   element: (
+    <ProtectedRouter isAuth={isAuthenticated}>
+     <SidebarLayout />
+    </ProtectedRouter>
+   ),
+   children: [
+    {
+     path: '',
+     element: <Navigate to="role" replace />
+    },
+    {
+     path: 'role',
+     element: <Role />
+    },
+    {
+     path: 'role_menu/:id',
+     element: <RoleMenu />
+    },
+    {
+     path: 'internal_user',
+     element: <InternalUser />
+    }
+   ]
+  },
+  {
+   path: 'master',
+   element: (
+    <ProtectedRouter isAuth={isAuthenticated}>
+     <SidebarLayout />
+    </ProtectedRouter>
+   ),
+   children: [
+    {
+     path: '',
+     element: <Navigate to="role" replace />
+    },
+    {
+     path: 'customer',
+     element: <Customer />
+    },
+    {
+     path: 'product',
+     element: <Product />
+    },
+    {
+     path: 'customer_product',
+     element: <CustomerProduct />
+    },
+    {
+     path: 'topic',
+     element: <Topic />
+    }
+   ]
+  },
+  {
+   path: 'users',
+   element: <BaseLayout />,
+   children: [
+    {
+     path: 'sign_in',
+     element: isAuthenticated ? <Navigate to={'/'} replace /> : <SignIn />
+    }
+   ]
+  }
+ ];
 };
 
 export default routes;

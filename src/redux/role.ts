@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IResponseRoleList, IRole } from 'src/models/role';
+import { IMenu, IPayloadAddRoleMenu, IResponseMenuSideBarList, IResponseRoleList, IResponseRoleMenuList, IRole } from 'src/models/role';
 
 interface IStore {
   loading?: boolean;
   roleList: IResponseRoleList;
   roleById?: IRole;
+  roleMenuList: IResponseRoleMenuList;
+  roleMenuSideBarList: IResponseMenuSideBarList;
 }
 
 const initialState: IStore = {
@@ -18,7 +20,19 @@ const initialState: IStore = {
     totalRow: 0,
     loading: false
   },
-  roleById: undefined
+  roleMenuList: {
+    data: [],
+    message: '',
+    status: '',
+    statusCode: '',
+  },
+  roleById: undefined,
+  roleMenuSideBarList: {
+    data: [],
+    message: '',
+    status: '',
+    statusCode: '',
+  }
 };
 
 const roleStore = createSlice({
@@ -43,6 +57,20 @@ const roleStore = createSlice({
     reducerUpdateRoleById: (state: IStore, action: PayloadAction<IRole>) => {
       state.roleById = action.payload;
     },
+    reducerUpdateRoleMenuList: (state: IStore, action: PayloadAction<IResponseRoleMenuList>) => {
+      state.roleMenuList = action.payload;
+    },
+    reducerUpdateMenuSideBarList: (state: IStore, action: PayloadAction<IResponseMenuSideBarList>) => {
+      state.roleMenuList = action.payload;
+    },
+    reducerUpdateManageRoleMenu: (state: IStore, action: PayloadAction<IPayloadAddRoleMenu>) => {
+      state.roleMenuList.data = state.roleMenuList.data.map(role=> {
+        if(role.menuId === action.payload.menus[0].menuId) return {
+          ...role, ...action.payload.menus[0]
+        }
+        return role;
+      } );
+    },
   }
 });
 
@@ -51,7 +79,10 @@ export const {
     reducerUpdateRoleList,
     reducerUpdateAddRole,
     reducerEditRole,
-    reducerUpdateRoleById
+    reducerUpdateRoleById,
+    reducerUpdateRoleMenuList,
+    reducerUpdateMenuSideBarList,
+    reducerUpdateManageRoleMenu
 } = roleStore.actions;
 
 export default roleStore.reducer;
