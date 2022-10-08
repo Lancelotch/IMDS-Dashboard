@@ -8,5 +8,6 @@ export const CORE_INTERNAL_USER = `${CORE}/internal_user`;
 export const MASTER = `/master`;
 export const MASTER_CUSTOMER = `${MASTER}/customer`;
 export const MASTER_PRODUCT = `${MASTER}/product`;
+export const MASTER_PACKAGE = `${MASTER}/package`;
 export const MASTER_CUSTOMER_PRODUCT = `${MASTER}/customer_product`;
 export const MASTER_TOPIC = `${MASTER}/topic`;

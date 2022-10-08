@@ -22,9 +22,9 @@ import {
  InputAdornment,
  IconButton,
  Tooltip,
+ Chip,
  TooltipProps,
- tooltipClasses,
- Chip
+ tooltipClasses
 } from '@mui/material';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
@@ -38,34 +38,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useAppSelector } from 'src/app/hooks';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import { useCustomer } from 'src/services/customer/useCustomer';
+import { usePackage } from 'src/services/package/usePackage';
 import ModalForm from 'src/components/ModalForm';
-import { ICustomer } from 'src/models/customer';
-import { useFirstRender } from 'src/hooks/useFirstRender';
+import { IPackage } from 'src/models/package';
 import SearchBySelectField from 'src/components/SearchBySelectField';
-import { MASTER_CUSTOMER } from 'src/route';
+import { useFirstRender } from 'src/hooks/useFirstRender';
 import { useNavigate } from 'react-router';
+import { MASTER_PACKAGE } from 'src/route';
 
 const optionFields: Array<IOptionSearchField> = [
  {
-  label: 'Customer Name',
-  value: 'customerName'
- },
- {
-  label: 'Address',
-  value: 'address'
- },
- {
-  label: 'Pic',
-  value: 'pic'
- },
- {
-  label: 'Phone Number',
-  value: 'phoneNumber'
- },
- {
-  label: 'Email',
-  value: 'email'
+  label: 'Package Name',
+  value: 'packageName'
  }
 ];
 
@@ -82,39 +66,36 @@ const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
  }
 }));
 
-const TableCustomer = () => {
+const TablePackage = () => {
  const navigate = useNavigate();
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
- const [field, setField] = useState<ICustomer>();
+ const [field, setField] = useState<IPackage>();
  const [search, setSearch] = useState<string>('');
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
  );
 
- const { customerList, loading } = useAppSelector(
-  (state) => state.storeCustomer
- );
-
- const filterCustomerListActive = useMemo(() => {
-  const filterDataActive = customerList.data.filter(
-   (customer) => customer.isActive === 1
+ const { packageList, loading } = useAppSelector((state) => state.storePackage);
+ const filterPackageListActive = useMemo(() => {
+  const filterDataActive = packageList.data.filter(
+   (Package) => Package.isActive === 1
   );
-  return { ...customerList, data: filterDataActive };
- }, [customerList]);
+  return { ...packageList, data: filterDataActive };
+ }, [packageList]);
 
- const { getCustomerList, deleteCustomer } = useCustomer();
+ const { getPackageList, deletePackage } = usePackage();
 
- const handleClickEdit = function (customer: ICustomer) {
-  navigate(`${MASTER_CUSTOMER}?action=edit&id=${customer.customerId}`);
+ const handleClickEdit = function (packageSelected: IPackage) {
+  navigate(`${MASTER_PACKAGE}?action=edit&id=${packageSelected.packageId}`);
  };
 
- const handleClickDelete = (customer: ICustomer) => {
-  setField(customer);
+ const handleClickDelete = (Package: IPackage) => {
+  setField(Package);
   setOpenConfirmation(true);
  };
 
  const handleOkDelete = function () {
-  deleteCustomer(field.customerId);
+  deletePackage(field.packageId);
  };
 
  const handleChangeSearch = (value: string) => {
@@ -123,8 +104,8 @@ const TableCustomer = () => {
 
  const optionLimits = [10, 25, 50, 100];
 
- const initialTableAttribute: ITableAtribute<ICustomer> = {
-  columnName: 'customerName',
+ const initialTableAttribute: ITableAtribute<IPackage> = {
+  columnName: 'packageName',
   limit: 10,
   page: 1,
   sortingMethod: 'asc'
@@ -148,7 +129,7 @@ const TableCustomer = () => {
  }
 
  const [stateTable, dispatchTable] = useReducer<
-  React.Reducer<ITableAtribute<ICustomer>, IAction>
+  React.Reducer<ITableAtribute<IPackage>, IAction>
  >(reducerTopTalker, initialTableAttribute);
 
  const handleSort = function (payloadSort) {
@@ -177,24 +158,24 @@ const TableCustomer = () => {
  const isFirstRender = useFirstRender();
  const handleClickSearch = () => {
   const { page, limit, sortingMethod, columnName } = stateTable;
-  getCustomerList({
+  getPackageList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `customer.${columnName}`,
-   searchField: `customer.${searchField.value}`,
+   dir: `package.${columnName}`,
+   searchField: `package.${searchField.value}`,
    searchValue: search
   });
  };
 
  useEffect(() => {
   const { page, limit, sortingMethod, columnName } = stateTable;
-  getCustomerList({
+  getPackageList({
    page: page,
    limit: limit,
    sort: sortingMethod,
-   dir: `customer.${columnName}`,
-   searchField: `customer.${searchField.value}`,
+   dir: `package.${columnName}`,
+   searchField: `package.${searchField.value}`,
    searchValue: search
   });
  }, [stateTable]);
@@ -259,23 +240,20 @@ const TableCustomer = () => {
        />
 
        <TableBody>
-        {filterCustomerListActive.data.map((customer, index) => (
-         <TableRow key={customer.id}>
+        {filterPackageListActive.data.map((packageActive, index) => (
+         <TableRow key={packageActive.id}>
           <TableCell align="center">
            {stateTable.limit * (stateTable.page - 1) + index + 1}
           </TableCell>
-          <TableCell align="left">{customer.customerName}</TableCell>
-          <TableCell align="left">{customer.pic}</TableCell>
-          <TableCell align="left">{customer.phoneNumber}</TableCell>
-          <TableCell align="left">{customer.email}</TableCell>
-          <TableCell align="center">
+          <TableCell align="left">{packageActive.packageName}</TableCell>
+          <TableCell align="left">
            <BootstrapTooltip
             placement="top"
-            title={customer.packages.map((pack) => (
+            title={packageActive.products.map((product) => (
              <Chip
-              label={pack.packageName}
+              label={product.productName}
               variant="outlined"
-              key={pack.packageId}
+              key={product.productId}
               size="small"
               sx={{
                mr: theme.spacing(0.5),
@@ -284,7 +262,7 @@ const TableCustomer = () => {
              />
             ))}
            >
-            <Chip label={`${customer.packages.length} Package`} />
+            <Chip label={`${packageActive.products.length} Products`} />
            </BootstrapTooltip>
           </TableCell>
           <TableCell align="center">
@@ -299,7 +277,7 @@ const TableCustomer = () => {
               }}
               color="inherit"
               size="small"
-              onClick={() => handleClickEdit(customer)}
+              onClick={() => handleClickEdit(packageActive)}
              >
               <EditTwoToneIcon fontSize="small" />
              </IconButton>
@@ -314,7 +292,7 @@ const TableCustomer = () => {
               }}
               color="inherit"
               size="small"
-              onClick={() => handleClickDelete(customer)}
+              onClick={() => handleClickDelete(packageActive)}
              >
               <DeleteTwoToneIcon fontSize="small" />
              </IconButton>
@@ -349,13 +327,13 @@ const TableCustomer = () => {
             </Select>
            </FormControl>
            <Pagination
-            count={customerList.totalPages}
+            count={packageList.totalPages}
             shape="rounded"
             color="primary"
             size="large"
             page={stateTable.page}
             onChange={(_, page) => handleChangePagination(page)}
-            disabled={customerList.loading}
+            disabled={packageList.loading}
            />
           </Stack>
          </TableCell>
@@ -369,7 +347,7 @@ const TableCustomer = () => {
      onOk={handleOkDelete}
      open={openConfirmation}
      labelButton="Delete"
-     title={`Are you sure want to remove ${field?.customerName} ?`}
+     title={`Are you sure want to remove ${field?.packageName} ?`}
      message="This might be effect your data, consider that what has been deleted cannot be recover."
     />
    </Card>
@@ -377,4 +355,4 @@ const TableCustomer = () => {
  );
 };
 
-export default TableCustomer;
+export default TablePackage;
