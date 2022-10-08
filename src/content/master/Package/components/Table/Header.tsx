@@ -2,11 +2,11 @@ import React from 'react';
 import { TableHead, TableRow, TableCell, TableSortLabel } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { IPayloadSort, Order } from 'src/models/general';
-import { ICustomer } from 'src/models/customer';
+import { IPackage } from 'src/models/package';
 
 interface HeadCell {
  disablePadding: boolean;
- id: keyof ICustomer;
+ id: keyof IPackage;
  label: string;
  size?: number;
  needSorting: boolean;
@@ -14,46 +14,25 @@ interface HeadCell {
 }
 
 interface EnhancedTableProps {
- onRequestSort: (payload: IPayloadSort<ICustomer>) => void;
+ onRequestSort: (payload: IPayloadSort<IPackage>) => void;
  order: Order;
  orderBy: string;
 }
 
 const headCells: HeadCell[] = [
  {
-  id: 'customerName',
+  id: 'packageName',
   disablePadding: false,
-  label: 'Customer Name',
+  label: 'Package Name',
   needSorting: false,
   align: 'left'
  },
  {
-  id: 'pic',
+  id: 'products',
   disablePadding: false,
-  label: 'PIC',
+  label: 'Products',
   needSorting: false,
   align: 'left'
- },
- {
-  id: 'phoneNumber',
-  disablePadding: false,
-  label: 'Phone Number',
-  needSorting: false,
-  align: 'left'
- },
- {
-  id: 'email',
-  disablePadding: false,
-  label: 'Customer Name',
-  needSorting: false,
-  align: 'left'
- },
- {
-  id: 'qtyPackage',
-  disablePadding: false,
-  label: 'Qty Package',
-  needSorting: false,
-  align: 'center'
  }
 ];
 
@@ -63,7 +42,7 @@ const Header: React.FC<EnhancedTableProps> = ({
  orderBy
 }) => {
  const createSortHandler =
-  (property: keyof ICustomer) => (event: React.MouseEvent<unknown>) => {
+  (property: keyof IPackage) => (event: React.MouseEvent<unknown>) => {
    onRequestSort({
     columnName: property,
     sortingMethod: order === 'asc' ? 'desc' : 'asc'

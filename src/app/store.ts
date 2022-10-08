@@ -8,6 +8,7 @@ import customerProductStore from 'src/redux/customerProduct';
 import internalUserStore from 'src/redux/internalUser';
 import topicStore from 'src/redux/topic';
 import alertStore from 'src/redux/alert';
+import packageStore from 'src/redux/package';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -24,6 +25,7 @@ export const store = configureStore({
     storeCustomerProduct: customerProductStore,
     storeInternalUser: internalUserStore,
     storeTopic: topicStore,
+    storePackage: packageStore,
   }
 });
 

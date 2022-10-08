@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 
 import {
-  ListSubheader,
-  alpha,
-  Box,
-  List,
-  styled,
-  Button,
-  ListItem
+ ListSubheader,
+ alpha,
+ Box,
+ List,
+ styled,
+ Button,
+ ListItem
 } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { SidebarContext } from 'src/contexts/SidebarContext';
@@ -22,17 +22,21 @@ import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import SecurityIcon from '@mui/icons-material/Security';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import CategoryIcon from '@mui/icons-material/Category';
+import TopicIcon from '@mui/icons-material/Topic';
 import {
-  CORE_INTERNAL_USER,
-  CORE_ROLE,
-  MASTER_CUSTOMER,
-  MASTER_CUSTOMER_PRODUCT,
-  MASTER_PRODUCT,
-  MASTER_TOPIC
+ CORE_INTERNAL_USER,
+ CORE_ROLE,
+ MASTER_CUSTOMER,
+ MASTER_CUSTOMER_PRODUCT,
+ MASTER_PACKAGE,
+ MASTER_PRODUCT,
+ MASTER_TOPIC
 } from 'src/route';
 
 const MenuWrapper = styled(Box)(
-  ({ theme }) => `
+ ({ theme }) => `
   .MuiList-root {
     padding: ${theme.spacing(1)};
 
@@ -53,7 +57,7 @@ const MenuWrapper = styled(Box)(
 );
 
 const SubMenuWrapper = styled(Box)(
-  ({ theme }) => `
+ ({ theme }) => `
     .MuiList-root {
 
       .MuiListItem-root {
@@ -146,8 +150,8 @@ const SubMenuWrapper = styled(Box)(
                 background: ${theme.colors.alpha.trueWhite[100]};
                 opacity: 0;
                 transition: ${theme.transitions.create([
-                  'transform',
-                  'opacity'
+                 'transform',
+                 'opacity'
                 ])};
                 width: 6px;
                 height: 6px;
@@ -174,106 +178,117 @@ const SubMenuWrapper = styled(Box)(
 );
 
 function SidebarMenu() {
-  const { closeSidebar } = useContext(SidebarContext);
+ const { closeSidebar } = useContext(SidebarContext);
 
-  return (
-    <>
-      <MenuWrapper>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Security
-            </ListSubheader>
-          }
+ return (
+  <>
+   <MenuWrapper>
+    <List
+     component="div"
+     subheader={
+      <ListSubheader component="div" disableSticky>
+       Security
+      </ListSubheader>
+     }
+    >
+     <SubMenuWrapper>
+      <List component="div">
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={CORE_ROLE}
+         startIcon={<AccessibilityIcon />}
         >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={CORE_ROLE}
-                  startIcon={<AccessibilityIcon />}
-                >
-                  Role
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={CORE_INTERNAL_USER}
-                  startIcon={<AccountCircleIcon />}
-                >
-                  Internal User
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Master Form Parameter
-            </ListSubheader>
-          }
+         Role
+        </Button>
+       </ListItem>
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={CORE_INTERNAL_USER}
+         startIcon={<AccountCircleIcon />}
         >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={MASTER_CUSTOMER}
-                  startIcon={<PersonIcon />}
-                >
-                  Customer
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={MASTER_PRODUCT}
-                  startIcon={<PersonIcon />}
-                >
-                  Product
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={MASTER_CUSTOMER_PRODUCT}
-                  startIcon={<PersonIcon />}
-                >
-                  Customer Product
-                </Button>
-              </ListItem>
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to={MASTER_TOPIC}
-                  startIcon={<AccessibilityIcon />}
-                >
-                  Topic
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-      </MenuWrapper>
-    </>
-  );
+         Internal User
+        </Button>
+       </ListItem>
+      </List>
+     </SubMenuWrapper>
+    </List>
+    <List
+     component="div"
+     subheader={
+      <ListSubheader component="div" disableSticky>
+       Master Form Parameter
+      </ListSubheader>
+     }
+    >
+     <SubMenuWrapper>
+      <List component="div">
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={MASTER_CUSTOMER}
+         startIcon={<PersonIcon />}
+        >
+         Customer
+        </Button>
+       </ListItem>
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={MASTER_PRODUCT}
+         startIcon={<CategoryIcon />}
+        >
+         Product
+        </Button>
+       </ListItem>
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={MASTER_PACKAGE}
+         startIcon={<InventoryIcon />}
+        >
+         Package
+        </Button>
+       </ListItem>
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={MASTER_CUSTOMER_PRODUCT}
+         startIcon={<PersonIcon />}
+        >
+         Customer Product
+        </Button>
+       </ListItem>
+       <ListItem component="div">
+        <Button
+         disableRipple
+         component={RouterLink}
+         onClick={closeSidebar}
+         to={MASTER_TOPIC}
+         startIcon={<TopicIcon />}
+        >
+         Topic
+        </Button>
+       </ListItem>
+      </List>
+     </SubMenuWrapper>
+    </List>
+   </MenuWrapper>
+  </>
+ );
 }
 
 export default SidebarMenu;

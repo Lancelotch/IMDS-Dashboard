@@ -37,6 +37,7 @@ const InternalUser = Loader(
 // Core
 const Customer = Loader(lazy(() => import('src/content/master/Customer')));
 const Product = Loader(lazy(() => import('src/content/master/Product')));
+const Package = Loader(lazy(() => import('src/content/master/Package')));
 const CustomerProduct = Loader(
  lazy(() => import('src/content/master/CustomerProduct'))
 );
@@ -161,6 +162,10 @@ const routes = (isAuthenticated: boolean): RouteObject[] => {
     {
      path: 'product',
      element: <Product />
+    },
+    {
+     path: 'package',
+     element: <Package />
     },
     {
      path: 'customer_product',
