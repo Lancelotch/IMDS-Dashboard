@@ -71,7 +71,14 @@ const customerStore = createSlice({
    state: IStore,
    action: PayloadAction<IResponseGenerateToken>
   ) => {
-   state.customerPackage = action.payload;
+   state.customerById = {
+    ...state.customerById,
+    packages: state.customerById.packages.map((pkg) => {
+     if (pkg.customerPackageId === action.payload.data.customerPackageId)
+      return action.payload.data;
+     return pkg;
+    })
+   };
   }
  }
 });

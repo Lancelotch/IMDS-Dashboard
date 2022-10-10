@@ -8,6 +8,7 @@ import {
  Modal,
  OutlinedInput,
  Paper,
+ Stack,
  Table,
  TableBody,
  TableCell,
@@ -32,6 +33,9 @@ import { DataGrid, GridSelectionModel } from '@mui/x-data-grid';
 import { filter, indexOf } from 'lodash';
 import { usePackage } from 'src/services/package/usePackage';
 import { DesktopDatePicker } from '@mui/lab';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useAlert } from 'src/hooks/useAlert';
 
 interface Props {
  action: string;
@@ -86,6 +90,7 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
  const handleClose = () => setOpen(false);
  const { addCustomer, editCustomer, getCustomerById, generateToken } =
   useCustomer();
+ const { handleClickAlert } = useAlert();
  const { getPackageList } = usePackage();
  const packageList = useAppSelector((store) => store.storePackage.packageList);
  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
@@ -350,7 +355,36 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
            {action === 'edit' && (
             <>
              <TableCell align="center">
-              {pkg.token ?? (
+              {pkg.token ? (
+               <CopyToClipboard
+                text={pkg.token}
+                onCopy={() => {
+                 handleClickAlert({
+                  horizontal: 'center',
+                  vertical: 'top',
+                  message: 'Token has successfully copied!',
+                  severity: 'success'
+                 });
+                }}
+               >
+                <Stack direction="row" spacing={2} alignItems="center">
+                 <Box
+                  sx={{
+                   width: theme.spacing(20),
+                   overflow: 'hidden',
+                   textOverflow: 'ellipsis'
+                  }}
+                 >
+                  {pkg.token}
+                 </Box>
+                 <Tooltip title="Copy Token" arrow>
+                  <IconButton size="small">
+                   <ContentCopyIcon />
+                  </IconButton>
+                 </Tooltip>
+                </Stack>
+               </CopyToClipboard>
+              ) : (
                <Button
                 variant="contained"
                 color="success"
