@@ -3,6 +3,8 @@ import {
  FormControl,
  FormHelperText,
  FormLabel,
+ Select,
+ MenuItem,
  Grid,
  OutlinedInput,
  useTheme
@@ -14,7 +16,8 @@ import { useAppSelector } from 'src/app/hooks';
 import { useTopic } from 'src/services/topic/useTopic';
 import { FC, useEffect } from 'react';
 import { useFirstRender } from 'src/hooks/useFirstRender';
-import { IPayloadAddTopic } from 'src/models/topic';
+import { IPayloadAddTopic ,TDataSource} from 'src/models/topic';
+import { DataGrid, GridSelectionModel } from '@mui/x-data-grid';
 
 interface Props {
  action: string;
@@ -23,9 +26,13 @@ interface Props {
 
 function validationSchema() {
  return Yup.object({
-  topicName: Yup.string().required()
+  topicName: Yup.string().required(),
+  dataSource: Yup.string().required(),
  });
 }
+
+
+const types: Array<TDataSource> = ['data_source_mongo_1' , 'data_source_mongo_2' , 'data_source_mongo_3' , 'data_source_mongo_4'];
 
 const FormTopic: FC<Props> = ({ action, id }) => {
  const { addTopic, editTopic, getTopicById } = useTopic();
@@ -40,7 +47,8 @@ const FormTopic: FC<Props> = ({ action, id }) => {
   resetForm
  } = useFormik<IPayloadAddTopic>({
   initialValues: {
-   topicName: ''
+   topicName: '',
+   dataSource: '',
   },
   validationSchema: validationSchema(),
   onSubmit: async (value) => {
@@ -55,6 +63,7 @@ const FormTopic: FC<Props> = ({ action, id }) => {
 
  const theme = useTheme();
 
+
  const isFirstRender = useFirstRender();
  const { loading, topicById } = useAppSelector((store) => store.storeTopic);
  useEffect(() => {
@@ -67,6 +76,7 @@ const FormTopic: FC<Props> = ({ action, id }) => {
   if (isFirstRender) return;
   if (action === 'edit' && topicById) {
    setFieldValue('topicName', topicById.topicName);
+   setFieldValue('dataSource', topicById.dataSource);
   }
  }, [topicById]);
 
@@ -87,6 +97,28 @@ const FormTopic: FC<Props> = ({ action, id }) => {
        />
        <FormHelperText error variant="outlined" margin="dense" sx={{ ml: 0 }}>
         {errors.topicName && touched.topicName && errors.topicName}
+       </FormHelperText>
+      </FormControl>
+     </Grid>
+     <Grid item lg={6}>
+      <FormControl fullWidth size="medium">
+       <FormLabel>Data Source</FormLabel>
+       <Select
+        value={values.dataSource}
+        onChange={(e) => {
+         handleChange(e);
+        }}
+        size="small"
+        name="dataSource"
+       >
+        {types.map((type) => (
+         <MenuItem key={type} value={type}>
+          {type}
+         </MenuItem>
+        ))}
+       </Select>
+       <FormHelperText error variant="outlined" margin="dense" sx={{ ml: 0 }}>
+        {errors.dataSource && touched.dataSource && errors.dataSource}
        </FormHelperText>
       </FormControl>
      </Grid>

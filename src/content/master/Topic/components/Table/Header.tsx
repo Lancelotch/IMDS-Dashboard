@@ -21,12 +21,19 @@ interface EnhancedTableProps {
 
 const headCells: HeadCell[] = [
  {
-  id: 'topicName',
-  disablePadding: false,
-  label: 'Name',
-  needSorting: false,
-  align: 'left'
- }
+    id: 'topicName',
+    disablePadding: false,
+    label: 'Name',
+    needSorting: false,
+    align: 'left'
+ },
+ {
+    id: 'dataSource',
+    disablePadding: false,
+    label: 'Data Source',
+    needSorting: false,
+    align: 'left'
+   }
 ];
 
 const Header: React.FC<EnhancedTableProps> = ({

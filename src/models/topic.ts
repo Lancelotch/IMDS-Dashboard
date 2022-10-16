@@ -1,9 +1,12 @@
 import { IResponseBody } from "./general";
 
+export type TDataSource = 'data_source_mongo_1' | 'data_source_mongo_2' | 'data_source_mongo_3' | 'data_source_mongo_4';
+
 export interface ITopic {
     id: string;
     topicId: string;
     topicName: string;
+    dataSource:String;
     createdAt: Date;
     createdBy: string;
     updatedAt: Date | null;
@@ -21,5 +24,6 @@ export interface ITopic {
   
   export interface IPayloadAddTopic {
     topicName: string;
+    dataSource:string;
   }
   

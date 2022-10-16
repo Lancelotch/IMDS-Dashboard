@@ -227,6 +227,7 @@ const TableTopic = () => {
            {stateTable.limit * (stateTable.page - 1) + index + 1}
           </TableCell>
           <TableCell align="left">{topic.topicName}</TableCell>
+          <TableCell align="left">{topic.dataSource}</TableCell>
           <TableCell align="center">
            <Stack direction="row" spacing={2} justifyContent="center">
             {roleMenu?.isUpdate === 1 && (
