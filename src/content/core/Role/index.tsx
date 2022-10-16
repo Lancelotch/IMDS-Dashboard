@@ -1,5 +1,7 @@
 import { Container, Grid } from '@mui/material';
+import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useAppSelector } from 'src/app/hooks';
 import ContainerContent from 'src/components/ContainerContent';
 import Footer from 'src/components/Footer';
 import PageHeader from 'src/components/PageHeader';

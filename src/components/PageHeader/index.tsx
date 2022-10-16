@@ -7,6 +7,7 @@ import { getValueParam } from 'src/hooks/useQueryUrl';
 import { useNavigate } from 'react-router';
 import firstWordToUpperCase from 'src/utils/firstWordToUppercase';
 import changeUnderscoresToSpaces from 'src/utils/changeUnderscoresToSpaces';
+import { useAppSelector } from 'src/app/hooks';
 
 interface Props {
  title: string;
@@ -23,6 +24,7 @@ const PageHeader: FC<Props> = ({ title, subtitle, labelButton }) => {
  const handleBack = function () {
   navigate(window.location.pathname);
  };
+ const roleMenu = useAppSelector((state) => state.storeRole.roleMenu);
  return (
   <Grid container justifyContent="space-between" alignItems="center">
    <Grid item>
@@ -44,14 +46,16 @@ const PageHeader: FC<Props> = ({ title, subtitle, labelButton }) => {
       Back
      </Button>
     ) : (
-     <Button
-      sx={{ mt: { xs: 2, md: 0 } }}
-      variant="contained"
-      startIcon={<AddTwoToneIcon fontSize="small" />}
-      onClick={handleCreate}
-     >
-      {labelButton}
-     </Button>
+     roleMenu?.isCreate === 1 && (
+      <Button
+       sx={{ mt: { xs: 2, md: 0 } }}
+       variant="contained"
+       startIcon={<AddTwoToneIcon fontSize="small" />}
+       onClick={handleCreate}
+      >
+       {labelButton}
+      </Button>
+     )
     )}
    </Grid>
   </Grid>

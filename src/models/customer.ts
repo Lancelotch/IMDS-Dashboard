@@ -45,6 +45,7 @@ export interface IPayloadAddCustomer {
  phoneNumber: string;
  email: string;
  packages: Array<ICustomerPackage>;
+ removedPackages?: Array<ICustomerPackage>;
 }
 
 export interface IPayloadGenerateToken {

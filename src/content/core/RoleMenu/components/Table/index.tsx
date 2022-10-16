@@ -66,6 +66,7 @@ const TableRole = () => {
   const filterDataActive = roleList.data.filter((role) => role.isActive === 1);
   return { ...roleList, data: filterDataActive };
  }, [roleList]);
+ const roleMenu = useAppSelector((state) => state.storeRole.roleMenu);
 
  const handleClickEdit = function (role: IRole) {
   navigate(`${CORE_ROLE}?action=edit&id=${role.roleId}`);

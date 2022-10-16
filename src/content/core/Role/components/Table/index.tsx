@@ -60,6 +60,7 @@ const TableRole = () => {
   optionFields[0]
  );
  const { roleList, loading } = useAppSelector((state) => state.storeRole);
+ const roleMenu = useAppSelector((state) => state.storeRole.roleMenu);
  const isFirstRender = useFirstRender();
 
  const filterRoleListActive = useMemo(() => {
@@ -235,51 +236,57 @@ const TableRole = () => {
           <TableCell align="left">{role.roleName}</TableCell>
           <TableCell align="center">
            <Stack direction="row" spacing={2} justifyContent="center">
-            <Tooltip title="Edit Role" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.primary.lighter
-               },
-               color: theme.palette.primary.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickEdit(role)}
-             >
-              <EditTwoToneIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete Role" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.error.lighter
-               },
-               color: theme.palette.error.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickDelete(role)}
-             >
-              <DeleteTwoToneIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
-            <Tooltip title="Role Menu Permission" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.error.lighter
-               },
-               color: theme.palette.warning.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickMenuPermission(role)}
-             >
-              <ListIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
+            {roleMenu?.isUpdate === 1 && (
+             <Tooltip title="Edit Role" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.primary.lighter
+                },
+                color: theme.palette.primary.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickEdit(role)}
+              >
+               <EditTwoToneIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
+            {roleMenu?.isDelete === 1 && (
+             <Tooltip title="Delete Role" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.error.lighter
+                },
+                color: theme.palette.error.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickDelete(role)}
+              >
+               <DeleteTwoToneIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
+            {roleMenu?.isUpdate === 1 && (
+             <Tooltip title="Role Menu Permission" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.error.lighter
+                },
+                color: theme.palette.warning.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickMenuPermission(role)}
+              >
+               <ListIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
            </Stack>
           </TableCell>
          </TableRow>

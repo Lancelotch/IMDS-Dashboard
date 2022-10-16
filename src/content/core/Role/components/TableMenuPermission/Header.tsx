@@ -80,9 +80,8 @@ const Header: React.FC<EnhancedTableProps> = ({
  return (
   <TableHead>
    <TableRow>
-    <TableCell size="small" align="center" padding="none">
-     No
-    </TableCell>
+    <TableCell size="small" align="center" padding="checkbox"></TableCell>
+
     {headCells.map((headCell: any) => (
      <React.Fragment key={headCell.id}>
       {headCell ? (
@@ -129,9 +128,9 @@ const Header: React.FC<EnhancedTableProps> = ({
       )}
      </React.Fragment>
     ))}
-    <TableCell size="small" align="center" padding="none">
+    {/* <TableCell size="small" align="center" padding="none">
      Action
-    </TableCell>
+    </TableCell> */}
    </TableRow>
   </TableHead>
  );

@@ -1,4 +1,4 @@
-import { Suspense, lazy, FC } from 'react';
+import { Suspense, lazy, FC, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
 
@@ -7,14 +7,37 @@ import BaseLayout from 'src/layouts/BaseLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import { USERS_SIGN_IN } from './route';
+import { useRole } from './services/role/useRole';
+import { useAppSelector } from './app/hooks';
 
 interface IProtectedRouter {
  isAuth: boolean;
  children: React.ReactChild;
 }
 
+const LoaderMetaData = ({ children }) => {
+ const { getRoleMenuSideBarList } = useRole();
+ const userJson = window.localStorage.getItem('user');
+ const user = JSON.parse(userJson);
+ useEffect(() => {
+  getRoleMenuSideBarList({
+   roleId: user?.roleId
+  });
+ }, []);
+
+ return <>{children}</>;
+};
+
 const ProtectedRouter: FC<IProtectedRouter> = ({ children, isAuth }) => {
- return <>{!isAuth ? <Navigate to={USERS_SIGN_IN} /> : children}</>;
+ return (
+  <>
+   {!isAuth ? (
+    <Navigate to={USERS_SIGN_IN} />
+   ) : (
+    <LoaderMetaData>{children}</LoaderMetaData>
+   )}
+  </>
+ );
 };
 
 const Loader = (Component) => (props) =>

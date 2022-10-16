@@ -34,6 +34,9 @@ import {
  MASTER_PRODUCT,
  MASTER_TOPIC
 } from 'src/route';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { IRoleMenuRecursive } from 'src/models/role';
+import { reducerUpdateMenuRole } from 'src/redux/role';
 
 const MenuWrapper = styled(Box)(
  ({ theme }) => `
@@ -178,117 +181,156 @@ const SubMenuWrapper = styled(Box)(
 );
 
 function SidebarMenu() {
- const { closeSidebar } = useContext(SidebarContext);
+ //  const { closeSidebar } = useContext(SidebarContext);
+ const roleMenuSideBarList = useAppSelector(
+  (store) => store.storeRole.roleMenuSideBarList
+ );
+ const dispatch = useAppDispatch();
+ const handleClick = function (subMenu: IRoleMenuRecursive) {
+  dispatch(reducerUpdateMenuRole(subMenu));
+ };
 
  return (
-  <>
-   <MenuWrapper>
+  <MenuWrapper>
+   {roleMenuSideBarList.data.map((menuSideBar) => (
     <List
+     key={menuSideBar.id}
      component="div"
      subheader={
       <ListSubheader component="div" disableSticky>
-       Security
+       {menuSideBar.menuName}
       </ListSubheader>
      }
     >
      <SubMenuWrapper>
       <List component="div">
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={CORE_ROLE}
-         startIcon={<AccessibilityIcon />}
-        >
-         Role
-        </Button>
-       </ListItem>
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={CORE_INTERNAL_USER}
-         startIcon={<AccountCircleIcon />}
-        >
-         Internal User
-        </Button>
-       </ListItem>
+       {menuSideBar.children.map((subMenu) => (
+        <ListItem component="div" key={subMenu.id}>
+         <Button
+          disableRipple
+          component={RouterLink}
+          onClick={() => handleClick(subMenu)}
+          to={`/${subMenu.url}`}
+         >
+          {subMenu.menuName}
+         </Button>
+        </ListItem>
+       ))}
       </List>
      </SubMenuWrapper>
     </List>
-    <List
-     component="div"
-     subheader={
-      <ListSubheader component="div" disableSticky>
-       Master Form Parameter
-      </ListSubheader>
-     }
-    >
-     <SubMenuWrapper>
-      <List component="div">
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={MASTER_CUSTOMER}
-         startIcon={<PersonIcon />}
-        >
-         Customer
-        </Button>
-       </ListItem>
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={MASTER_PRODUCT}
-         startIcon={<CategoryIcon />}
-        >
-         Product
-        </Button>
-       </ListItem>
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={MASTER_PACKAGE}
-         startIcon={<InventoryIcon />}
-        >
-         Package
-        </Button>
-       </ListItem>
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={MASTER_CUSTOMER_PRODUCT}
-         startIcon={<PersonIcon />}
-        >
-         Customer Product
-        </Button>
-       </ListItem>
-       <ListItem component="div">
-        <Button
-         disableRipple
-         component={RouterLink}
-         onClick={closeSidebar}
-         to={MASTER_TOPIC}
-         startIcon={<TopicIcon />}
-        >
-         Topic
-        </Button>
-       </ListItem>
-      </List>
-     </SubMenuWrapper>
-    </List>
-   </MenuWrapper>
-  </>
+   ))}
+  </MenuWrapper>
  );
+ //  return (
+ //   <>
+ //    <MenuWrapper>
+ //     <List
+ //      component="div"
+ //      subheader={
+ //       <ListSubheader component="div" disableSticky>
+ //        Security
+ //       </ListSubheader>
+ //      }
+ //     >
+ //      <SubMenuWrapper>
+ //       <List component="div">
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={CORE_ROLE}
+ //          startIcon={<AccessibilityIcon />}
+ //         >
+ //          Role
+ //         </Button>
+ //        </ListItem>
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={CORE_INTERNAL_USER}
+ //          startIcon={<AccountCircleIcon />}
+ //         >
+ //          Internal User
+ //         </Button>
+ //        </ListItem>
+ //       </List>
+ //      </SubMenuWrapper>
+ //     </List>
+ //     <List
+ //      component="div"
+ //      subheader={
+ //       <ListSubheader component="div" disableSticky>
+ //        Master Form Parameter
+ //       </ListSubheader>
+ //      }
+ //     >
+ //      <SubMenuWrapper>
+ //       <List component="div">
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={MASTER_CUSTOMER}
+ //          startIcon={<PersonIcon />}
+ //         >
+ //          Customer
+ //         </Button>
+ //        </ListItem>
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={MASTER_PRODUCT}
+ //          startIcon={<CategoryIcon />}
+ //         >
+ //          Product
+ //         </Button>
+ //        </ListItem>
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={MASTER_PACKAGE}
+ //          startIcon={<InventoryIcon />}
+ //         >
+ //          Package
+ //         </Button>
+ //        </ListItem>
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={MASTER_CUSTOMER_PRODUCT}
+ //          startIcon={<PersonIcon />}
+ //         >
+ //          Customer Product
+ //         </Button>
+ //        </ListItem>
+ //        <ListItem component="div">
+ //         <Button
+ //          disableRipple
+ //          component={RouterLink}
+ //          onClick={closeSidebar}
+ //          to={MASTER_TOPIC}
+ //          startIcon={<TopicIcon />}
+ //         >
+ //          Topic
+ //         </Button>
+ //        </ListItem>
+ //       </List>
+ //      </SubMenuWrapper>
+ //     </List>
+ //    </MenuWrapper>
+ //   </>
+ //  );
 }
 
 export default SidebarMenu;
