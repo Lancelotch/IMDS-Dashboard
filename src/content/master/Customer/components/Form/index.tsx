@@ -36,6 +36,7 @@ import { DesktopDatePicker } from '@mui/lab';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useAlert } from 'src/hooks/useAlert';
+import Confirmation from 'src/components/Confirmation';
 
 interface Props {
  action: string;
@@ -88,6 +89,8 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
  const [open, setOpen] = useState(false);
  const handleOpen = () => setOpen(true);
  const handleClose = () => setOpen(false);
+ const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
+ const [field, setField] = useState<ICustomerPackage>();
  const { addCustomer, editCustomer, getCustomerById, generateToken } =
   useCustomer();
  const { handleClickAlert } = useAlert();
@@ -109,7 +112,8 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
    email: '',
    phoneNumber: '',
    pic: '',
-   packages: []
+   packages: [],
+   removedPackages: []
   },
   validationSchema: validationSchema(),
   onSubmit: async (value) => {
@@ -156,10 +160,23 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
  }, []);
 
  const handleClickDelete = function (packageSelected: ICustomerPackage) {
+  if (action === 'edit') {
+   setField(packageSelected);
+   setOpenConfirmation(true);
+   return;
+  }
   const filter = values.packages.filter(
    (pkg) => pkg.packageId != packageSelected.packageId
   );
   setFieldValue('packages', filter);
+ };
+
+ const handleOkDelete = function () {
+  const filter = values.packages.filter(
+   (pkg) => pkg.packageId != field.packageId
+  );
+  setFieldValue('packages', filter);
+  setFieldValue('removedPackages', [...values.removedPackages, field]);
  };
 
  const handleClickGenerateToken = function (customerPackageId: string) {
@@ -290,7 +307,7 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
           >
            <TableCell align="center">
-            <Tooltip title="Delete Role" arrow>
+            <Tooltip title="Delete Package" arrow>
              <IconButton
               sx={{
                '&:hover': {
@@ -473,6 +490,14 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
      </Box>
     </Modal>
    )}
+   <Confirmation
+    onClose={() => setOpenConfirmation(false)}
+    onOk={handleOkDelete}
+    open={openConfirmation}
+    labelButton="Delete"
+    title={`Are you sure want to remove "${field?.packageName}" ?`}
+    message="This might be effect your data, consider that what has been deleted cannot be recover."
+   />
   </Box>
  );
 };

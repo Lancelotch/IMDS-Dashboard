@@ -64,6 +64,7 @@ const TableProduct = () => {
  );
 
  const { productList, loading } = useAppSelector((state) => state.storeProduct);
+ const roleMenu = useAppSelector((state) => state.storeRole.roleMenu);
  const filterProductListActive = useMemo(() => {
   const filterDataActive = productList.data.filter(
    (product) => product.isActive === 1
@@ -239,36 +240,40 @@ const TableProduct = () => {
           <TableCell align="left">{product.typeValue}</TableCell>
           <TableCell align="center">
            <Stack direction="row" spacing={2} justifyContent="center">
-            <Tooltip title="Edit Role" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.primary.lighter
-               },
-               color: theme.palette.primary.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickEdit(product)}
-             >
-              <EditTwoToneIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete Role" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.error.lighter
-               },
-               color: theme.palette.error.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickDelete(product)}
-             >
-              <DeleteTwoToneIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
+            {roleMenu?.isUpdate === 1 && (
+             <Tooltip title="Edit Product" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.primary.lighter
+                },
+                color: theme.palette.primary.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickEdit(product)}
+              >
+               <EditTwoToneIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
+            {roleMenu?.isDelete === 1 && (
+             <Tooltip title="Delete Product" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.error.lighter
+                },
+                color: theme.palette.error.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickDelete(product)}
+              >
+               <DeleteTwoToneIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
            </Stack>
           </TableCell>
          </TableRow>

@@ -55,6 +55,7 @@ const TableTopic = () => {
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
  );
+ const roleMenu = useAppSelector((state) => state.storeRole.roleMenu);
 
  const filterTopicListActive = useMemo(() => {
   const filterDataActive = topicList.data.filter(
@@ -228,36 +229,40 @@ const TableTopic = () => {
           <TableCell align="left">{topic.topicName}</TableCell>
           <TableCell align="center">
            <Stack direction="row" spacing={2} justifyContent="center">
-            <Tooltip title="Edit Topic" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.primary.lighter
-               },
-               color: theme.palette.primary.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickEdit(topic)}
-             >
-              <EditTwoToneIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete Topic" arrow>
-             <IconButton
-              sx={{
-               '&:hover': {
-                background: theme.colors.error.lighter
-               },
-               color: theme.palette.error.main
-              }}
-              color="inherit"
-              size="small"
-              onClick={() => handleClickDelete(topic)}
-             >
-              <DeleteTwoToneIcon fontSize="small" />
-             </IconButton>
-            </Tooltip>
+            {roleMenu?.isUpdate === 1 && (
+             <Tooltip title="Edit Topic" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.primary.lighter
+                },
+                color: theme.palette.primary.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickEdit(topic)}
+              >
+               <EditTwoToneIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
+            {roleMenu?.isDelete === 1 && (
+             <Tooltip title="Delete Topic" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.error.lighter
+                },
+                color: theme.palette.error.main
+               }}
+               color="inherit"
+               size="small"
+               onClick={() => handleClickDelete(topic)}
+              >
+               <DeleteTwoToneIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
            </Stack>
           </TableCell>
          </TableRow>
