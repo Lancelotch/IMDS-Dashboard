@@ -38,6 +38,8 @@ import { IInternalUser } from 'src/models/internalUser';
 import SearchBySelectField from 'src/components/SearchBySelectField';
 import { CORE_INTERNAL_USER } from 'src/route';
 import { useNavigate } from 'react-router';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
+import LockResetIcon from '@mui/icons-material/LockReset';
 
 const optionFields: Array<IOptionSearchField> = [
  {
@@ -79,7 +81,8 @@ const TableRole = () => {
   return { ...internalUserList, data: filterDataActive };
  }, [internalUserList]);
 
- const { getInternalUserList, deleteInternalUser } = useInternalUser();
+ const { getInternalUserList, deleteInternalUser, suspenseInternalUser } =
+  useInternalUser();
 
  const handleChangeSearch = (value: string) => {
   setSearch(value);
@@ -91,6 +94,16 @@ const TableRole = () => {
   navigate(
    `${CORE_INTERNAL_USER}?action=edit&id=${internalUser.internalUserId}`
   );
+ };
+
+ const handleClickResetPassword = function (internalUser: IInternalUser) {
+  navigate(
+   `${CORE_INTERNAL_USER}?action=reset-password&id=${internalUser.internalUserId}`
+  );
+ };
+
+ const handleClickSuspend = function (internalUser: IInternalUser) {
+  suspenseInternalUser(internalUser.internalUserId, { isSuspend: 1 });
  };
 
  const handleClickDelete = (internalUser: IInternalUser) => {
@@ -248,6 +261,42 @@ const TableRole = () => {
           <TableCell align="left">{internalUser.roleName}</TableCell>
           <TableCell align="center">
            <Stack direction="row" spacing={2} justifyContent="center">
+            {roleMenu?.isUpdate === 1 && (
+             <Tooltip title="Reset Password" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.primary.lighter
+                },
+                color: theme.palette.primary.main
+               }}
+               color="inherit"
+               size="small"
+               disabled={loading}
+               onClick={() => handleClickResetPassword(internalUser)}
+              >
+               <LockResetIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
+            {roleMenu?.isUpdate === 1 && (
+             <Tooltip title="Suspend Internal User" arrow>
+              <IconButton
+               sx={{
+                '&:hover': {
+                 background: theme.colors.primary.lighter
+                },
+                color: theme.palette.primary.main
+               }}
+               color="inherit"
+               size="small"
+               disabled={loading}
+               onClick={() => handleClickSuspend(internalUser)}
+              >
+               <DoNotDisturbIcon fontSize="small" />
+              </IconButton>
+             </Tooltip>
+            )}
             {roleMenu?.isUpdate === 1 && (
              <Tooltip title="Edit Internal User" arrow>
               <IconButton

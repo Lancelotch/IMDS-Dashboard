@@ -18,6 +18,7 @@ export interface ICustomer {
 }
 
 export interface ICustomerPackage {
+ id?: string;
  customerId?: string;
  contractBegin: Date;
  contractEnd: Date;

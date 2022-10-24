@@ -24,7 +24,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box } from '@mui/system';
 import { useAppSelector } from 'src/app/hooks';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useFirstRender } from 'src/hooks/useFirstRender';
 import { useCustomer } from 'src/services/customer/useCustomer';
 import { ICustomerPackage, IPayloadAddCustomer } from 'src/models/customer';
@@ -149,8 +149,15 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
    setFieldValue('phoneNumber', customerById.phoneNumber);
    setFieldValue('pic', customerById.pic);
    setFieldValue('packages', customerById.packages);
+   const packagesId = customerById.packages.map((pkg) => pkg.packageId);
+   setSelectionModel(packagesId);
   }
  }, [customerById]);
+
+ useEffect(() => {
+  const packagesId = values.packages.map((pkg) => pkg.packageId);
+  setSelectionModel(packagesId);
+ }, [values.packages]);
 
  useEffect(() => {
   getPackageList({
@@ -187,10 +194,23 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
   handleClose();
   const filterPackageByArrayId = filter(
    packageList.data,
-   (v) => indexOf(selectionModel, v.id) !== -1
+   (v) => indexOf(selectionModel, v.packageId) !== -1
   );
-  setFieldValue('packages', filterPackageByArrayId);
+  setFieldValue('packages', [
+   ...customerById.packages,
+   ...filterPackageByArrayId
+  ]);
  };
+
+ const filterSelectPackage = useMemo(() => {
+  return packageList.data.filter(
+   (pkg) =>
+    indexOf(
+     customerById.packages.map((p) => p.packageId),
+     pkg.packageId
+    ) === -1
+  );
+ }, [customerById]);
 
  return (
   <Box sx={{ mt: theme.spacing(2) }}>
@@ -474,10 +494,11 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
           }
          }
         ]}
-        rows={packageList.data}
+        rows={filterSelectPackage}
         onSelectionModelChange={(a) => {
          setSelectionModel(a);
         }}
+        selectionModel={selectionModel}
         components={{
          Footer: CustomFooterComponent
         }}
@@ -485,6 +506,7 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
          footer: { onOk }
         }}
         hideFooterPagination
+        getRowId={(row) => row.packageId}
        />
       </div>
      </Box>
