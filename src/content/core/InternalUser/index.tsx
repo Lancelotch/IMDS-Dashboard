@@ -6,6 +6,7 @@ import PageHeader from 'src/components/PageHeader';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { getValueParam } from 'src/hooks/useQueryUrl';
 import Form from './components/Form';
+import FormResetPassword from './components/FormResetPassword';
 import Table from './components/Table';
 
 const InternalUser = () => {
@@ -34,7 +35,11 @@ const InternalUser = () => {
      spacing={3}
     >
      <Grid item xs={12}>
-      {action ? (
+      {action === 'reset-password' ? (
+       <ContainerContent>
+        <FormResetPassword id={id} />
+       </ContainerContent>
+      ) : action ? (
        <ContainerContent>
         <Form action={action} id={id} />{' '}
        </ContainerContent>

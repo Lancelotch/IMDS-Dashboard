@@ -31,7 +31,7 @@ export const useCustomer = () => {
     '/customer_v2/create',
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerUpdateAddCustomer(response.data.data));
     handleClickAlert({
      horizontal: 'center',
@@ -61,7 +61,7 @@ export const useCustomer = () => {
     '/customer_v2/generate_token',
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerUpdateCustomerPackage(response.data));
     handleClickAlert({
      horizontal: 'center',
@@ -91,7 +91,7 @@ export const useCustomer = () => {
      isActive: false
     }
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerEditCustomer(response.data.data));
     handleClickAlert({
      horizontal: 'center',
@@ -120,7 +120,7 @@ export const useCustomer = () => {
     `/customer_v2/update/${id}`,
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerEditCustomer(response.data.data));
     handleClickAlert({
      horizontal: 'center',

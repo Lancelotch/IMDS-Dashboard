@@ -28,7 +28,7 @@ export const usePackage = () => {
     '/package/create',
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerUpdateAddPackage(response.data.data));
     handleClickAlert({
      horizontal: 'center',
@@ -60,7 +60,7 @@ export const usePackage = () => {
      isActive: false
     }
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerEditPackage(response.data.data));
     handleClickAlert({
      horizontal: 'center',
@@ -89,7 +89,7 @@ export const usePackage = () => {
     `/package/update/${id}`,
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerEditPackage(response.data.data));
     handleClickAlert({
      horizontal: 'center',

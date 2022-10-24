@@ -37,7 +37,7 @@ export const useRole = () => {
     '/role/create',
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerUpdateAddRole(response.data.data));
     handleClickAlert({
      horizontal: 'center',
@@ -69,7 +69,7 @@ export const useRole = () => {
      isActive: false
     }
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerEditRole(response.data.data));
     handleClickAlert({
      horizontal: 'center',
@@ -98,7 +98,7 @@ export const useRole = () => {
     `/role/update/${id}`,
     payload
    );
-   if (response.status === 201) {
+   if (response.status === 200) {
     dispatch(reducerEditRole(response.data.data));
     handleClickAlert({
      horizontal: 'center',
