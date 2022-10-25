@@ -235,9 +235,13 @@ const TableProduct = () => {
            {stateTable.limit * (stateTable.page - 1) + index + 1}
           </TableCell>
           <TableCell align="left">{product.productName}</TableCell>
-          <TableCell align="left">{product.isStaging}</TableCell>
+          <TableCell align="left">
+           {product.isStaging === 0 ? 'false' : 'true'}
+          </TableCell>
           <TableCell align="left">{product.type}</TableCell>
-          <TableCell align="left">{product.typeValue}</TableCell>
+          <TableCell align="left">
+           {product.typeValue.replaceAll(',', ', ')}
+          </TableCell>
           <TableCell align="center">
            <Stack direction="row" spacing={2} justifyContent="center">
             {roleMenu?.isUpdate === 1 && (
