@@ -196,13 +196,29 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
    packageList.data,
    (v) => indexOf(selectionModel, v.packageId) !== -1
   );
+
+  const filterRemoveByArrayId = filter(
+   customerById.packages,
+   (v) =>
+    indexOf(
+     values.removedPackages.map((remove) => remove.packageId),
+     v.packageId
+    ) === -1
+  );
+
+  if (action === 'create') {
+   setFieldValue('packages', filterPackageByArrayId);
+   return;
+  }
+
   setFieldValue('packages', [
-   ...customerById.packages,
+   ...filterRemoveByArrayId,
    ...filterPackageByArrayId
   ]);
  };
 
  const filterSelectPackage = useMemo(() => {
+  if (isFirstRender && action !== 'edit') return;
   return packageList.data.filter(
    (pkg) =>
     indexOf(
@@ -431,7 +447,7 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
                   values.packages[idx].customerPackageId
                  )
                 }
-                disabled={loading}
+                disabled={loading || !values.packages[idx]?.customerPackageId}
                >
                 Generate
                </Button>
@@ -494,9 +510,9 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
           }
          }
         ]}
-        rows={filterSelectPackage}
-        onSelectionModelChange={(a) => {
-         setSelectionModel(a);
+        rows={action === 'create' ? packageList.data : filterSelectPackage}
+        onSelectionModelChange={(packageId) => {
+         setSelectionModel(packageId);
         }}
         selectionModel={selectionModel}
         components={{
