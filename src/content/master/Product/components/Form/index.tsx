@@ -60,7 +60,7 @@ const FormProduct: FC<Props> = ({ action, id }) => {
    isStaging: false,
    productName: '',
    topic: '',
-   type: 'widget',
+   type: '',
    widgetId: ''
   },
   validationSchema: validationSchema(),
@@ -122,7 +122,11 @@ const FormProduct: FC<Props> = ({ action, id }) => {
        <FormLabel>Type</FormLabel>
        <Select
         value={values.type}
-        onChange={handleChange}
+        onChange={(e) => {
+         setFieldValue('widgetId', '');
+         setFieldValue('topic', '');
+         handleChange(e);
+        }}
         size="small"
         name="type"
        >
@@ -147,7 +151,6 @@ const FormProduct: FC<Props> = ({ action, id }) => {
         value={values.topic}
         fullWidth
         size="small"
-        disabled={values.type !== 'streaming'}
        />
        <FormHelperText error variant="outlined" margin="dense" sx={{ ml: 0 }}>
         {errors.topic && touched.topic && errors.topic}
@@ -177,7 +180,11 @@ const FormProduct: FC<Props> = ({ action, id }) => {
        <FormLabel>Widget</FormLabel>
        <Select
         value={values.widgetId}
-        onChange={handleChange}
+        onChange={(e) => {
+         handleChange(e);
+         const widgetById = widgetList.data.find((widget) => widget.widgetId);
+         setFieldValue('topic', widgetById.topic);
+        }}
         size="small"
         name="widgetId"
         disabled={values.type !== 'widget'}
