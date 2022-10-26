@@ -182,7 +182,9 @@ const FormProduct: FC<Props> = ({ action, id }) => {
         value={values.widgetId}
         onChange={(e) => {
          handleChange(e);
-         const widgetById = widgetList.data.find((widget) => widget.widgetId);
+         const widgetById = widgetList.data.find(
+          (widget) => widget.widgetId === e.target.value
+         );
          setFieldValue('topic', widgetById.topic);
         }}
         size="small"
