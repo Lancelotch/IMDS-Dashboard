@@ -32,7 +32,7 @@ function validationSchema() {
   productName: Yup.string().required(),
   type: Yup.string().required(),
   topic: Yup.string(),
-  apiUrl: Yup.string(),
+  apiUrl: Yup.string().nullable(),
   widgetId: Yup.string()
  });
 }
