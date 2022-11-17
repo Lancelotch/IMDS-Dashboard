@@ -494,7 +494,7 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
     >
      <Box sx={style}>
       <Box sx={{ mb: theme.spacing(1) }}>
-       <Typography variant="h4">Select Product</Typography>
+       <Typography variant="h4">Select Package</Typography>
       </Box>
       <div style={{ height: 300, width: '100%' }}>
        <DataGrid
