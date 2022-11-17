@@ -219,13 +219,15 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
 
  const filterSelectPackage = useMemo(() => {
   if (isFirstRender && action !== 'edit') return;
-  return packageList.data.filter(
-   (pkg) =>
-    indexOf(
-     customerById.packages.map((p) => p.packageId),
-     pkg.packageId
-    ) === -1
-  );
+  return packageList
+   ? packageList.data.filter(
+      (pkg) =>
+       indexOf(
+        customerById.packages.map((p) => p.packageId),
+        pkg.packageId
+       ) === -1
+     )
+   : [];
  }, [customerById]);
 
  return (
