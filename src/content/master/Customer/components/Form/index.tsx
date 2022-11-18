@@ -197,14 +197,16 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
    (v) => indexOf(selectionModel, v.packageId) !== -1
   );
 
-  const filterRemoveByArrayId = filter(
-   customerById.packages,
-   (v) =>
-    indexOf(
-     values.removedPackages.map((remove) => remove.packageId),
-     v.packageId
-    ) === -1
-  );
+  const filterRemoveByArrayId = customerById?.packages
+   ? filter(
+      customerById.packages,
+      (v) =>
+       indexOf(
+        values.removedPackages.map((remove) => remove.packageId),
+        v.packageId
+       ) === -1
+     )
+   : [];
 
   if (action === 'create') {
    setFieldValue('packages', filterPackageByArrayId);
