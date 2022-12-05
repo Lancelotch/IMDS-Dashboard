@@ -1,8 +1,18 @@
 import React from 'react';
-import { TableHead, TableRow, TableCell, TableSortLabel } from '@mui/material';
+import {
+ TableHead,
+ TableRow,
+ TableCell,
+ TableSortLabel,
+ Checkbox,
+ useTheme
+} from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { IPayloadSort, Order } from 'src/models/general';
 import { ICustomer } from 'src/models/customer';
+import FilterNoneIcon from '@mui/icons-material/FilterNone';
+import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 
 interface HeadCell {
  disablePadding: boolean;
@@ -17,6 +27,12 @@ interface EnhancedTableProps {
  onRequestSort: (payload: IPayloadSort<ICustomer>) => void;
  order: Order;
  orderBy: string;
+ rowCount: number;
+ numSelected: number;
+ onSelectAllClick: (
+  event: React.ChangeEvent<HTMLInputElement>,
+  checked: boolean
+ ) => void;
 }
 
 const headCells: HeadCell[] = [
@@ -60,7 +76,10 @@ const headCells: HeadCell[] = [
 const Header: React.FC<EnhancedTableProps> = ({
  onRequestSort,
  order,
- orderBy
+ orderBy,
+ numSelected,
+ onSelectAllClick,
+ rowCount
 }) => {
  const createSortHandler =
   (property: keyof ICustomer) => (event: React.MouseEvent<unknown>) => {
@@ -69,10 +88,49 @@ const Header: React.FC<EnhancedTableProps> = ({
     sortingMethod: order === 'asc' ? 'desc' : 'asc'
    });
   };
-
+ const theme = useTheme();
  return (
   <TableHead>
    <TableRow>
+    <TableCell padding="checkbox" sx={{ width: '4%' }}>
+     <Checkbox
+      indeterminate={numSelected > 0 && numSelected < rowCount}
+      checked={numSelected - rowCount === 0}
+      size="small"
+      sx={{
+       ml: theme.spacing(0.5),
+       backgroundColor: theme.palette.primary.main
+      }}
+      icon={
+       <FilterNoneIcon
+        sx={{
+         color: theme.palette.common.white,
+         width: theme.spacing(2.5),
+         height: theme.spacing(2.5)
+        }}
+       />
+      }
+      checkedIcon={
+       <LibraryAddCheckIcon
+        sx={{
+         color: theme.palette.common.white,
+         width: theme.spacing(2.5),
+         height: theme.spacing(2.5)
+        }}
+       />
+      }
+      indeterminateIcon={
+       <IndeterminateCheckBoxIcon
+        sx={{
+         color: theme.palette.common.white,
+         width: theme.spacing(2.5),
+         height: theme.spacing(2.5)
+        }}
+       />
+      }
+      onChange={onSelectAllClick}
+     />
+    </TableCell>
     <TableCell size="small" align="center" padding="none">
      No
     </TableCell>

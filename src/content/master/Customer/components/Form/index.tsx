@@ -91,8 +91,13 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
  const handleClose = () => setOpen(false);
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<ICustomerPackage>();
- const { addCustomer, editCustomer, getCustomerById, generateToken } =
-  useCustomer();
+ const {
+  addCustomer,
+  editCustomer,
+  getCustomerById,
+  generateToken,
+  suspendPackage
+ } = useCustomer();
  const { handleClickAlert } = useAlert();
  const { getPackageList } = usePackage();
  const packageList = useAppSelector((store) => store.storePackage.packageList);
@@ -232,6 +237,12 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
    : [];
  }, [customerById]);
 
+ const handleClickSuspend = (customerPackageId: string) => {
+  suspendPackage(customerPackageId).then(() => {
+   getCustomerById(id);
+  });
+ };
+
  return (
   <Box sx={{ mt: theme.spacing(2) }}>
    <form onSubmit={handleSubmit}>
@@ -338,6 +349,8 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
             <TableCell align="center">Token</TableCell>
            </>
           )}
+
+          <TableCell align="center">Action</TableCell>
          </TableRow>
         </TableHead>
         <TableBody>
@@ -459,6 +472,16 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
              </TableCell>
             </>
            )}
+           <TableCell align="center">
+            <Button
+             variant="contained"
+             color={pkg.isSuspend ? 'error' : 'success'}
+             disabled={loading ? true : pkg.isSuspend === 0 ? false : true}
+             onClick={() => handleClickSuspend(pkg.customerPackageId)}
+            >
+             {pkg.isSuspend === 0 ? 'Suspend' : 'Suspended'}
+            </Button>
+           </TableCell>
           </TableRow>
          ))}
         </TableBody>

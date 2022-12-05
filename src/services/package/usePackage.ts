@@ -82,6 +82,32 @@ export const usePackage = () => {
   }
  };
 
+ const deletesPackages = async (packageIds: Array<string>) => {
+  dispatch(reducerUpdateLoadingPackage(true));
+  try {
+   const response = await httpClient.post(`/package/delete_multiple_package`, {
+    packageIds
+   });
+   if (response.status === 200) {
+    handleClickAlert({
+     horizontal: 'center',
+     vertical: 'top',
+     message: 'Deletes package has successfully',
+     severity: 'success'
+    });
+   }
+  } catch (e) {
+   handleClickAlert({
+    horizontal: 'center',
+    vertical: 'top',
+    message: 'Failed delete packages',
+    severity: 'error'
+   });
+  } finally {
+   dispatch(reducerUpdateLoadingPackage(false));
+  }
+ };
+
  const editPackage = async (id: string, payload: IPayloadAddPackage) => {
   dispatch(reducerUpdateLoadingPackage(true));
   try {
@@ -161,6 +187,7 @@ export const usePackage = () => {
   addPackage,
   editPackage,
   deletePackage,
-  getPackageById
+  getPackageById,
+  deletesPackages
  };
 };

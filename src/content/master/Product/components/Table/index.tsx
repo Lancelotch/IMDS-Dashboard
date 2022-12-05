@@ -21,7 +21,8 @@ import {
  OutlinedInput,
  InputAdornment,
  IconButton,
- Tooltip
+ Tooltip,
+ Checkbox
 } from '@mui/material';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
@@ -59,6 +60,7 @@ const TableProduct = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<IProduct>();
  const [search, setSearch] = useState<string>('');
+ const [selectedItems, setSelectedItems] = useState<Array<IProduct>>([]);
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
  );
@@ -72,7 +74,7 @@ const TableProduct = () => {
   return { ...productList, data: filterDataActive };
  }, [productList]);
 
- const { getProductList, deleteProduct } = useProduct();
+ const { getProductList, deleteProduct, deletesProducts } = useProduct();
 
  const handleClickEdit = function (product: IProduct) {
   navigate(`${MASTER_PRODUCT}?action=edit&id=${product.productId}`);
@@ -144,9 +146,9 @@ const TableProduct = () => {
   });
  };
 
+ const { page, limit, sortingMethod, columnName } = stateTable;
  const isFirstRender = useFirstRender();
  const handleClickSearch = () => {
-  const { page, limit, sortingMethod, columnName } = stateTable;
   getProductList({
    page: page,
    limit: limit,
@@ -158,7 +160,6 @@ const TableProduct = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod, columnName } = stateTable;
   getProductList({
    page: page,
    limit: limit,
@@ -174,14 +175,75 @@ const TableProduct = () => {
   if (!loading) setOpenConfirmation(false);
  }, [loading]);
 
+ const handleChangeSelectStream = function (customer: IProduct) {
+  const selectedIndex = selectedItems.findIndex(
+   (item) => item.productId === customer.productId
+  );
+  let newSelected: any[] = [];
+  if (selectedIndex === -1) {
+   newSelected = newSelected.concat(selectedItems, customer);
+  } else if (selectedIndex === 0) {
+   newSelected = newSelected.concat(selectedItems.slice(1));
+  } else if (selectedIndex === selectedItems.length - 1) {
+   newSelected = newSelected.concat(selectedItems.slice(0, -1));
+  } else if (selectedIndex > 0) {
+   newSelected = newSelected.concat(
+    selectedItems.slice(0, selectedIndex),
+    selectedItems.slice(selectedIndex + 1)
+   );
+  }
+  setSelectedItems(newSelected);
+ };
+
+ const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.checked) {
+   setSelectedItems(filterProductListActive.data);
+   return;
+  }
+  setSelectedItems([]);
+ };
+
+ const isSelected = (id: string) =>
+  selectedItems.findIndex((item) => item.productId === id) !== -1;
+
  const theme = useTheme();
+
+ const handleDeletes = () => {
+  const ids = selectedItems.map((item) => item.productId);
+  deletesProducts(ids).then(() => {
+   setSelectedItems([]);
+   getProductList({
+    page: 1,
+    limit: limit,
+    sort: sortingMethod,
+    dir: `product.${columnName}`,
+    searchField: `product.${searchField.value}`,
+    searchValue: search
+   });
+  });
+ };
 
  return (
   <>
    <Card>
     <CardHeader
+     sx={{ position: 'relative' }}
      action={
-      <Box sx={{ margin: theme.spacing(1, 1, 0, 1) }}>
+      <Box
+       sx={{
+        margin: theme.spacing(1, 1, 0, 1)
+       }}
+      >
+       {selectedItems.length > 0 ? (
+        <Button
+         onClick={handleDeletes}
+         variant="contained"
+         color="error"
+         sx={{ position: 'absolute', left: 16 }}
+        >
+         Delete selected products
+        </Button>
+       ) : null}
        <OutlinedInput
         id="outlined-search"
         type="text"
@@ -226,62 +288,76 @@ const TableProduct = () => {
         order={stateTable.sortingMethod}
         orderBy={stateTable.columnName}
         onRequestSort={handleSort}
+        rowCount={filterProductListActive.data.length}
+        onSelectAllClick={handleSelectAllClick}
+        numSelected={selectedItems.length}
        />
 
        <TableBody>
-        {filterProductListActive.data.map((product, index) => (
-         <TableRow key={product.id}>
-          <TableCell align="center">
-           {stateTable.limit * (stateTable.page - 1) + index + 1}
-          </TableCell>
-          <TableCell align="left">{product.productName}</TableCell>
-          <TableCell align="left">
-           {product.isStaging === 0 ? 'false' : 'true'}
-          </TableCell>
-          <TableCell align="left">{product.type}</TableCell>
-          <TableCell align="left">
-           {product.typeValue.replaceAll(',', ', ')}
-          </TableCell>
-          <TableCell align="center">
-           <Stack direction="row" spacing={2} justifyContent="center">
-            {roleMenu?.isUpdate === 1 && (
-             <Tooltip title="Edit Product" arrow>
-              <IconButton
-               sx={{
-                '&:hover': {
-                 background: theme.colors.primary.lighter
-                },
-                color: theme.palette.primary.main
-               }}
-               color="inherit"
-               size="small"
-               onClick={() => handleClickEdit(product)}
-              >
-               <EditTwoToneIcon fontSize="small" />
-              </IconButton>
-             </Tooltip>
-            )}
-            {roleMenu?.isDelete === 1 && (
-             <Tooltip title="Delete Product" arrow>
-              <IconButton
-               sx={{
-                '&:hover': {
-                 background: theme.colors.error.lighter
-                },
-                color: theme.palette.error.main
-               }}
-               color="inherit"
-               size="small"
-               onClick={() => handleClickDelete(product)}
-              >
-               <DeleteTwoToneIcon fontSize="small" />
-              </IconButton>
-             </Tooltip>
-            )}
-           </Stack>
-          </TableCell>
-         </TableRow>
-        ))}
+        {filterProductListActive.data.map((product, index) => {
+         const isItemSelected = isSelected(product.productId);
+         return (
+          <TableRow key={product.id}>
+           <TableCell align="center" size="small" padding="none">
+            <Checkbox
+             color="primary"
+             checked={isItemSelected}
+             value={product.productId}
+             onChange={() => handleChangeSelectStream(product)}
+            />
+           </TableCell>
+           <TableCell align="center">
+            {stateTable.limit * (stateTable.page - 1) + index + 1}
+           </TableCell>
+           <TableCell align="left">{product.productName}</TableCell>
+           <TableCell align="left">
+            {product.isStaging === 0 ? 'false' : 'true'}
+           </TableCell>
+           <TableCell align="left">{product.type}</TableCell>
+           <TableCell align="left">
+            {product.typeValue.replaceAll(',', ', ')}
+           </TableCell>
+           <TableCell align="center">
+            <Stack direction="row" spacing={2} justifyContent="center">
+             {roleMenu?.isUpdate === 1 && (
+              <Tooltip title="Edit Product" arrow>
+               <IconButton
+                sx={{
+                 '&:hover': {
+                  background: theme.colors.primary.lighter
+                 },
+                 color: theme.palette.primary.main
+                }}
+                color="inherit"
+                size="small"
+                onClick={() => handleClickEdit(product)}
+               >
+                <EditTwoToneIcon fontSize="small" />
+               </IconButton>
+              </Tooltip>
+             )}
+             {roleMenu?.isDelete === 1 && (
+              <Tooltip title="Delete Product" arrow>
+               <IconButton
+                sx={{
+                 '&:hover': {
+                  background: theme.colors.error.lighter
+                 },
+                 color: theme.palette.error.main
+                }}
+                color="inherit"
+                size="small"
+                onClick={() => handleClickDelete(product)}
+               >
+                <DeleteTwoToneIcon fontSize="small" />
+               </IconButton>
+              </Tooltip>
+             )}
+            </Stack>
+           </TableCell>
+          </TableRow>
+         );
+        })}
         <TableRow hover={false}>
          <TableCell colSpan={3}>
           <Stack

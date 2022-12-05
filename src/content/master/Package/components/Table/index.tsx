@@ -24,7 +24,8 @@ import {
  Tooltip,
  Chip,
  TooltipProps,
- tooltipClasses
+ tooltipClasses,
+ Checkbox
 } from '@mui/material';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
@@ -71,6 +72,7 @@ const TablePackage = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<IPackage>();
  const [search, setSearch] = useState<string>('');
+ const [selectedItems, setSelectedItems] = useState<Array<IPackage>>([]);
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
  );
@@ -84,7 +86,7 @@ const TablePackage = () => {
   return { ...packageList, data: filterDataActive };
  }, [packageList]);
 
- const { getPackageList, deletePackage } = usePackage();
+ const { getPackageList, deletePackage, deletesPackages } = usePackage();
 
  const handleClickEdit = function (packageSelected: IPackage) {
   navigate(`${MASTER_PACKAGE}?action=edit&id=${packageSelected.packageId}`);
@@ -156,9 +158,10 @@ const TablePackage = () => {
   });
  };
 
+ const { page, limit, sortingMethod, columnName } = stateTable;
+
  const isFirstRender = useFirstRender();
  const handleClickSearch = () => {
-  const { page, limit, sortingMethod, columnName } = stateTable;
   getPackageList({
    page: page,
    limit: limit,
@@ -170,7 +173,6 @@ const TablePackage = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod, columnName } = stateTable;
   getPackageList({
    page: page,
    limit: limit,
@@ -186,14 +188,75 @@ const TablePackage = () => {
   if (!loading) setOpenConfirmation(false);
  }, [loading]);
 
+ const handleChangeSelectStream = function (packageSelected: IPackage) {
+  const selectedIndex = selectedItems.findIndex(
+   (item) => item.packageId === packageSelected.packageId
+  );
+  let newSelected: any[] = [];
+  if (selectedIndex === -1) {
+   newSelected = newSelected.concat(selectedItems, packageSelected);
+  } else if (selectedIndex === 0) {
+   newSelected = newSelected.concat(selectedItems.slice(1));
+  } else if (selectedIndex === selectedItems.length - 1) {
+   newSelected = newSelected.concat(selectedItems.slice(0, -1));
+  } else if (selectedIndex > 0) {
+   newSelected = newSelected.concat(
+    selectedItems.slice(0, selectedIndex),
+    selectedItems.slice(selectedIndex + 1)
+   );
+  }
+  setSelectedItems(newSelected);
+ };
+
+ const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.checked) {
+   setSelectedItems(filterPackageListActive.data);
+   return;
+  }
+  setSelectedItems([]);
+ };
+
+ const isSelected = (id: string) =>
+  selectedItems.findIndex((item) => item.packageId === id) !== -1;
+
  const theme = useTheme();
+
+ const handleDeletes = () => {
+  const ids = selectedItems.map((item) => item.packageId);
+  deletesPackages(ids).then(() => {
+   setSelectedItems([]);
+   getPackageList({
+    page: 1,
+    limit: limit,
+    sort: sortingMethod,
+    dir: `package.${columnName}`,
+    searchField: `package.${searchField.value}`,
+    searchValue: search
+   });
+  });
+ };
 
  return (
   <>
    <Card>
     <CardHeader
+     sx={{ position: 'relative' }}
      action={
-      <Box sx={{ margin: theme.spacing(1, 1, 0, 1) }}>
+      <Box
+       sx={{
+        margin: theme.spacing(1, 1, 0, 1)
+       }}
+      >
+       {selectedItems.length > 0 ? (
+        <Button
+         onClick={handleDeletes}
+         variant="contained"
+         color="error"
+         sx={{ position: 'absolute', left: 16 }}
+        >
+         Delete selected packages
+        </Button>
+       ) : null}
        <OutlinedInput
         id="outlined-search"
         type="text"
@@ -238,74 +301,88 @@ const TablePackage = () => {
         order={stateTable.sortingMethod}
         orderBy={stateTable.columnName}
         onRequestSort={handleSort}
+        rowCount={filterPackageListActive.data.length}
+        onSelectAllClick={handleSelectAllClick}
+        numSelected={selectedItems.length}
        />
 
        <TableBody>
-        {filterPackageListActive.data.map((packageActive, index) => (
-         <TableRow key={packageActive.id}>
-          <TableCell align="center">
-           {stateTable.limit * (stateTable.page - 1) + index + 1}
-          </TableCell>
-          <TableCell align="left">{packageActive.packageName}</TableCell>
-          <TableCell align="left">
-           <BootstrapTooltip
-            placement="top"
-            title={packageActive.products.map((product) => (
-             <Chip
-              label={product.productName}
-              variant="outlined"
-              key={product.productId}
-              size="small"
-              sx={{
-               mr: theme.spacing(0.5),
-               backgroundColor: theme.palette.grey[50]
-              }}
-             />
-            ))}
-           >
-            <Chip label={`${packageActive.products.length} Products`} />
-           </BootstrapTooltip>
-          </TableCell>
-          <TableCell align="center">
-           <Stack direction="row" spacing={2} justifyContent="center">
-            {roleMenu?.isUpdate === 1 && (
-             <Tooltip title="Edit Package" arrow>
-              <IconButton
-               sx={{
-                '&:hover': {
-                 background: theme.colors.primary.lighter
-                },
-                color: theme.palette.primary.main
-               }}
-               color="inherit"
+        {filterPackageListActive.data.map((packageActive, index) => {
+         const isItemSelected = isSelected(packageActive.packageId);
+         return (
+          <TableRow key={packageActive.packageId}>
+           <TableCell align="center" size="small" padding="none">
+            <Checkbox
+             color="primary"
+             checked={isItemSelected}
+             value={packageActive.packageId}
+             onChange={() => handleChangeSelectStream(packageActive)}
+            />
+           </TableCell>
+           <TableCell align="center">
+            {stateTable.limit * (stateTable.page - 1) + index + 1}
+           </TableCell>
+           <TableCell align="left">{packageActive.packageName}</TableCell>
+           <TableCell align="left">
+            <BootstrapTooltip
+             placement="top"
+             title={packageActive.products.map((product) => (
+              <Chip
+               label={product.productName}
+               variant="outlined"
+               key={product.productId}
                size="small"
-               onClick={() => handleClickEdit(packageActive)}
-              >
-               <EditTwoToneIcon fontSize="small" />
-              </IconButton>
-             </Tooltip>
-            )}
-            {roleMenu?.isDelete === 1 && (
-             <Tooltip title="Delete Package" arrow>
-              <IconButton
                sx={{
-                '&:hover': {
-                 background: theme.colors.error.lighter
-                },
-                color: theme.palette.error.main
+                mr: theme.spacing(0.5),
+                backgroundColor: theme.palette.grey[50]
                }}
-               color="inherit"
-               size="small"
-               onClick={() => handleClickDelete(packageActive)}
-              >
-               <DeleteTwoToneIcon fontSize="small" />
-              </IconButton>
-             </Tooltip>
-            )}
-           </Stack>
-          </TableCell>
-         </TableRow>
-        ))}
+              />
+             ))}
+            >
+             <Chip label={`${packageActive.products.length} Products`} />
+            </BootstrapTooltip>
+           </TableCell>
+           <TableCell align="center">
+            <Stack direction="row" spacing={2} justifyContent="center">
+             {roleMenu?.isUpdate === 1 && (
+              <Tooltip title="Edit Package" arrow>
+               <IconButton
+                sx={{
+                 '&:hover': {
+                  background: theme.colors.primary.lighter
+                 },
+                 color: theme.palette.primary.main
+                }}
+                color="inherit"
+                size="small"
+                onClick={() => handleClickEdit(packageActive)}
+               >
+                <EditTwoToneIcon fontSize="small" />
+               </IconButton>
+              </Tooltip>
+             )}
+             {roleMenu?.isDelete === 1 && (
+              <Tooltip title="Delete Package" arrow>
+               <IconButton
+                sx={{
+                 '&:hover': {
+                  background: theme.colors.error.lighter
+                 },
+                 color: theme.palette.error.main
+                }}
+                color="inherit"
+                size="small"
+                onClick={() => handleClickDelete(packageActive)}
+               >
+                <DeleteTwoToneIcon fontSize="small" />
+               </IconButton>
+              </Tooltip>
+             )}
+            </Stack>
+           </TableCell>
+          </TableRow>
+         );
+        })}
         <TableRow hover={false}>
          <TableCell colSpan={3}>
           <Stack

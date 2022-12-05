@@ -27,6 +27,7 @@ export interface ICustomerPackage {
  packageName?: string;
  domain?: string;
  customerPackageId?: string;
+ isSuspend?: number;
 }
 
 export interface IResponseCustomerList extends IResponseBody<Array<ICustomer>> {

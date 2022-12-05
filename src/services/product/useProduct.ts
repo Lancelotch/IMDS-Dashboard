@@ -82,6 +82,32 @@ export const useProduct = () => {
   }
  };
 
+ const deletesProducts = async (productIds: Array<string>) => {
+  dispatch(reducerUpdateLoadingProduct(true));
+  try {
+   const response = await httpClient.post(`/product/delete_multiple_product`, {
+    productIds
+   });
+   if (response.status === 200) {
+    handleClickAlert({
+     horizontal: 'center',
+     vertical: 'top',
+     message: 'Deletes products has successfully',
+     severity: 'success'
+    });
+   }
+  } catch (e) {
+   handleClickAlert({
+    horizontal: 'center',
+    vertical: 'top',
+    message: 'Failed delete products',
+    severity: 'error'
+   });
+  } finally {
+   dispatch(reducerUpdateLoadingProduct(false));
+  }
+ };
+
  const editProduct = async (id: string, payload: IPayloadAddProduct) => {
   dispatch(reducerUpdateLoadingProduct(true));
   try {
@@ -161,6 +187,7 @@ export const useProduct = () => {
   addProduct,
   editProduct,
   deleteProduct,
-  getProductById
+  getProductById,
+  deletesProducts
  };
 };

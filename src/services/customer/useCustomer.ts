@@ -113,6 +113,63 @@ export const useCustomer = () => {
   }
  };
 
+ const deletesCustomers = async (customerIds: Array<string>) => {
+  dispatch(reducerUpdateLoadingCustomer(true));
+  try {
+   const response = await httpClient.post(
+    `/customer_v2/delete_multiple_customer`,
+    {
+     customerIds
+    }
+   );
+   if (response.status === 200) {
+    //dispatch(reducerEditCustomer(response.data.data));
+    handleClickAlert({
+     horizontal: 'center',
+     vertical: 'top',
+     message: 'Deletes customers has successfully',
+     severity: 'success'
+    });
+   }
+  } catch (e) {
+   handleClickAlert({
+    horizontal: 'center',
+    vertical: 'top',
+    message: 'Failed deletes Customers',
+    severity: 'error'
+   });
+  } finally {
+   dispatch(reducerUpdateLoadingCustomer(false));
+  }
+ };
+
+ const suspendPackage = async (customerPackageId: string) => {
+  dispatch(reducerUpdateLoadingCustomer(true));
+  try {
+   const response = await httpClient.post(`/customer_v2/suspend`, {
+    customerPackageId
+   });
+   if (response.status === 200) {
+    //dispatch(reducerEditCustomer(response.data.data));
+    handleClickAlert({
+     horizontal: 'center',
+     vertical: 'top',
+     message: 'Deletes customer package has successfully',
+     severity: 'success'
+    });
+   }
+  } catch (e) {
+   handleClickAlert({
+    horizontal: 'center',
+    vertical: 'top',
+    message: 'Failed deletes customer package',
+    severity: 'error'
+   });
+  } finally {
+   dispatch(reducerUpdateLoadingCustomer(false));
+  }
+ };
+
  const editCustomer = async (id: string, payload: IPayloadAddCustomer) => {
   dispatch(reducerUpdateLoadingCustomer(true));
   try {
@@ -188,12 +245,15 @@ export const useCustomer = () => {
    navigate(window.location.pathname);
   }
  };
+
  return {
   getCustomerList,
   addCustomer,
   editCustomer,
   deleteCustomer,
   getCustomerById,
-  generateToken
+  generateToken,
+  deletesCustomers,
+  suspendPackage
  };
 };

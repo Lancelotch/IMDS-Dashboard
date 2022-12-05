@@ -24,7 +24,8 @@ import {
  Tooltip,
  TooltipProps,
  tooltipClasses,
- Chip
+ Chip,
+ Checkbox
 } from '@mui/material';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import Confirmation from 'src/components/Confirmation';
@@ -87,6 +88,8 @@ const TableCustomer = () => {
  const [openConfirmation, setOpenConfirmation] = useState<boolean>(false);
  const [field, setField] = useState<ICustomer>();
  const [search, setSearch] = useState<string>('');
+ const [selectedItems, setSelectedItems] = useState<Array<ICustomer>>([]);
+
  const [searchField, setSearchField] = useState<IOptionSearchField>(
   optionFields[0]
  );
@@ -103,7 +106,7 @@ const TableCustomer = () => {
   return { ...customerList, data: filterDataActive };
  }, [customerList]);
 
- const { getCustomerList, deleteCustomer } = useCustomer();
+ const { getCustomerList, deleteCustomer, deletesCustomers } = useCustomer();
 
  const handleClickEdit = function (customer: ICustomer) {
   navigate(`${MASTER_CUSTOMER}?action=edit&id=${customer.customerId}`);
@@ -175,9 +178,38 @@ const TableCustomer = () => {
   });
  };
 
+ const handleChangeSelectStream = function (customer: ICustomer) {
+  const selectedIndex = selectedItems.findIndex(
+   (item) => item.customerId === customer.customerId
+  );
+  let newSelected: any[] = [];
+  if (selectedIndex === -1) {
+   newSelected = newSelected.concat(selectedItems, customer);
+  } else if (selectedIndex === 0) {
+   newSelected = newSelected.concat(selectedItems.slice(1));
+  } else if (selectedIndex === selectedItems.length - 1) {
+   newSelected = newSelected.concat(selectedItems.slice(0, -1));
+  } else if (selectedIndex > 0) {
+   newSelected = newSelected.concat(
+    selectedItems.slice(0, selectedIndex),
+    selectedItems.slice(selectedIndex + 1)
+   );
+  }
+  setSelectedItems(newSelected);
+ };
+
+ const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (event.target.checked) {
+   setSelectedItems(filterCustomerListActive.data);
+   return;
+  }
+  setSelectedItems([]);
+ };
+
  const isFirstRender = useFirstRender();
+
+ const { page, limit, sortingMethod, columnName } = stateTable;
  const handleClickSearch = () => {
-  const { page, limit, sortingMethod, columnName } = stateTable;
   getCustomerList({
    page: page,
    limit: limit,
@@ -189,7 +221,6 @@ const TableCustomer = () => {
  };
 
  useEffect(() => {
-  const { page, limit, sortingMethod, columnName } = stateTable;
   getCustomerList({
    page: page,
    limit: limit,
@@ -205,14 +236,48 @@ const TableCustomer = () => {
   if (!loading) setOpenConfirmation(false);
  }, [loading]);
 
+ const isSelected = (id: string) =>
+  selectedItems.findIndex((item) => item.customerId === id) !== -1;
+
  const theme = useTheme();
+
+ const handleDeletes = () => {
+  const customerIds = selectedItems.map((item) => item.customerId);
+  deletesCustomers(customerIds).then(() => {
+   setSelectedItems([]);
+   getCustomerList({
+    page: 1,
+    limit: limit,
+    sort: sortingMethod,
+    dir: `customer.${columnName}`,
+    searchField: `customer.${searchField.value}`,
+    searchValue: search
+   });
+  });
+ };
 
  return (
   <>
    <Card>
     <CardHeader
+     sx={{ position: 'relative' }}
      action={
-      <Box sx={{ margin: theme.spacing(1, 1, 0, 1) }}>
+      <Box
+       sx={{
+        margin: theme.spacing(1, 1, 0, 1)
+       }}
+      >
+       {selectedItems.length > 0 ? (
+        <Button
+         onClick={handleDeletes}
+         variant="contained"
+         color="error"
+         sx={{ position: 'absolute', left: 16 }}
+        >
+         Delete selected custumers
+        </Button>
+       ) : null}
+
        <OutlinedInput
         id="outlined-search"
         type="text"
@@ -257,77 +322,91 @@ const TableCustomer = () => {
         order={stateTable.sortingMethod}
         orderBy={stateTable.columnName}
         onRequestSort={handleSort}
+        rowCount={filterCustomerListActive.data.length}
+        onSelectAllClick={handleSelectAllClick}
+        numSelected={selectedItems.length}
        />
 
        <TableBody>
-        {filterCustomerListActive.data.map((customer, index) => (
-         <TableRow key={customer.id}>
-          <TableCell align="center">
-           {stateTable.limit * (stateTable.page - 1) + index + 1}
-          </TableCell>
-          <TableCell align="left">{customer.customerName}</TableCell>
-          <TableCell align="left">{customer.pic}</TableCell>
-          <TableCell align="left">{customer.phoneNumber}</TableCell>
-          <TableCell align="left">{customer.email}</TableCell>
-          <TableCell align="center">
-           <BootstrapTooltip
-            placement="top"
-            title={customer.packages.map((pack) => (
-             <Chip
-              label={pack.packageName}
-              variant="outlined"
-              key={pack.packageId}
-              size="small"
-              sx={{
-               mr: theme.spacing(0.5),
-               backgroundColor: theme.palette.grey[50]
-              }}
-             />
-            ))}
-           >
-            <Chip label={`${customer.packages.length} Package`} />
-           </BootstrapTooltip>
-          </TableCell>
-          <TableCell align="center">
-           <Stack direction="row" spacing={2} justifyContent="center">
-            {roleMenu?.isUpdate === 1 && (
-             <Tooltip title="Edit Customer" arrow>
-              <IconButton
-               sx={{
-                '&:hover': {
-                 background: theme.colors.primary.lighter
-                },
-                color: theme.palette.primary.main
-               }}
-               color="inherit"
+        {filterCustomerListActive.data.map((customer, index) => {
+         const isItemSelected = isSelected(customer.customerId);
+         return (
+          <TableRow key={customer.customerId}>
+           <TableCell align="center" size="small" padding="none">
+            <Checkbox
+             color="primary"
+             checked={isItemSelected}
+             value={customer.customerId}
+             onChange={() => handleChangeSelectStream(customer)}
+            />
+           </TableCell>
+           <TableCell align="center">
+            {stateTable.limit * (stateTable.page - 1) + index + 1}
+           </TableCell>
+           <TableCell align="left">{customer.customerName}</TableCell>
+           <TableCell align="left">{customer.pic}</TableCell>
+           <TableCell align="left">{customer.phoneNumber}</TableCell>
+           <TableCell align="left">{customer.email}</TableCell>
+           <TableCell align="center">
+            <BootstrapTooltip
+             placement="top"
+             title={customer.packages.map((pack) => (
+              <Chip
+               label={pack.packageName}
+               variant="outlined"
+               key={pack.packageId}
                size="small"
-               onClick={() => handleClickEdit(customer)}
-              >
-               <EditTwoToneIcon fontSize="small" />
-              </IconButton>
-             </Tooltip>
-            )}
-            {roleMenu?.isDelete === 1 && (
-             <Tooltip title="Delete Customer" arrow>
-              <IconButton
                sx={{
-                '&:hover': {
-                 background: theme.colors.error.lighter
-                },
-                color: theme.palette.error.main
+                mr: theme.spacing(0.5),
+                backgroundColor: theme.palette.grey[50]
                }}
-               color="inherit"
-               size="small"
-               onClick={() => handleClickDelete(customer)}
-              >
-               <DeleteTwoToneIcon fontSize="small" />
-              </IconButton>
-             </Tooltip>
-            )}
-           </Stack>
-          </TableCell>
-         </TableRow>
-        ))}
+              />
+             ))}
+            >
+             <Chip label={`${customer.packages.length} Package`} />
+            </BootstrapTooltip>
+           </TableCell>
+           <TableCell align="center">
+            <Stack direction="row" spacing={2} justifyContent="center">
+             {roleMenu?.isUpdate === 1 && (
+              <Tooltip title="Edit Customer" arrow>
+               <IconButton
+                sx={{
+                 '&:hover': {
+                  background: theme.colors.primary.lighter
+                 },
+                 color: theme.palette.primary.main
+                }}
+                color="inherit"
+                size="small"
+                onClick={() => handleClickEdit(customer)}
+               >
+                <EditTwoToneIcon fontSize="small" />
+               </IconButton>
+              </Tooltip>
+             )}
+             {roleMenu?.isDelete === 1 && (
+              <Tooltip title="Delete Customer" arrow>
+               <IconButton
+                sx={{
+                 '&:hover': {
+                  background: theme.colors.error.lighter
+                 },
+                 color: theme.palette.error.main
+                }}
+                color="inherit"
+                size="small"
+                onClick={() => handleClickDelete(customer)}
+               >
+                <DeleteTwoToneIcon fontSize="small" />
+               </IconButton>
+              </Tooltip>
+             )}
+            </Stack>
+           </TableCell>
+          </TableRow>
+         );
+        })}
         <TableRow hover={false}>
          <TableCell colSpan={3}>
           <Stack
