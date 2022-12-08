@@ -61,6 +61,7 @@ const InternalUser = Loader(
 const Customer = Loader(lazy(() => import('src/content/master/Customer')));
 const Product = Loader(lazy(() => import('src/content/master/Product')));
 const Package = Loader(lazy(() => import('src/content/master/Package')));
+const CustomerWillBeExpired = Loader(lazy(() => import('src/content/master/CustomerWillBeExpired')));
 const CustomerProduct = Loader(
  lazy(() => import('src/content/master/CustomerProduct'))
 );
@@ -181,6 +182,10 @@ const routes = (isAuthenticated: boolean): RouteObject[] => {
     {
      path: 'customer',
      element: <Customer />
+    },
+    {
+     path: 'customer_will_be_expired',
+     element: <CustomerWillBeExpired />
     },
     {
      path: 'product',

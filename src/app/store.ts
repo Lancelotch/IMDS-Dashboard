@@ -9,6 +9,7 @@ import internalUserStore from 'src/redux/internalUser';
 import topicStore from 'src/redux/topic';
 import alertStore from 'src/redux/alert';
 import packageStore from 'src/redux/package';
+import customerWillBeExpiredStore from 'src/redux/customerWillBeExpired';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -26,6 +27,7 @@ export const store = configureStore({
     storeInternalUser: internalUserStore,
     storeTopic: topicStore,
     storePackage: packageStore,
+    storeCustomerWillBeExpired:customerWillBeExpiredStore
   }
 });
 
