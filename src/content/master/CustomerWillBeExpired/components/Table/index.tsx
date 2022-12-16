@@ -7,6 +7,7 @@ import {
  TableCell,
  TableContainer,
  TableRow,
+ Button,
  useTheme,
  FormControl,
  InputLabel,
@@ -75,7 +76,7 @@ const TableCustomerWillBeExpired = () => {
 
 
 
- const { getCustomerWillBeExpiredList } = useCustomerWillBeExpired();
+ const { getCustomerWillBeExpiredList,exportExel } = useCustomerWillBeExpired();
 
  const handleChangeSearch = (value: string) => {
   setSearch(value);
@@ -172,6 +173,14 @@ const TableCustomerWillBeExpired = () => {
     <CardHeader
      action={
       <Box sx={{ margin: theme.spacing(1, 1, 0, 1) }}>
+        <Button
+         onClick={exportExel}
+         variant="contained"
+         color="success"
+         sx={{ position: 'absolute', left: 50 }}
+        >
+         Export To Exel
+        </Button>
        <OutlinedInput
         id="outlined-search"
         type="text"

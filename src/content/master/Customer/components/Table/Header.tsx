@@ -60,9 +60,16 @@ const headCells: HeadCell[] = [
  {
   id: 'email',
   disablePadding: false,
-  label: 'Customer Name',
+  label: 'Email',
   needSorting: false,
   align: 'left'
+ },
+ {
+    id: 'customerCategory',
+    disablePadding: false,
+    label: 'Category',
+    needSorting: false,
+    align: 'left'
  },
  {
   id: 'qtyPackage',

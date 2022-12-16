@@ -1,5 +1,8 @@
 import { IResponseBody } from './general';
 
+export type TCustomerCategory = 'Anggota Bursa' | 'Data Vendor' | 'SRO';
+
+
 export interface ICustomer {
  id: number;
  customerId: string;
@@ -7,6 +10,7 @@ export interface ICustomer {
  address: string;
  pic: string;
  phoneNumber: string;
+ customerCategory: string;
  email: string;
  createdAt: Date;
  createdBy: string;
@@ -46,6 +50,7 @@ export interface IPayloadAddCustomer {
  pic: string;
  phoneNumber: string;
  email: string;
+ customerCategory:string,
  packages: Array<ICustomerPackage>;
  removedPackages?: Array<ICustomerPackage>;
 }

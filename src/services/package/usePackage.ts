@@ -182,7 +182,36 @@ export const usePackage = () => {
    navigate(window.location.pathname);
   }
  };
- return {
+
+ const exportExel = async () => {
+    dispatch(reducerUpdateLoadingPackage(true));
+    try {
+     const response = await httpClient.get<IResponseAddPackage>(
+      `/package/download_exel`);
+     if (response.status === 200) {
+      dispatch(reducerEditPackage(response.data.data));
+      const responseDownload = response.data.data;
+      window.open(`${responseDownload}`, "_blank");
+      handleClickAlert({
+       horizontal: 'center',
+       vertical: 'top',
+       message: 'Export Exel has successfully',
+       severity: 'success'
+      });
+     }
+     dispatch(reducerUpdateLoadingPackage(false));
+    } catch (e) {
+     console.log(e);
+     handleClickAlert({
+      horizontal: 'center',
+      vertical: 'top',
+      message: 'Failed Export Exel',
+      severity: 'error'
+     });
+     dispatch(reducerUpdateLoadingPackage(false));
+    }
+   };
+ return {exportExel,
   getPackageList,
   addPackage,
   editPackage,

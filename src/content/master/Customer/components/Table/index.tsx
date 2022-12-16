@@ -65,8 +65,12 @@ const optionFields: Array<IOptionSearchField> = [
   value: 'phoneNumber'
  },
  {
-  label: 'Email',
-  value: 'email'
+  label: 'Phone Number',
+  value: 'phoneNumber'
+ },
+ {
+  label: 'Category',
+  value: 'customerCategory'
  }
 ];
 
@@ -106,7 +110,7 @@ const TableCustomer = () => {
   return { ...customerList, data: filterDataActive };
  }, [customerList]);
 
- const { getCustomerList, deleteCustomer, deletesCustomers } = useCustomer();
+ const { getCustomerList, deleteCustomer, deletesCustomers,exportExel } = useCustomer();
 
  const handleClickEdit = function (customer: ICustomer) {
   navigate(`${MASTER_CUSTOMER}?action=edit&id=${customer.customerId}`);
@@ -272,11 +276,20 @@ const TableCustomer = () => {
          onClick={handleDeletes}
          variant="contained"
          color="error"
-         sx={{ position: 'absolute', left: 16 }}
+         sx={{ position: 'absolute', left: 160 }}
         >
          Delete selected custumers
         </Button>
        ) : null}
+
+      <Button
+              onClick={exportExel}
+              variant="contained"
+              color="success"
+              sx={{ position: 'absolute', left: 16 }}
+              >
+              Export To Exel
+        </Button>
 
        <OutlinedInput
         id="outlined-search"
@@ -347,6 +360,7 @@ const TableCustomer = () => {
            <TableCell align="left">{customer.pic}</TableCell>
            <TableCell align="left">{customer.phoneNumber}</TableCell>
            <TableCell align="left">{customer.email}</TableCell>
+           <TableCell align="left">{customer.customerCategory}</TableCell>
            <TableCell align="center">
             <BootstrapTooltip
              placement="top"

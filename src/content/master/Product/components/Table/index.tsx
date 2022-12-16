@@ -74,7 +74,7 @@ const TableProduct = () => {
   return { ...productList, data: filterDataActive };
  }, [productList]);
 
- const { getProductList, deleteProduct, deletesProducts } = useProduct();
+ const { getProductList, deleteProduct, deletesProducts,exportExel } = useProduct();
 
  const handleClickEdit = function (product: IProduct) {
   navigate(`${MASTER_PRODUCT}?action=edit&id=${product.productId}`);
@@ -87,6 +87,11 @@ const TableProduct = () => {
 
  const handleOkDelete = function () {
   deleteProduct(field.productId);
+ };
+
+ 
+ const hanldeDownload = function () {
+  exportExel();
  };
 
  const handleChangeSearch = (value: string) => {
@@ -239,11 +244,19 @@ const TableProduct = () => {
          onClick={handleDeletes}
          variant="contained"
          color="error"
-         sx={{ position: 'absolute', left: 16 }}
+         sx={{ position: 'absolute', left: 160 }}
         >
          Delete selected products
         </Button>
        ) : null}
+        <Button
+         onClick={exportExel}
+         variant="contained"
+         color="success"
+         sx={{ position: 'absolute', left: 16 }}
+        >
+         Export To Exel
+        </Button>
        <OutlinedInput
         id="outlined-search"
         type="text"

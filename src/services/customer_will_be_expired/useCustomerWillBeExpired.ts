@@ -63,5 +63,35 @@ export const useCustomerWillBeExpired = () => {
    navigate(window.location.pathname);
   }
  };
- return { getCustomerWillBeExpiredList , getCustomerWillBeExpiredById };
+
+ 
+ const exportExel = async () => {
+    dispatch(reducerUpdateLoadingCustomerWillBeExpired(true));
+    try {
+     const response = await httpClient.get<IResponseAddCustomerWillBeExpired>(
+      `/customer_v2/download_exel_customer_will_be_expired`);
+     if (response.status === 200) {
+      //dispatch(reducerEditCustomerWillBeExpired(response.data.data));
+      const responseDownload = response.data.data;
+      window.open(`${responseDownload}`, "_blank");
+      handleClickAlert({
+       horizontal: 'center',
+       vertical: 'top',
+       message: 'Export Exel has successfully',
+       severity: 'success'
+      });
+     }
+     dispatch(reducerUpdateLoadingCustomerWillBeExpired(false));
+    } catch (e) {
+     console.log(e);
+     handleClickAlert({
+      horizontal: 'center',
+      vertical: 'top',
+      message: 'Failed Export Exel',
+      severity: 'error'
+     });
+     dispatch(reducerUpdateLoadingCustomerWillBeExpired(false));
+    }
+   };
+ return { exportExel,getCustomerWillBeExpiredList , getCustomerWillBeExpiredById };
 };

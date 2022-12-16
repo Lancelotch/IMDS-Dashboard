@@ -246,7 +246,37 @@ export const useCustomer = () => {
   }
  };
 
+ const exportExel = async () => {
+    dispatch(reducerUpdateLoadingCustomer(true));
+    try {
+     const response = await httpClient.get<IResponseAddCustomer>(
+      `/customer_v2/download_exel`);
+     if (response.status === 200) {
+      dispatch(reducerEditCustomer(response.data.data));
+      const responseDownload = response.data.data;
+      window.open(`${responseDownload}`, "_blank");
+      handleClickAlert({
+       horizontal: 'center',
+       vertical: 'top',
+       message: 'Export Exel has successfully',
+       severity: 'success'
+      });
+     }
+     dispatch(reducerUpdateLoadingCustomer(false));
+    } catch (e) {
+     console.log(e);
+     handleClickAlert({
+      horizontal: 'center',
+      vertical: 'top',
+      message: 'Failed Export Exel',
+      severity: 'error'
+     });
+     dispatch(reducerUpdateLoadingCustomer(false));
+    }
+   };
+
  return {
+    exportExel,
   getCustomerList,
   addCustomer,
   editCustomer,

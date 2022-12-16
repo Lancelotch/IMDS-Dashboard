@@ -86,7 +86,7 @@ const TablePackage = () => {
   return { ...packageList, data: filterDataActive };
  }, [packageList]);
 
- const { getPackageList, deletePackage, deletesPackages } = usePackage();
+ const { getPackageList, deletePackage, deletesPackages ,exportExel} = usePackage();
 
  const handleClickEdit = function (packageSelected: IPackage) {
   navigate(`${MASTER_PACKAGE}?action=edit&id=${packageSelected.packageId}`);
@@ -252,11 +252,20 @@ const TablePackage = () => {
          onClick={handleDeletes}
          variant="contained"
          color="error"
-         sx={{ position: 'absolute', left: 16 }}
+         sx={{ position: 'absolute', left: 160 }}
         >
          Delete selected packages
         </Button>
        ) : null}
+
+        <Button
+         onClick={exportExel}
+         variant="contained"
+         color="success"
+         sx={{ position: 'absolute', left: 16 }}
+        >
+         Export To Exel
+        </Button>
        <OutlinedInput
         id="outlined-search"
         type="text"

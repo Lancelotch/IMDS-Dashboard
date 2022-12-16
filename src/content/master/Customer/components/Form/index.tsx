@@ -8,6 +8,8 @@ import {
  Modal,
  OutlinedInput,
  Paper,
+ Select,
+ MenuItem,
  Stack,
  Table,
  TableBody,
@@ -27,7 +29,7 @@ import { useAppSelector } from 'src/app/hooks';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useFirstRender } from 'src/hooks/useFirstRender';
 import { useCustomer } from 'src/services/customer/useCustomer';
-import { ICustomerPackage, IPayloadAddCustomer } from 'src/models/customer';
+import { ICustomerPackage, IPayloadAddCustomer, TCustomerCategory } from 'src/models/customer';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { DataGrid, GridSelectionModel } from '@mui/x-data-grid';
 import { filter, indexOf } from 'lodash';
@@ -116,6 +118,7 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
    address: '',
    email: '',
    phoneNumber: '',
+   customerCategory:'',
    pic: '',
    packages: [],
    removedPackages: []
@@ -190,6 +193,8 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
   setFieldValue('packages', filter);
   setFieldValue('removedPackages', [...values.removedPackages, field]);
  };
+
+ const customerCategorys: Array<TCustomerCategory> = ['Anggota Bursa' , 'Data Vendor' , 'SRO'];
 
  const handleClickGenerateToken = function (customerPackageId: string) {
   generateToken({ customerPackageId });
@@ -309,6 +314,28 @@ const FormCustomer: FC<Props> = ({ action, id }) => {
        />
        <FormHelperText error variant="outlined" margin="dense" sx={{ ml: 0 }}>
         {errors.pic && touched.pic && errors.pic}
+       </FormHelperText>
+      </FormControl>
+     </Grid>
+     <Grid item lg={6}>
+      <FormControl fullWidth size="medium">
+       <FormLabel>Customer Category</FormLabel>
+       <Select
+        value={values.customerCategory}
+        onChange={(e) => {
+         handleChange(e);
+        }}
+        size="small"
+        name="customerCategory"
+       >
+        {customerCategorys.map((customerCategory) => (
+         <MenuItem key={customerCategory} value={customerCategory}>
+          {customerCategory}
+         </MenuItem>
+        ))}
+       </Select>
+       <FormHelperText error variant="outlined" margin="dense" sx={{ ml: 0 }}>
+        {errors.customerCategory && touched.customerCategory && errors.customerCategory}
        </FormHelperText>
       </FormControl>
      </Grid>

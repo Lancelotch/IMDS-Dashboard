@@ -44,7 +44,7 @@ export const useProduct = () => {
    handleClickAlert({
     horizontal: 'center',
     vertical: 'top',
-    message: 'Failed add Internal User',
+    message: 'Failed add Product',
     severity: 'error'
    });
    dispatch(reducerUpdateLoadingProduct(false));
@@ -75,7 +75,7 @@ export const useProduct = () => {
    handleClickAlert({
     horizontal: 'center',
     vertical: 'top',
-    message: 'Failed delete Internal User',
+    message: 'Failed delete Product',
     severity: 'error'
    });
    dispatch(reducerUpdateLoadingProduct(false));
@@ -130,7 +130,7 @@ export const useProduct = () => {
    handleClickAlert({
     horizontal: 'center',
     vertical: 'top',
-    message: 'Failed edit Internal User',
+    message: 'Failed edit Product',
     severity: 'error'
    });
    dispatch(reducerUpdateLoadingProduct(false));
@@ -182,7 +182,37 @@ export const useProduct = () => {
    navigate(window.location.pathname);
   }
  };
+
+ const exportExel = async () => {
+    dispatch(reducerUpdateLoadingProduct(true));
+    try {
+     const response = await httpClient.get<IResponseAddProduct>(
+      `/product/download_exel`);
+     if (response.status === 200) {
+      dispatch(reducerEditProduct(response.data.data));
+      const responseDownload = response.data.data;
+      window.open(`${responseDownload}`, "_blank");
+      handleClickAlert({
+       horizontal: 'center',
+       vertical: 'top',
+       message: 'Export Exel has successfully',
+       severity: 'success'
+      });
+     }
+     dispatch(reducerUpdateLoadingProduct(false));
+    } catch (e) {
+     console.log(e);
+     handleClickAlert({
+      horizontal: 'center',
+      vertical: 'top',
+      message: 'Failed Export Exel',
+      severity: 'error'
+     });
+     dispatch(reducerUpdateLoadingProduct(false));
+    }
+   };
  return {
+    exportExel,
   getProductList,
   addProduct,
   editProduct,
